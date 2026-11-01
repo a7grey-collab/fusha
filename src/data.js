@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 6;
+const VERSION = 7;
 const CHANGELOG = [
+ {v:7, ru:['На главной и на первом экране нарисована Медина: Масджид ан-Набави с зелёным куполом','Имя автора мельче и умещается в одну строку'],
+  en:['Al-Madinah illustration on the home and first screens: the Prophet’s Mosque with its green dome','Author name is smaller and fits on one line'],
+  ar:['رسم للمدينة المنورة في الشاشة الرئيسية والأولى: المسجد النبوي بقبته الخضراء','اسم المؤلف أصغر ويتسع في سطر واحد']},
  {v:6, ru:['Установка на экран: две небольшие кнопки «Android» и «iPhone / iPad» всегда рядом','iPhone / iPad: по нажатию показываются шаги установки'],
   en:['Add to home screen: two small buttons, “Android” and “iPhone / iPad”, always side by side','iPhone / iPad: tapping shows the install steps'],
   ar:['الإضافة إلى الشاشة: زران صغيران «Android» و«iPhone / iPad» دائمًا جنبًا إلى جنب','iPhone / iPad: عند الضغط تظهر خطوات التثبيت']},

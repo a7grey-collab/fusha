@@ -230,6 +230,21 @@ function updateRec() { const b = $('#recbox'); if (b) b.innerHTML = recHTML(); }
 
 /* ---------- views ---------- */
 function authorBlock() { return '<div class="author"><span class="small muted">' + t('author.label') + '</span><b>' + esc(AUTHOR[st.lang]) + '</b>' + (st.lang !== 'ar' ? ar(AUTHOR.ar, 'acal') : '') + '</div>'; }
+function medina() {
+  const min = x => '<g transform="translate(' + x + ' 0)"><rect x="-4" y="34" width="8" height="70" fill="#e4dcc0"/><rect x="-4" y="34" width="3" height="70" fill="#cfc59f"/><rect x="-7" y="46" width="14" height="4" fill="#bfb283"/><rect x="-7" y="66" width="14" height="4" fill="#bfb283"/><path d="M-5 34 L0 18 L5 34 Z" fill="#2a9d73"/><circle cx="0" cy="16" r="2" fill="#e6c35c"/></g>';
+  const palm = x => '<g transform="translate(' + x + ' 0)"><path d="M0 104 C1 92 -1 84 0 76" stroke="#5b4a2a" stroke-width="3" fill="none"/><path d="M0 76 q-14 -2 -20 8 M0 76 q-10 -9 -18 -6 M0 76 q14 -2 20 8 M0 76 q10 -9 18 -6 M0 76 q0 -12 0 -14" stroke="#2a9d73" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>';
+  let w = '';
+  for (let i = 0; i < 9; i++) w += '<path d="M' + (123 + i * 14) + ' 104 v-9 a3 3 0 0 1 6 0 v9 z" fill="#6b5f3a"/>';
+  let s = '';
+  [[22,12],[60,22],[96,9],[150,16],[210,10],[262,20],[300,10],[338,24],[330,52],[30,50]].forEach(q => { s += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="1.1" fill="#f6ecd2" opacity=".8"/>'; });
+  return '<svg class="medina" viewBox="0 0 360 120" role="img" aria-label="Al-Madinah, Prophet’s Mosque skyline"><defs><linearGradient id="mdsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a2f26"/><stop offset=".65" stop-color="#1b5a47"/><stop offset="1" stop-color="#c1932f"/></linearGradient></defs>'
+    + '<rect width="360" height="120" fill="url(#mdsky)"/>' + s + '<circle cx="300" cy="30" r="9" fill="#f6ecd2"/><circle cx="304" cy="27" r="8" fill="#14463a"/>'
+    + '<rect y="104" width="360" height="16" fill="#07261e"/>' + palm(40) + palm(322) + palm(62)
+    + '<rect x="112" y="82" width="136" height="22" fill="#e4dcc0"/><rect x="112" y="82" width="136" height="4" fill="#bfb283"/>' + w
+    + '<path d="M129 82 a10 10 0 0 1 20 0 Z M211 82 a10 10 0 0 1 20 0 Z" fill="#cfd8cf"/>'
+    + '<rect x="162" y="76" width="36" height="8" fill="#e4dcc0"/><path d="M160 76 C160 58 170 48 180 46 C190 48 200 58 200 76 Z" fill="#2a9d73"/><path d="M180 46 C170 48 160 58 160 76 L170 76 C170 60 174 52 180 46 Z" fill="#1f7a5a"/><line x1="180" y1="46" x2="180" y2="36" stroke="#e6c35c" stroke-width="2"/><circle cx="180" cy="34" r="3" fill="#e6c35c"/>'
+    + min(96) + min(122) + min(238) + min(264) + '</svg>';
+}
 function tracksView() {
   const stl = {open:'st.open', demo:'st.demo', soon:'st.soon'};
   let h = '<h1 class="h1">' + t('tracks.title') + '</h1><p class="lead">' + t('tracks.lead') + '</p><div class="opts">';
@@ -261,7 +276,7 @@ function tabs(cur) {
 }
 function homeView() {
   const nl = nextLesson();
-  let h = installCard();
+  let h = '<div class="mdwrap">' + medina() + '</div>' + installCard();
   h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
   if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
   h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
@@ -359,7 +374,7 @@ function logView() {
 function onbView() {
   const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard();
+  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard() + '<div class="mdwrap">' + medina() + '</div>';
   if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>';
   if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
   if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
