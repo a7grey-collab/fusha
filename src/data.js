@@ -1,0 +1,174 @@
+/* ===== version ===== */
+const VERSION = 3;
+const CHANGELOG = [
+ {v:3, ru:['Логотип FUSHA в шапке теперь ведёт на главную'], en:['The FUSHA logo in the header now takes you to the home screen'], ar:['شعار FUSHA في الأعلى يعيدك الآن إلى الشاشة الرئيسية']},
+ {v:2, ru:['Добавлен автор: Хамза аш-Шишани аль-Мадани','Экран «Направления»: от первой буквы до чтения Корана, хифз, Kids, Академия','Демо «Проверка чтения» (таджвид с ИИ, макет)','Иджаза только через квалифицированного шейха'],
+  en:['Author added: Hamza ash-Shishani al-Madani','New “Tracks” screen: from the first letter to Quran reading, hifz, Kids, Academy','“Reading check” demo (tajweed with AI, mock-up)','Ijazah only through a qualified sheikh'],
+  ar:['إضافة المؤلف: حمزة الشيشاني المدني','شاشة «المسارات»: من الحرف الأول إلى قراءة القرآن والحفظ وKids والأكاديمية','عرض «فحص القراءة» (التجويد بالذكاء الاصطناعي، تصوّر)','الإجازة لا تُمنح إلا عبر شيخ مؤهَّل']},
+ {v:1, ru:['Первый рабочий прототип сервиса','Путь по урокам: буквы, приветствия, трудные звуки, числа','6 типов упражнений, повторение по интервалам, XP и серия','AI-тьютор (демо по сценариям), запись голоса, тарифы по регионам','Русский, English, العربية с зеркальным интерфейсом'],
+  en:['First working prototype of the service','Lesson path: letters, greetings, hard sounds, numbers','6 exercise types, spaced repetition, XP and streak','AI tutor (scripted demo), voice recording, regional plans','Russian, English and Arabic with a mirrored interface'],
+  ar:['أول نموذج عملي للخدمة','مسار الدروس: الحروف والتحيات والأصوات الصعبة والأرقام','6 أنواع من التمارين ومراجعة متباعدة ونقاط وسلسلة أيام','معلّم ذكي (عرض تجريبي) وتسجيل الصوت وخطط حسب المنطقة','الروسية والإنجليزية والعربية بواجهة معكوسة']}
+];
+
+/* ===== letters: [glyph, name, soundRu, soundEn, hard] ===== */
+const LETTERS = [
+ ['ا','alif','а (долгий)','a (long)',0],['ب','ba','б','b',0],['ت','ta','т','t',0],['ث','tha','«th» как в think','th (think)',1],
+ ['ج','jim','дж','j (jam)',0],['خ','kha','х как в «хорошо»','kh (loch)',1],['د','dal','д','d',0],['ذ','dhal','«th» как в this','th (this)',1],
+ ['ر','ra','р (раскатистая)','r (rolled)',0],['ز','zay','з','z',0],['س','sin','с','s',0],['ش','shin','ш','sh',0],
+ ['ف','fa','ф','f',0],['ك','kaf','к','k',0],['ل','lam','л','l',0],['م','mim','м','m',0],
+ ['ن','nun','н','n',0],['ه','ha (soft)','х (мягкий выдох)','h (soft)',0],['و','waw','в / долгий у','w / long u',0],['ي','ya','й / долгий и','y / long i',0],
+ ['ص','Sad','с эмфатическое','emphatic s',1],['ض','Dad','д эмфатическое','emphatic d',1],['ط','Ta (emph.)','т эмфатическое','emphatic t',1],['ظ','Za (emph.)','з эмфатическое','emphatic z',1],
+ ['ع','ayn','гортанный «айн»','ayn (throat)',1],['غ','ghayn','гъ (картавое)','gh (French r)',1],['ق','qaf','к глубокое','deep q',1],['ح','Ha (throat)','горловое «х»','throat h',1]
+];
+/* ===== words: [id, ar, ru, en, translit] ===== */
+const WORDS = [
+ ['marhaban','مرحبا','привет','hello','marhaban'],
+ ['ahlan','أهلا','здравствуйте (рад вас видеть)','hi (welcome)','ahlan'],
+ ['salam','السلام عليكم','мир вам (приветствие)','peace be upon you (greeting)','as-salamu alaykum'],
+ ['reply','وعليكم السلام','и вам мир (ответ)','and peace be upon you (reply)','wa alaykum as-salam'],
+ ['sabah','صباح الخير','доброе утро','good morning','sabah al-khayr'],
+ ['masa','مساء الخير','добрый вечер','good evening','masa’ al-khayr'],
+ ['bye','مع السلامة','до свидания','goodbye','ma‘a as-salama'],
+ ['yes','نعم','да','yes','na‘am'],
+ ['no','لا','нет','no','la'],
+ ['thanks','شكرا','спасибо','thank you','shukran'],
+ ['welcome','عفوا','не за что','you’re welcome','‘afwan'],
+ ['please','من فضلك','пожалуйста (просьба)','please','min fadlik'],
+ ['how','كيف حالك','как дела?','how are you?','kayfa haluk'],
+ ['fine','بخير','хорошо (в порядке)','fine (well)','bikhayr'],
+ ['n1','واحد','один','one','wahid'],['n2','اثنان','два','two','ithnan'],['n3','ثلاثة','три','three','thalatha'],
+ ['n4','أربعة','четыре','four','arba‘a'],['n5','خمسة','пять','five','khamsa'],['n6','ستة','шесть','six','sitta'],
+ ['n7','سبعة','семь','seven','sab‘a'],['n8','ثمانية','восемь','eight','thamaniya'],['n9','تسعة','девять','nine','tis‘a'],['n10','عشرة','десять','ten','‘ashara']
+];
+const ITEMS = {};
+LETTERS.forEach(l => { ITEMS['L:' + l[0]] = {id:'L:' + l[0], type:'L', ar:l[0], name:l[1], snd:{ru:l[2], en:l[3]}, hard:!!l[4]}; });
+WORDS.forEach(w => { ITEMS['W:' + w[0]] = {id:'W:' + w[0], type:'W', ar:w[1], gl:{ru:w[2], en:w[3]}, tr:w[4]}; });
+const L = g => 'L:' + g, W = i => 'W:' + i;
+const UNITS = [
+ {id:'u1', ic:'ا', premium:false, t:{ru:'Буквы и звуки', en:'Letters and sounds', ar:'الحروف والأصوات'}, lessons:[
+   ['ا','ب','ت','ث'].map(L), ['ج','خ','د','ذ'].map(L), ['ر','ز','س','ش'].map(L), ['ف','ك','ل','م'].map(L), ['ن','ه','و','ي'].map(L)]},
+ {id:'u2', ic:'م', premium:false, t:{ru:'Приветствия', en:'Greetings', ar:'التحيات'}, lessons:[
+   ['marhaban','ahlan','salam','reply'].map(W), ['sabah','masa','bye','yes','no'].map(W), ['thanks','welcome','please','how','fine'].map(W)]},
+ {id:'u3', ic:'ع', premium:false, t:{ru:'Трудные звуки', en:'Hard sounds', ar:'الأصوات الصعبة'}, lessons:[
+   ['ص','ض','ط','ظ'].map(L), ['ع','غ','ق','ح'].map(L)]},
+ {id:'u4', ic:'٤', premium:true, t:{ru:'Числа 1–10', en:'Numbers 1–10', ar:'الأرقام 1-10'}, lessons:[
+   ['n1','n2','n3','n4','n5'].map(W), ['n6','n7','n8','n9','n10'].map(W)]}
+];
+UNITS.forEach(u => u.lessons = u.lessons.map((items, i) => ({id:u.id + 'l' + (i + 1), unit:u, n:i + 1, items})));
+const ALL_LESSONS = UNITS.flatMap(u => u.lessons);
+
+/* ===== tutor scenarios ===== */
+const SCEN = {
+ meet:{ steps:[
+  {say:{ar:'السلام عليكم', ru:'Мир вам (приветствие)', en:'Peace be upon you (greeting)'}, ok:n => n.includes('وعليكم السلام'), chips:['وعليكم السلام']},
+  {say:{ar:'ما اسمك؟', ru:'Как вас зовут?', en:'What is your name?'}, ok:n => n.startsWith('اسمي') && n.length > 4, chips:['اسمي علي']},
+  {say:{ar:'كيف حالك؟', ru:'Как у вас дела?', en:'How are you?'}, ok:n => n.includes('بخير'), chips:['أنا بخير، شكرا']},
+  {say:{ar:'مع السلامة', ru:'До свидания', en:'Goodbye'}, ok:n => n.includes('مع السلامه') || n.includes('السلام'), chips:['مع السلامة']}
+ ], close:null},
+ cafe:{ steps:[
+  {say:{ar:'أهلا! ماذا تريد؟', ru:'Здравствуйте! Что вы хотите?', en:'Hello! What would you like?'}, ok:n => n.includes('اريد') && n.length > 5, chips:['أريد قهوة','أريد شاي']},
+  {say:{ar:'تفضل', ru:'Пожалуйста, вот ваш заказ', en:'Here you are'}, ok:n => n.includes('شكرا'), chips:['شكرا']}
+ ], close:{ar:'عفوا', ru:'Не за что', en:'You’re welcome'}}
+};
+
+/* ===== UI strings ===== */
+const S = {
+ru:{
+ 'author.label':'Автор','tracks.title':'Направления','tracks.lead':'Один путь: от первой буквы до свободного арабского и уверенного чтения Корана','tracks.open':'Открыть','st.open':'Доступно','st.demo':'Демо','st.soon':'Скоро','tracks.ijaza':'Иджаза выдаётся только квалифицированным шейхом с соответствующей цепочкой передачи, а не автоматически через ИИ.',
+ 'read.title':'Проверка чтения','read.sub':'Прочитайте аят','read.src':'Текст взят из заметок автора. В сервисе текст берётся из проверенного источника и сверяется шейхом.','read.how':'Система оценивает чтение в пределах возможностей распознавания речи и отмечает предполагаемые ошибки. Сложные вопросы таджвида передаются преподавателю.','read.sample':'Пример замечаний (макет)','read.madd':'Мадд в «الرَّحْمَٰنِ»: естественный мадд, два счёта. Возможная ошибка, проверьте.','read.teacher':'Отправить преподавателю (макет)','read.sent':'Макет: в сервисе запись уйдёт преподавателю',
+ 'tab.path':'Путь','tab.review':'Повтор','tab.tutor':'Тьютор','tab.me':'Профиль',
+ 'onb.welcome':'Учите арабский (фусха) вместе с Institute TOBA','onb.lang':'Язык интерфейса','onb.goal':'Зачем вам арабский?',
+ 'goal.talk':'Свободное общение','goal.quran':'Язык Корана','goal.work':'Работа и учёба',
+ 'onb.level':'Ваш уровень','level.zero':'Начинаю с нуля','level.letters':'Знаю буквы','level.some':'Немного читаю и говорю',
+ 'onb.daily':'Цель на день','daily.10':'Лёгкая · 10 XP','daily.20':'Обычная · 20 XP','daily.40':'Серьёзная · 40 XP',
+ 'onb.start':'Начать','onb.next':'Далее','onb.back':'Назад',
+ 'home.goal':'Цель дня','home.goalval':'{a} из {b} XP','home.continue':'Продолжить','home.start':'Начать','home.lesson':'Урок {n}','home.locked':'Сначала пройдите предыдущий урок','home.done':'Пройден',
+ 'lesson.quit':'Выйти из урока? Прогресс этого урока будет потерян.','lesson.stay':'Остаться','lesson.leave':'Выйти',
+ 'ex.sound':'Какой звук у этой буквы?','ex.letter':'Выберите букву «{name}»','ex.tr':'Что значит это слово?','ex.pickar':'Выберите по-арабски: «{w}»','ex.listen':'Что вы услышали?','ex.match':'Соедините пары','ex.order':'Составьте фразу: «{w}»','ex.type':'Напишите по-арабски: «{w}»','ex.speak':'Произнесите вслух',
+ 'btn.check':'Проверить','btn.cont':'Далее','btn.skip':'Пропустить','fb.ok':'Верно!','fb.no':'Не совсем. Правильно:',
+ 'tts.off':'Озвучка арабского недоступна на этом устройстве. В сервисе будет аудио носителей языка.','tts.play':'Послушать',
+ 'mic.rec':'Записать','mic.stop':'Остановить','mic.again':'Ещё раз','mic.err':'Нет доступа к микрофону. Разрешите его в настройках браузера.','mic.len':'Длительность: {s} с','mic.level':'Громкость записи: {p}%','mic.mock':'Пример оценки (макет). В сервисе оценку даст подключённый провайдер распознавания речи.','mic.overall':'Общая оценка','mic.hint':'Подсказка по артикуляции: звук идёт из глубины горла, язык не касается зубов.',
+ 'res.done':'Урок пройден!','res.xp':'+{n} XP','res.acc':'Точность: {n}%','res.learned':'Новых элементов в повторении: {n}','res.streak':'Серия: {n} дн.','res.back':'К пути',
+ 'rev.title':'Повторение','rev.due':'К повторению сегодня: {n}','rev.learned':'Выучено элементов: {n}','rev.start':'Начать повторение','rev.none':'Пока нечего повторять. Пройдите первый урок.','rev.all':'Повторить всё выученное (демо)','rev.why':'Буквы и слова возвращаются через 1, 3, 7 и 14 дней, чтобы остаться в памяти.',
+ 'tutor.title':'AI-тьютор','tutor.demo':'Демо: ответы по сценарию. В сервисе тьютор работает на Claude и понимает свободный текст.','tutor.pick':'Выберите сценарий','sc.meet':'Знакомство','sc.cafe':'В кафе','tutor.ph':'Напишите по-арабски…','tutor.send':'Отправить','tutor.hint':'Подсказка','tutor.try':'Почти. Попробуйте так:','tutor.good':'Отлично!','tutor.end':'Сценарий завершён','tutor.again':'Другой сценарий','tutor.left':'Бесплатно сегодня: осталось {n} из {m}','tutor.tap':'Нажмите на фразу или напишите свою',
+ 'pay.title':'Тарифы','pay.region':'Ваш регион','reg.gcc':'Саудовская Аравия и GCC','reg.mena':'MENA (вне GCC)','reg.west':'Северная Америка и Европа','reg.row':'Остальной мир','per':'/ мес.',
+ 'plan.free':'Бесплатно','plan.plus':'Plus',
+ 'free.1':'Юниты 1–3: буквы, приветствия, трудные звуки','free.2':'Повторение по интервалам','free.3':'5 сообщений тьютору в день',
+ 'plus.1':'Все юниты и новые уроки','plus.2':'AI-тьютор без лимита','plus.3':'Голосовой диалог и проверка произношения','plus.4':'Персональный план обучения',
+ 'pay.buy':'Оформить Plus (демо)','pay.cancel':'Отключить Plus (демо)','pay.active':'Plus активен (демо)','pay.demo':'Демо: оплата не выполняется.','pay.illus':'Цены иллюстративные. Итоговую сетку определим после закрытой беты.','pay.soon':'Скоро',
+ 'soon.live':'занятия с преподавателями','soon.q':'язык Корана','soon.c':'экзамены и иджаза','soon.k':'для детей',
+ 'sheet.title':'Нужен Plus','sheet.unit':'Этот юнит входит в Plus.','sheet.tutor':'Бесплатный лимит сообщений на сегодня исчерпан.','sheet.see':'Смотреть тарифы','sheet.later':'Позже',
+ 'me.title':'Профиль','me.xp':'Всего XP','me.streak':'Серия, дн.','me.lessons':'Уроков пройдено','me.items':'Элементов выучено','me.settings':'Настройки','me.lang':'Язык','me.theme':'Тема','theme.auto':'Авто','theme.light':'Светлая','theme.dark':'Тёмная','me.daily':'Цель на день','me.demo':'Демо: открыть все уроки','me.reset':'Сбросить прогресс','me.reset.q':'Сбросить весь прогресс?','me.notes':'Заметки для следующей версии','me.notes.ph':'Что поправить, добавить, убрать…','me.copy':'Скопировать заметки','me.plans':'Тарифы и Plus','me.log':'Что нового','me.reco':'Рекомендуем начать с юнита {n}',
+ 'upd.title':'Приложение обновлено до v{v}','upd.new':'Доступно обновление','upd.reload':'Обновить','upd.close':'Понятно',
+ 'toast.copied':'Скопировано','toast.sel':'Выделено. Скопируйте вручную','toast.demo':'Демо: оплата не выполняется','toast.reset':'Прогресс сброшен'
+},
+en:{
+ 'author.label':'Author','tracks.title':'Tracks','tracks.lead':'One path: from the first letter to fluent Arabic and confident Quran reading','tracks.open':'Open','st.open':'Available','st.demo':'Demo','st.soon':'Soon','tracks.ijaza':'Ijazah is granted only by a qualified sheikh with a proper chain of transmission, never automatically by AI.',
+ 'read.title':'Reading check','read.sub':'Read the verse','read.src':'Text taken from the author’s notes. In the service the text comes from a verified source and is reviewed by a sheikh.','read.how':'The system evaluates your reading within the limits of speech recognition and flags suspected mistakes. Complex tajweed questions go to a teacher.','read.sample':'Sample remarks (mock-up)','read.madd':'Madd in “الرَّحْمَٰنِ”: natural madd, two counts. Possible mistake, please check.','read.teacher':'Send to a teacher (mock-up)','read.sent':'Mock-up: in the service the recording goes to a teacher',
+ 'tab.path':'Path','tab.review':'Review','tab.tutor':'Tutor','tab.me':'Profile',
+ 'onb.welcome':'Learn Arabic (Fusha) with Institute TOBA','onb.lang':'Interface language','onb.goal':'Why do you want Arabic?',
+ 'goal.talk':'Everyday communication','goal.quran':'The language of the Quran','goal.work':'Work and study',
+ 'onb.level':'Your level','level.zero':'Starting from zero','level.letters':'I know the letters','level.some':'I read and speak a little',
+ 'onb.daily':'Daily goal','daily.10':'Light · 10 XP','daily.20':'Regular · 20 XP','daily.40':'Serious · 40 XP',
+ 'onb.start':'Start','onb.next':'Next','onb.back':'Back',
+ 'home.goal':'Daily goal','home.goalval':'{a} of {b} XP','home.continue':'Continue','home.start':'Start','home.lesson':'Lesson {n}','home.locked':'Finish the previous lesson first','home.done':'Completed',
+ 'lesson.quit':'Leave the lesson? Progress in this lesson will be lost.','lesson.stay':'Stay','lesson.leave':'Leave',
+ 'ex.sound':'What sound does this letter make?','ex.letter':'Choose the letter “{name}”','ex.tr':'What does this mean?','ex.pickar':'Choose in Arabic: “{w}”','ex.listen':'What did you hear?','ex.match':'Match the pairs','ex.order':'Build the phrase: “{w}”','ex.type':'Write in Arabic: “{w}”','ex.speak':'Say it out loud',
+ 'btn.check':'Check','btn.cont':'Continue','btn.skip':'Skip','fb.ok':'Correct!','fb.no':'Not quite. Correct answer:',
+ 'tts.off':'Arabic speech is not available on this device. The service will use native-speaker audio.','tts.play':'Listen',
+ 'mic.rec':'Record','mic.stop':'Stop','mic.again':'Again','mic.err':'No microphone access. Allow it in your browser settings.','mic.len':'Length: {s} s','mic.level':'Recording level: {p}%','mic.mock':'Sample result (mock-up). In the service, a speech-recognition provider will score this.','mic.overall':'Overall','mic.hint':'Articulation tip: the sound comes from deep in the throat; the tongue does not touch the teeth.',
+ 'res.done':'Lesson complete!','res.xp':'+{n} XP','res.acc':'Accuracy: {n}%','res.learned':'New items in review: {n}','res.streak':'Streak: {n} days','res.back':'Back to path',
+ 'rev.title':'Review','rev.due':'Due today: {n}','rev.learned':'Items learned: {n}','rev.start':'Start review','rev.none':'Nothing to review yet. Complete your first lesson.','rev.all':'Review everything learned (demo)','rev.why':'Letters and words return after 1, 3, 7 and 14 days so they stick.',
+ 'tutor.title':'AI tutor','tutor.demo':'Demo: scripted replies. In the service the tutor runs on Claude and understands free text.','tutor.pick':'Choose a scenario','sc.meet':'Meeting someone','sc.cafe':'At the café','tutor.ph':'Write in Arabic…','tutor.send':'Send','tutor.hint':'Hint','tutor.try':'Close. Try this:','tutor.good':'Great!','tutor.end':'Scenario complete','tutor.again':'Another scenario','tutor.left':'Free today: {n} of {m} left','tutor.tap':'Tap a phrase or write your own',
+ 'pay.title':'Plans','pay.region':'Your region','reg.gcc':'Saudi Arabia & GCC','reg.mena':'MENA (outside GCC)','reg.west':'North America & Europe','reg.row':'Rest of world','per':'/ mo',
+ 'plan.free':'Free','plan.plus':'Plus',
+ 'free.1':'Units 1–3: letters, greetings, hard sounds','free.2':'Spaced repetition','free.3':'5 tutor messages per day',
+ 'plus.1':'All units and new lessons','plus.2':'Unlimited AI tutor','plus.3':'Voice dialogue and pronunciation check','plus.4':'Personal study plan',
+ 'pay.buy':'Get Plus (demo)','pay.cancel':'Turn off Plus (demo)','pay.active':'Plus is active (demo)','pay.demo':'Demo: no payment is taken.','pay.illus':'Prices are illustrative. The final grid will be set after the closed beta.','pay.soon':'Coming soon',
+ 'soon.live':'lessons with teachers','soon.q':'the language of the Quran','soon.c':'exams and ijazah','soon.k':'for children',
+ 'sheet.title':'Plus required','sheet.unit':'This unit is part of Plus.','sheet.tutor':'You have used today’s free messages.','sheet.see':'See plans','sheet.later':'Later',
+ 'me.title':'Profile','me.xp':'Total XP','me.streak':'Streak, days','me.lessons':'Lessons completed','me.items':'Items learned','me.settings':'Settings','me.lang':'Language','me.theme':'Theme','theme.auto':'Auto','theme.light':'Light','theme.dark':'Dark','me.daily':'Daily goal','me.demo':'Demo: unlock all lessons','me.reset':'Reset progress','me.reset.q':'Reset all progress?','me.notes':'Notes for the next version','me.notes.ph':'What to fix, add or remove…','me.copy':'Copy notes','me.plans':'Plans and Plus','me.log':'What’s new','me.reco':'We recommend starting from unit {n}',
+ 'upd.title':'App updated to v{v}','upd.new':'Update available','upd.reload':'Update','upd.close':'Got it',
+ 'toast.copied':'Copied','toast.sel':'Selected. Copy it manually','toast.demo':'Demo: no payment is taken','toast.reset':'Progress reset'
+},
+ar:{
+ 'author.label':'المؤلف','tracks.title':'المسارات','tracks.lead':'مسار واحد: من الحرف الأول إلى العربية الفصيحة وقراءة القرآن بثقة','tracks.open':'افتح','st.open':'متاح','st.demo':'تجريبي','st.soon':'قريبًا','tracks.ijaza':'الإجازة لا يمنحها إلا شيخ مؤهَّل بسند متصل، وليست تلقائية عبر الذكاء الاصطناعي.',
+ 'read.title':'فحص القراءة','read.sub':'اقرأ الآية','read.src':'النص مأخوذ من ملاحظات المؤلف. في الخدمة يؤخذ النص من مصدر موثوق ويراجعه شيخ.','read.how':'يقيّم النظام قراءتك في حدود إمكانات التعرّف على الكلام ويشير إلى الأخطاء المحتملة، وتُحال مسائل التجويد الدقيقة إلى معلّم.','read.sample':'نموذج للملاحظات (تصوّر)','read.madd':'المدّ في «الرَّحْمَٰنِ»: مدّ طبيعي بمقدار حركتين. خطأ محتمل، يرجى التحقق.','read.teacher':'أرسل إلى معلّم (تصوّر)','read.sent':'تصوّر: في الخدمة يُرسل التسجيل إلى معلّم',
+ 'tab.path':'المسار','tab.review':'المراجعة','tab.tutor':'المعلّم','tab.me':'حسابي',
+ 'onb.welcome':'تعلّم العربية الفصحى مع Institute TOBA','onb.lang':'لغة الواجهة','onb.goal':'لماذا تريد تعلّم العربية؟',
+ 'goal.talk':'التواصل اليومي','goal.quran':'لغة القرآن','goal.work':'العمل والدراسة',
+ 'onb.level':'مستواك','level.zero':'مبتدئ من الصفر','level.letters':'أعرف الحروف','level.some':'أقرأ وأتحدث قليلًا',
+ 'onb.daily':'هدفك اليومي','daily.10':'خفيف · 10 XP','daily.20':'عادي · 20 XP','daily.40':'جاد · 40 XP',
+ 'onb.start':'ابدأ','onb.next':'التالي','onb.back':'رجوع',
+ 'home.goal':'هدف اليوم','home.goalval':'{a} من {b} XP','home.continue':'تابع','home.start':'ابدأ','home.lesson':'الدرس {n}','home.locked':'أكمل الدرس السابق أولًا','home.done':'مكتمل',
+ 'lesson.quit':'هل تريد مغادرة الدرس؟ سيُفقد تقدّم هذا الدرس.','lesson.stay':'ابقَ','lesson.leave':'مغادرة',
+ 'ex.sound':'ما صوت هذا الحرف؟','ex.letter':'اختر الحرف «{name}»','ex.tr':'ما معنى هذه الكلمة؟','ex.pickar':'اختر بالعربية: «{w}»','ex.listen':'ماذا سمعت؟','ex.match':'طابِق بين الأزواج','ex.order':'رتّب العبارة: «{w}»','ex.type':'اكتب بالعربية: «{w}»','ex.speak':'انطق بصوت عالٍ',
+ 'btn.check':'تحقّق','btn.cont':'التالي','btn.skip':'تخطَّ','fb.ok':'أحسنت!','fb.no':'ليست صحيحة. الإجابة الصحيحة:',
+ 'tts.off':'النطق العربي غير متاح على هذا الجهاز. ستستخدم الخدمة تسجيلات صوتية لمتحدثين أصليين.','tts.play':'استمع',
+ 'mic.rec':'سجّل','mic.stop':'أوقف','mic.again':'أعد','mic.err':'لا يمكن الوصول إلى الميكروفون. اسمح به من إعدادات المتصفح.','mic.len':'المدة: {s} ث','mic.level':'مستوى التسجيل: {p}%','mic.mock':'نموذج للنتيجة (تصوّر). في الخدمة سيقيّم مزوّد التعرّف على الكلام نطقك.','mic.overall':'التقييم العام','mic.hint':'نصيحة للنطق: يخرج الصوت من عمق الحلق ولا يلمس اللسان الأسنان.',
+ 'res.done':'اكتمل الدرس!','res.xp':'+{n} XP','res.acc':'الدقة: {n}%','res.learned':'عناصر جديدة في المراجعة: {n}','res.streak':'السلسلة: {n} يوم','res.back':'العودة إلى المسار',
+ 'rev.title':'المراجعة','rev.due':'للمراجعة اليوم: {n}','rev.learned':'العناصر المتعلَّمة: {n}','rev.start':'ابدأ المراجعة','rev.none':'لا شيء للمراجعة بعد. أكمل الدرس الأول.','rev.all':'راجع كل ما تعلّمته (تجريبي)','rev.why':'تعود الحروف والكلمات بعد 1 و3 و7 و14 يومًا لترسخ في الذاكرة.',
+ 'tutor.title':'المعلّم الذكي','tutor.demo':'تجريبي: ردود جاهزة. في الخدمة يعمل المعلّم بنموذج Claude ويفهم النص الحر.','tutor.pick':'اختر موقفًا','sc.meet':'التعارف','sc.cafe':'في المقهى','tutor.ph':'اكتب بالعربية…','tutor.send':'إرسال','tutor.hint':'تلميح','tutor.try':'قريب. جرّب هذا:','tutor.good':'ممتاز!','tutor.end':'انتهى الموقف','tutor.again':'موقف آخر','tutor.left':'المجاني اليوم: بقي {n} من {m}','tutor.tap':'اضغط على عبارة أو اكتب عبارتك',
+ 'pay.title':'الخطط','pay.region':'منطقتك','reg.gcc':'السعودية ودول الخليج','reg.mena':'الشرق الأوسط وشمال أفريقيا (خارج الخليج)','reg.west':'أمريكا الشمالية وأوروبا','reg.row':'بقية العالم','per':'/ شهر',
+ 'plan.free':'مجاني','plan.plus':'Plus',
+ 'free.1':'الوحدات 1-3: الحروف والتحيات والأصوات الصعبة','free.2':'مراجعة متباعدة','free.3':'5 رسائل يوميًا للمعلّم',
+ 'plus.1':'كل الوحدات والدروس الجديدة','plus.2':'معلّم ذكي بلا حدود','plus.3':'حوار صوتي وفحص النطق','plus.4':'خطة تعلّم شخصية',
+ 'pay.buy':'اشترك في Plus (تجريبي)','pay.cancel':'أوقف Plus (تجريبي)','pay.active':'Plus مفعّل (تجريبي)','pay.demo':'تجريبي: لا يتم أي دفع.','pay.illus':'الأسعار توضيحية؛ سنحدد الشبكة النهائية بعد النسخة التجريبية المغلقة.','pay.soon':'قريبًا',
+ 'soon.live':'دروس مع معلّمين','soon.q':'لغة القرآن','soon.c':'اختبارات وإجازة','soon.k':'للأطفال',
+ 'sheet.title':'يلزم Plus','sheet.unit':'هذه الوحدة ضمن Plus.','sheet.tutor':'انتهت رسائلك المجانية اليوم.','sheet.see':'عرض الخطط','sheet.later':'لاحقًا',
+ 'me.title':'حسابي','me.xp':'مجموع XP','me.streak':'السلسلة، أيام','me.lessons':'الدروس المكتملة','me.items':'العناصر المتعلَّمة','me.settings':'الإعدادات','me.lang':'اللغة','me.theme':'المظهر','theme.auto':'تلقائي','theme.light':'فاتح','theme.dark':'داكن','me.daily':'الهدف اليومي','me.demo':'تجريبي: افتح كل الدروس','me.reset':'مسح التقدّم','me.reset.q':'هل تريد مسح كل التقدّم؟','me.notes':'ملاحظات للإصدار القادم','me.notes.ph':'ما الذي يجب تعديله أو إضافته أو حذفه…','me.copy':'انسخ الملاحظات','me.plans':'الخطط وPlus','me.log':'الجديد','me.reco':'نوصي بالبدء من الوحدة {n}',
+ 'upd.title':'تم تحديث التطبيق إلى v{v}','upd.new':'يتوفر تحديث','upd.reload':'تحديث','upd.close':'حسنًا',
+ 'toast.copied':'تم النسخ','toast.sel':'تم التحديد. انسخ يدويًا','toast.demo':'تجريبي: لا يتم أي دفع','toast.reset':'تم مسح التقدّم'
+}};
+const REGIONS = [['gcc', '14.99'], ['mena', '8.99'], ['west', '12.99'], ['row', '5.99']];
+
+const AUTHOR = {ru:'Хамза аш-Шишани аль-Мадани', en:'Hamza ash-Shishani al-Madani', ar:'حمزة الشيشاني المدني'};
+const TRACKS = [
+ {id:'zero', st:'open', n:{ru:'Арабский с нуля', en:'Arabic from zero', ar:'العربية من الصفر'}, d:{ru:'Буквы, слова, грамматика, речь', en:'Letters, words, grammar, speech', ar:'الحروف والكلمات والقواعد والمحادثة'}},
+ {id:'quran', st:'soon', n:{ru:'Чтение Корана', en:'Quran reading', ar:'قراءة القرآن'}, d:{ru:'От алиф до чтения мусхафа', en:'From alif to reading the mushaf', ar:'من الألف إلى قراءة المصحف'}},
+ {id:'tajweed', st:'demo', n:{ru:'Таджвид с ИИ', en:'Tajweed with AI', ar:'التجويد بالذكاء الاصطناعي'}, d:{ru:'Практика и анализ произношения', en:'Practice and pronunciation analysis', ar:'تدريب وتحليل للنطق'}},
+ {id:'hifz', st:'soon', n:{ru:'Хифз', en:'Hifz', ar:'الحفظ'}, d:{ru:'Заучивание и повторение', en:'Memorisation and review', ar:'الحفظ والمراجعة'}},
+ {id:'kids', st:'soon', n:{ru:'FUSHA Kids', en:'FUSHA Kids', ar:'FUSHA Kids'}, d:{ru:'Игровое обучение детей', en:'Game-based learning for children', ar:'تعلّم الأطفال بالألعاب'}},
+ {id:'academy', st:'soon', n:{ru:'Академия', en:'Academy', ar:'الأكاديمية'}, d:{ru:'Учителя, экзамены, сертификаты', en:'Teachers, exams, certificates', ar:'معلّمون واختبارات وشهادات'}}
+];
+const BASMALA = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
