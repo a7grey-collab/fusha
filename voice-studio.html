@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>FUSHA Voice Studio</title>
+<style>
+:root{--bg:#f4f6f4;--surface:#fff;--soft:#eaefec;--ink:#0c3b30;--text:#26362f;--muted:#566860;--line:#d3dcd7;--gold:#c1932f;--ok:#1f7a5a;--bad:#b3392f}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1511;--surface:#12211b;--soft:#1b332b;--ink:#e6efe9;--text:#cfdcd5;--muted:#9db3a8;--line:#27433a;--gold:#d6a640;--ok:#4cc79a;--bad:#ef8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;overflow-wrap:anywhere}
+.wrap{max-width:46rem;margin:0 auto;padding:0 .9rem 6rem}
+h1{font:700 1.4rem/1.25 Georgia,"Noto Serif",serif;color:var(--ink);margin:1rem 0 .3rem}
+h2{font:700 1.05rem/1.3 system-ui,sans-serif;color:var(--ink);margin:1.6rem 0 .5rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:.9rem;margin:.8rem 0}
+.card ol{margin:.4rem 0 0;padding-inline-start:1.3rem}.card li{margin:.25rem 0}
+.top{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--line);padding:.6rem .9rem}
+.top .in{max-width:46rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.bar{flex:1 1 8rem;height:.7rem;background:var(--soft);border-radius:99px;overflow:hidden;min-width:6rem}.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.cnt{font-weight:700;color:var(--ink);white-space:nowrap}
+button{font:inherit;cursor:pointer;min-height:44px;padding:0 .9rem;border-radius:.8rem;border:2px solid var(--ink);background:transparent;color:var(--ink);font-weight:700}
+button.pri{background:var(--gold);border-color:var(--gold);color:#241a02}
+button[disabled]{opacity:.4;cursor:not-allowed}
+.row{display:grid;grid-template-columns:minmax(4rem,6rem) 1fr;gap:.2rem .8rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:.7rem .8rem;margin:.5rem 0}
+.row.done{border-color:var(--ok)}.row.rec{border-color:var(--bad);box-shadow:0 0 0 2px var(--bad)}
+.ar{font-family:"Noto Naskh Arabic","Amiri","Geeza Pro","Traditional Arabic",serif;font-size:2.2rem;line-height:1.7;text-align:center;direction:rtl}
+.row .ar.long{font-size:1.5rem}
+.hint{font-size:.9rem;color:var(--muted)}
+.say{font-weight:700;color:var(--ink)}
+.acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.acts .st{margin-inline-start:auto;font-size:.85rem;font-weight:700;color:var(--muted)}.row.done .st{color:var(--ok)}
+.meter{height:.6rem;background:var(--soft);border-radius:99px;overflow:hidden;margin:.4rem 0}.meter i{display:block;height:100%;width:0;background:var(--ok)}
+.foot{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line);display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.9rem}
+.foot a{color:var(--ink);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.foot svg{width:18px;height:18px;fill:currentColor}
+@media (max-width:420px){.ar{font-size:1.9rem}}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><span class="cnt" id="cnt">0 / 0</span><div class="bar"><i id="bar"></i></div><button class="pri" id="zip" disabled>Скачать ZIP</button></div></div>
+<div class="wrap">
+<h1>FUSHA Voice Studio</h1>
+<p class="hint">Студия записи голоса для приложения FUSHA. Запись идёт прямо в браузере, ничего устанавливать не нужно. / استوديو تسجيل الصوت لتطبيق FUSHA، التسجيل داخل المتصفح مباشرة.</p>
+<div class="card"><b>Как записывать</b>
+<ol>
+<li>Тихая комната, микрофон в 15–20 см ото рта (гарнитура или телефон). Выключите вентилятор и кондиционер.</li>
+<li>Откройте эту страницу в Chrome (телефон или компьютер) и разрешите доступ к микрофону.</li>
+<li>Нажмите «Проверить микрофон»: полоса должна заметно двигаться, но не упираться в край.</li>
+<li>Для каждой строки: «● Запись», подождите секунду, скажите ровно то, что написано жирным, подождите секунду, «■ Стоп». Прослушайте. Не понравилось, запишите заново.</li>
+<li>Буквы: произносить название буквы («باء»), а не звук. Слоги: только слог, без названия. Слова и фразы: естественно, медленно и чётко, как диктор в учебнике.</li>
+<li>Темп, дистанция и громкость должны быть одинаковыми во всех записях. Лучше записать всё за один подход (около 40–60 минут).</li>
+<li>В конце нажмите «Скачать ZIP» и отправьте файл Астару. Запись сохраняется в браузере даже при перезагрузке страницы.</li>
+</ol></div>
+<div class="card"><button id="mic">Проверить микрофон</button><div class="meter"><i id="lvl"></i></div><span class="hint" id="miccap">Нажмите и скажите что-нибудь.</span></div>
+<div id="list"></div>
+<div class="foot"><span>Alex Grey</span><a href="https://t.me/a7grey" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3.5 2.7 10.8c-.8.3-.8 1.3 0 1.6l4.6 1.5 1.8 5.6c.2.6 1 .8 1.4.3l2.6-2.4 4.7 3.5c.6.4 1.4.1 1.6-.6l3-15.3c.2-.8-.6-1.4-1.3-1.1zM9.3 13.6l8-5-6.2 6-.3 3z"/></svg>@a7grey</a></div>
+</div>
+<script>
+const ITEMS = [{"f":"a000","g":"L","ar":"ا","say":"ألف","ru":"alif · а (долгий)","en":"alif · a (long)"},{"f":"a001","g":"L","ar":"ب","say":"باء","ru":"ba · б","en":"ba · b"},{"f":"a002","g":"L","ar":"ت","say":"تاء","ru":"ta · т","en":"ta · t"},{"f":"a003","g":"L","ar":"ث","say":"ثاء","ru":"tha · «th» как в think","en":"tha · th (think)"},{"f":"a004","g":"L","ar":"ج","say":"جيم","ru":"jim · дж","en":"jim · j (jam)"},{"f":"a005","g":"L","ar":"ح","say":"حاء","ru":"Ha (throat) · горловое «х»","en":"Ha (throat) · throat h"},{"f":"a006","g":"L","ar":"خ","say":"خاء","ru":"kha · х как в «хорошо»","en":"kha · kh (loch)"},{"f":"a007","g":"L","ar":"د","say":"دال","ru":"dal · д","en":"dal · d"},{"f":"a008","g":"L","ar":"ذ","say":"ذال","ru":"dhal · «th» как в this","en":"dhal · th (this)"},{"f":"a009","g":"L","ar":"ر","say":"راء","ru":"ra · р (раскатистая)","en":"ra · r (rolled)"},{"f":"a010","g":"L","ar":"ز","say":"زاي","ru":"zay · з","en":"zay · z"},{"f":"a011","g":"L","ar":"س","say":"سين","ru":"sin · с","en":"sin · s"},{"f":"a012","g":"L","ar":"ش","say":"شين","ru":"shin · ш","en":"shin · sh"},{"f":"a013","g":"L","ar":"ص","say":"صاد","ru":"Sad · с эмфатическое","en":"Sad · emphatic s"},{"f":"a014","g":"L","ar":"ض","say":"ضاد","ru":"Dad · д эмфатическое","en":"Dad · emphatic d"},{"f":"a015","g":"L","ar":"ط","say":"طاء","ru":"Ta (emph.) · т эмфатическое","en":"Ta (emph.) · emphatic t"},{"f":"a016","g":"L","ar":"ظ","say":"ظاء","ru":"Za (emph.) · з эмфатическое","en":"Za (emph.) · emphatic z"},{"f":"a017","g":"L","ar":"ع","say":"عين","ru":"ayn · гортанный «айн»","en":"ayn · ayn (throat)"},{"f":"a018","g":"L","ar":"غ","say":"غين","ru":"ghayn · гъ (картавое)","en":"ghayn · gh (French r)"},{"f":"a019","g":"L","ar":"ف","say":"فاء","ru":"fa · ф","en":"fa · f"},{"f":"a020","g":"L","ar":"ق","say":"قاف","ru":"qaf · к глубокое","en":"qaf · deep q"},{"f":"a021","g":"L","ar":"ك","say":"كاف","ru":"kaf · к","en":"kaf · k"},{"f":"a022","g":"L","ar":"ل","say":"لام","ru":"lam · л","en":"lam · l"},{"f":"a023","g":"L","ar":"م","say":"ميم","ru":"mim · м","en":"mim · m"},{"f":"a024","g":"L","ar":"ن","say":"نون","ru":"nun · н","en":"nun · n"},{"f":"a025","g":"L","ar":"ه","say":"هاء","ru":"ha (soft) · х (мягкий выдох)","en":"ha (soft) · h (soft)"},{"f":"a026","g":"L","ar":"و","say":"واو","ru":"waw · в / долгий у","en":"waw · w / long u"},{"f":"a027","g":"L","ar":"ي","say":"ياء","ru":"ya · й / долгий и","en":"ya · y / long i"},{"f":"a028","g":"W","ar":"مرحبا","say":"مرحبا","ru":"привет (marhaban)","en":"hello (marhaban)"},{"f":"a029","g":"W","ar":"أهلا","say":"أهلا","ru":"здравствуйте (рад вас видеть) (ahlan)","en":"hi (welcome) (ahlan)"},{"f":"a030","g":"W","ar":"السلام عليكم","say":"السلام عليكم","ru":"мир вам (приветствие) (as-salamu alaykum)","en":"peace be upon you (greeting) (as-salamu alaykum)"},{"f":"a031","g":"W","ar":"وعليكم السلام","say":"وعليكم السلام","ru":"и вам мир (ответ) (wa alaykum as-salam)","en":"and peace be upon you (reply) (wa alaykum as-salam)"},{"f":"a032","g":"W","ar":"صباح الخير","say":"صباح الخير","ru":"доброе утро (sabah al-khayr)","en":"good morning (sabah al-khayr)"},{"f":"a033","g":"W","ar":"مساء الخير","say":"مساء الخير","ru":"добрый вечер (masa’ al-khayr)","en":"good evening (masa’ al-khayr)"},{"f":"a034","g":"W","ar":"مع السلامة","say":"مع السلامة","ru":"до свидания (ma‘a as-salama)","en":"goodbye (ma‘a as-salama)"},{"f":"a035","g":"W","ar":"نعم","say":"نعم","ru":"да (na‘am)","en":"yes (na‘am)"},{"f":"a036","g":"W","ar":"لا","say":"لا","ru":"нет (la)","en":"no (la)"},{"f":"a037","g":"W","ar":"شكرا","say":"شكرا","ru":"спасибо (shukran)","en":"thank you (shukran)"},{"f":"a038","g":"W","ar":"عفوا","say":"عفوا","ru":"не за что (‘afwan)","en":"you’re welcome (‘afwan)"},{"f":"a039","g":"W","ar":"من فضلك","say":"من فضلك","ru":"пожалуйста (просьба) (min fadlik)","en":"please (min fadlik)"},{"f":"a040","g":"W","ar":"كيف حالك","say":"كيف حالك","ru":"как дела? (kayfa haluk)","en":"how are you? (kayfa haluk)"},{"f":"a041","g":"W","ar":"بخير","say":"بخير","ru":"хорошо (в порядке) (bikhayr)","en":"fine (well) (bikhayr)"},{"f":"a042","g":"W","ar":"بَاب","say":"بَاب","ru":"дверь (bab)","en":"door (bab)"},{"f":"a043","g":"W","ar":"بَيْت","say":"بَيْت","ru":"дом (bayt)","en":"house (bayt)"},{"f":"a044","g":"W","ar":"كِتَاب","say":"كِتَاب","ru":"книга (kitab)","en":"book (kitab)"},{"f":"a045","g":"W","ar":"قَلَم","say":"قَلَم","ru":"ручка (qalam)","en":"pen (qalam)"},{"f":"a046","g":"W","ar":"وَلَد","say":"وَلَد","ru":"мальчик (walad)","en":"boy (walad)"},{"f":"a047","g":"W","ar":"شَمْس","say":"شَمْس","ru":"солнце (shams)","en":"sun (shams)"},{"f":"a048","g":"W","ar":"قَمَر","say":"قَمَر","ru":"луна (qamar)","en":"moon (qamar)"},{"f":"a049","g":"W","ar":"سَمَك","say":"سَمَك","ru":"рыба (samak)","en":"fish (samak)"},{"f":"a050","g":"W","ar":"واحد","say":"واحد","ru":"один (wahid)","en":"one (wahid)"},{"f":"a051","g":"W","ar":"اثنان","say":"اثنان","ru":"два (ithnan)","en":"two (ithnan)"},{"f":"a052","g":"W","ar":"ثلاثة","say":"ثلاثة","ru":"три (thalatha)","en":"three (thalatha)"},{"f":"a053","g":"W","ar":"أربعة","say":"أربعة","ru":"четыре (arba‘a)","en":"four (arba‘a)"},{"f":"a054","g":"W","ar":"خمسة","say":"خمسة","ru":"пять (khamsa)","en":"five (khamsa)"},{"f":"a055","g":"W","ar":"ستة","say":"ستة","ru":"шесть (sitta)","en":"six (sitta)"},{"f":"a056","g":"W","ar":"سبعة","say":"سبعة","ru":"семь (sab‘a)","en":"seven (sab‘a)"},{"f":"a057","g":"W","ar":"ثمانية","say":"ثمانية","ru":"восемь (thamaniya)","en":"eight (thamaniya)"},{"f":"a058","g":"W","ar":"تسعة","say":"تسعة","ru":"девять (tis‘a)","en":"nine (tis‘a)"},{"f":"a059","g":"W","ar":"عشرة","say":"عشرة","ru":"десять (‘ashara)","en":"ten (‘ashara)"},{"f":"a060","g":"S","ar":"بَ","say":"بَ","ru":"ба","en":"ba"},{"f":"a061","g":"S","ar":"بُ","say":"بُ","ru":"бу","en":"bu"},{"f":"a062","g":"S","ar":"بِ","say":"بِ","ru":"би","en":"bi"},{"f":"a063","g":"S","ar":"بَا","say":"بَا","ru":"баа (долгий)","en":"baa (long)"},{"f":"a064","g":"S","ar":"بُو","say":"بُو","ru":"буу (долгий)","en":"buu (long)"},{"f":"a065","g":"S","ar":"بِي","say":"بِي","ru":"бии (долгий)","en":"bii (long)"},{"f":"a066","g":"S","ar":"تَ","say":"تَ","ru":"та","en":"ta"},{"f":"a067","g":"S","ar":"تُ","say":"تُ","ru":"ту","en":"tu"},{"f":"a068","g":"S","ar":"تِ","say":"تِ","ru":"ти","en":"ti"},{"f":"a069","g":"S","ar":"تَا","say":"تَا","ru":"таа (долгий)","en":"taa (long)"},{"f":"a070","g":"S","ar":"تُو","say":"تُو","ru":"туу (долгий)","en":"tuu (long)"},{"f":"a071","g":"S","ar":"تِي","say":"تِي","ru":"тии (долгий)","en":"tii (long)"},{"f":"a072","g":"S","ar":"مَ","say":"مَ","ru":"ма","en":"ma"},{"f":"a073","g":"S","ar":"مُ","say":"مُ","ru":"му","en":"mu"},{"f":"a074","g":"S","ar":"مِ","say":"مِ","ru":"ми","en":"mi"},{"f":"a075","g":"S","ar":"مَا","say":"مَا","ru":"маа (долгий)","en":"maa (long)"},{"f":"a076","g":"S","ar":"مُو","say":"مُو","ru":"муу (долгий)","en":"muu (long)"},{"f":"a077","g":"S","ar":"مِي","say":"مِي","ru":"мии (долгий)","en":"mii (long)"},{"f":"a078","g":"S","ar":"لَ","say":"لَ","ru":"ла","en":"la"},{"f":"a079","g":"S","ar":"لُ","say":"لُ","ru":"лу","en":"lu"},{"f":"a080","g":"S","ar":"لِ","say":"لِ","ru":"ли","en":"li"},{"f":"a081","g":"S","ar":"لَا","say":"لَا","ru":"лаа (долгий)","en":"laa (long)"},{"f":"a082","g":"S","ar":"لُو","say":"لُو","ru":"луу (долгий)","en":"luu (long)"},{"f":"a083","g":"S","ar":"لِي","say":"لِي","ru":"лии (долгий)","en":"lii (long)"},{"f":"a084","g":"S","ar":"نَ","say":"نَ","ru":"на","en":"na"},{"f":"a085","g":"S","ar":"نُ","say":"نُ","ru":"ну","en":"nu"},{"f":"a086","g":"S","ar":"نِ","say":"نِ","ru":"ни","en":"ni"},{"f":"a087","g":"S","ar":"نَا","say":"نَا","ru":"наа (долгий)","en":"naa (long)"},{"f":"a088","g":"S","ar":"نُو","say":"نُو","ru":"нуу (долгий)","en":"nuu (long)"},{"f":"a089","g":"S","ar":"نِي","say":"نِي","ru":"нии (долгий)","en":"nii (long)"},{"f":"a090","g":"S","ar":"سَ","say":"سَ","ru":"са","en":"sa"},{"f":"a091","g":"S","ar":"سُ","say":"سُ","ru":"су","en":"su"},{"f":"a092","g":"S","ar":"سِ","say":"سِ","ru":"си","en":"si"},{"f":"a093","g":"S","ar":"سَا","say":"سَا","ru":"саа (долгий)","en":"saa (long)"},{"f":"a094","g":"S","ar":"سُو","say":"سُو","ru":"суу (долгий)","en":"suu (long)"},{"f":"a095","g":"S","ar":"سِي","say":"سِي","ru":"сии (долгий)","en":"sii (long)"},{"f":"a096","g":"S","ar":"كَ","say":"كَ","ru":"ка","en":"ka"},{"f":"a097","g":"S","ar":"كُ","say":"كُ","ru":"ку","en":"ku"},{"f":"a098","g":"S","ar":"كِ","say":"كِ","ru":"ки","en":"ki"},{"f":"a099","g":"S","ar":"كَا","say":"كَا","ru":"каа (долгий)","en":"kaa (long)"},{"f":"a100","g":"S","ar":"كُو","say":"كُو","ru":"куу (долгий)","en":"kuu (long)"},{"f":"a101","g":"S","ar":"كِي","say":"كِي","ru":"кии (долгий)","en":"kii (long)"},{"f":"a102","g":"S","ar":"رَ","say":"رَ","ru":"ра","en":"ra"},{"f":"a103","g":"S","ar":"رُ","say":"رُ","ru":"ру","en":"ru"},{"f":"a104","g":"S","ar":"رِ","say":"رِ","ru":"ри","en":"ri"},{"f":"a105","g":"S","ar":"رَا","say":"رَا","ru":"раа (долгий)","en":"raa (long)"},{"f":"a106","g":"S","ar":"رُو","say":"رُو","ru":"руу (долгий)","en":"ruu (long)"},{"f":"a107","g":"S","ar":"رِي","say":"رِي","ru":"рии (долгий)","en":"rii (long)"},{"f":"t00","g":"P","ar":"السلام عليكم","say":"السلام عليكم","ru":"Мир вам (приветствие)","en":"Peace be upon you (greeting)"},{"f":"t01","g":"P","ar":"ما اسمك؟","say":"ما اسمك؟","ru":"Как вас зовут?","en":"What is your name?"},{"f":"t02","g":"P","ar":"كيف حالك؟","say":"كيف حالك؟","ru":"Как у вас дела?","en":"How are you?"},{"f":"t03","g":"P","ar":"مع السلامة","say":"مع السلامة","ru":"До свидания","en":"Goodbye"},{"f":"t04","g":"P","ar":"أهلا! ماذا تريد؟","say":"أهلا! ماذا تريد؟","ru":"Здравствуйте! Что вы хотите?","en":"Hello! What would you like?"},{"f":"t05","g":"P","ar":"تفضل","say":"تفضل","ru":"Пожалуйста, вот ваш заказ","en":"Here you are"}];
+const GROUPS = {L:'Буквы (28) · الحروف', S:'Слоги с огласовками (48) · المقاطع', W:'Слова (32) · الكلمات', P:'Фразы тьютора (6) · العبارات'};
+const DB = 'fusha-voice-studio', ST = 'clips';
+const clips = {};          // f -> {blob, type}
+let rec = null, cur = null, audio = null;
+const $ = s => document.querySelector(s);
+const ext = t => /mp4|aac/.test(t) ? 'm4a' : /ogg/.test(t) ? 'ogg' : 'webm';
+function openDB() { return new Promise((res, rej) => { const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => r.result.createObjectStore(ST); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function dbOp(mode, fn) { try { const db = await openDB(); return await new Promise((res, rej) => { const tx = db.transaction(ST, mode), os = tx.objectStore(ST), q = fn(os); tx.oncomplete = () => res(q && q.result); tx.onerror = () => rej(tx.error); }); } catch (e) { return null; } }
+function build() {
+  let h = '', last = '';
+  ITEMS.forEach(it => {
+    if (it.g !== last) { h += '<h2>' + GROUPS[it.g] + '</h2>'; last = it.g; }
+    h += '<div class="row" id="r-' + it.f + '"><div class="ar' + (it.ar.length > 6 ? ' long' : '') + '" lang="ar">' + it.ar + '</div><div><div class="say" dir="rtl" lang="ar">' + it.say + '</div><div class="hint">' + it.ru + '</div></div>' +
+      '<div class="acts"><button data-a="rec" data-f="' + it.f + '">● Запись</button><button data-a="play" data-f="' + it.f + '" disabled>▶ Слушать</button><button data-a="del" data-f="' + it.f + '" disabled>✕</button><span class="st" id="s-' + it.f + '">не записано</span></div></div>';
+  });
+  $('#list').innerHTML = h;
+}
+function refresh(f) {
+  const r = $('#r-' + f), has = !!clips[f];
+  r.classList.toggle('done', has);
+  r.querySelector('[data-a=play]').disabled = !has; r.querySelector('[data-a=del]').disabled = !has;
+  $('#s-' + f).textContent = has ? '✓ ' + Math.max(1, Math.round(clips[f].blob.size / 1024)) + ' КБ' : 'не записано';
+  const n = Object.keys(clips).length;
+  $('#cnt').textContent = n + ' / ' + ITEMS.length; $('#bar').style.width = (n / ITEMS.length * 100) + '%'; $('#zip').disabled = n === 0;
+}
+function stopRec() { if (rec && rec.state === 'recording') rec.stop(); }
+async function startRec(f) {
+  stopRec();
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    const mr = new MediaRecorder(stream), chunks = []; rec = mr; cur = f;
+    mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    mr.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(chunks, {type:mr.mimeType || 'audio/webm'}); clips[f] = {blob, type:blob.type};
+      dbOp('readwrite', os => os.put({blob, type:blob.type}, f)); rec = null; cur = null;
+      const b = $('#r-' + f + ' [data-a=rec]'); b.textContent = '● Запись'; $('#r-' + f).classList.remove('rec'); refresh(f);
+    };
+    mr.start(); const b = $('#r-' + f + ' [data-a=rec]'); b.textContent = '■ Стоп'; $('#r-' + f).classList.add('rec'); $('#s-' + f).textContent = 'идёт запись…';
+  } catch (e) { alert('Нет доступа к микрофону. Разрешите его в настройках браузера. / لا يوجد وصول إلى الميكروفون.'); }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return; const f = b.dataset.f, a = b.dataset.a;
+  if (a === 'rec') { if (cur === f) stopRec(); else startRec(f); }
+  if (a === 'play' && clips[f]) { if (audio) audio.pause(); audio = new Audio(URL.createObjectURL(clips[f].blob)); audio.play(); }
+  if (a === 'del') { delete clips[f]; dbOp('readwrite', os => os.delete(f)); refresh(f); }
+});
+$('#mic').onclick = async () => {
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({audio:true}), ac = new (window.AudioContext || window.webkitAudioContext)(), an = ac.createAnalyser(); an.fftSize = 512;
+    ac.createMediaStreamSource(s).connect(an); const buf = new Uint8Array(an.fftSize); let t0 = Date.now(), peak = 0;
+    (function tick() { an.getByteTimeDomainData(buf); let m = 0; for (const v of buf) m = Math.max(m, Math.abs(v - 128)); peak = Math.max(peak, m); $('#lvl').style.width = Math.min(100, m / 128 * 100 * 1.6) + '%';
+      if (Date.now() - t0 < 6000) requestAnimationFrame(tick); else { s.getTracks().forEach(x => x.stop()); ac.close(); $('#lvl').style.width = '0'; $('#miccap').textContent = peak < 6 ? 'Тихо или микрофон не слышит. Подвиньте ближе.' : peak > 120 ? 'Слишком громко: отодвиньте микрофон.' : 'Уровень хороший.'; } })();
+    $('#miccap').textContent = 'Слушаю 6 секунд…';
+  } catch (e) { $('#miccap').textContent = 'Нет доступа к микрофону.'; }
+};
+/* ---- ZIP (store, no compression) ---- */
+const CRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = u => { let c = 0xFFFFFFFF; for (let i = 0; i < u.length; i++) c = CRC[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function zip(files) {
+  const enc = new TextEncoder(), parts = [], cd = []; let off = 0;
+  files.forEach(f => {
+    const nm = enc.encode(f.name), crc = crc32(f.data), h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true); h.setUint16(10, 0, true); h.setUint16(12, 0x21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, f.data.length, true); h.setUint32(22, f.data.length, true); h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+    parts.push(h.buffer, nm, f.data);
+    const c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, 0, true); c.setUint16(14, 0x21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, f.data.length, true); c.setUint32(24, f.data.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+    cd.push(c.buffer, nm); off += 30 + nm.length + f.data.length;
+  });
+  const cdSize = cd.reduce((s, x) => s + x.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cdSize, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...cd, e.buffer], {type:'application/zip'});
+}
+$('#zip').onclick = async () => {
+  const files = [], man = {};
+  for (const it of ITEMS) { const c = clips[it.f]; if (!c) continue; const name = it.f + '.' + ext(c.type); files.push({name, data:new Uint8Array(await c.blob.arrayBuffer())}); man[it.f] = {file:name, ar:it.ar}; }
+  files.push({name:'manifest.json', data:new TextEncoder().encode(JSON.stringify({recorded:files.length, total:ITEMS.length, items:man}, null, 1))});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(zip(files)); a.download = 'Fusha_Voice_Clips_' + Object.keys(clips).length + 'of' + ITEMS.length + '.zip'; document.body.appendChild(a); a.click(); a.remove();
+};
+build(); ITEMS.forEach(it => refresh(it.f));
+(async () => { for (const it of ITEMS) { const r = await dbOp('readonly', os => os.get(it.f)); if (r && r.blob) { clips[it.f] = r; refresh(it.f); } } })();
+</script>
+</body>
+</html>

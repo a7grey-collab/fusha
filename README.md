@@ -30,3 +30,6 @@ Developer Alex Grey · [@a7grey](https://t.me/a7grey)
 
 ## Аудио (с v12)
 Клипы лежат в `src/audio/` (manifest.json: id → файл) и вшиваются в HTML при сборке. Это синтезированный голос для прототипа. В продакшене заменить на записи диктора (для Корана: чтецы, например EveryAyah).
+
+## Реальный голос
+`voice-studio.html` (https://a7grey-collab.github.io/fusha/voice-studio.html) — студия записи 114 клипов в браузере. Готовый ZIP: `python3 tools/ingest_audio.py <zip>`, затем `python3 build.py`.
