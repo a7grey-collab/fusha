@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 4;
+const VERSION = 5;
 const CHANGELOG = [
+ {v:5, ru:['Кнопки установки на экран теперь видны сразу, на первом экране','Номер версии (V5) показывается рядом с логотипом'],
+  en:['Install buttons are now visible right on the first screen','The version number (V5) is shown next to the logo'],
+  ar:['أزرار التثبيت تظهر الآن مباشرة في الشاشة الأولى','يظهر رقم الإصدار (V5) بجانب الشعار']},
  {v:4, ru:['Кнопки «Установить на экран»: Android — одним нажатием, iPhone/iPad — пошаговая инструкция','После установки кнопки исчезают, приложение открывается во весь экран','Автоуведомление: при выходе новой версии появляется «Доступно обновление → Обновить»'],
   en:['“Add to home screen” buttons: Android in one tap, iPhone/iPad with step-by-step instructions','After install the buttons disappear and the app opens full screen','Automatic notice: when a new version is out you see “Update available → Update”'],
   ar:['أزرار «إضافة إلى الشاشة الرئيسية»: أندرويد بضغطة واحدة، وآيفون/آيباد بخطوات مفصلة','بعد التثبيت تختفي الأزرار ويفتح التطبيق بملء الشاشة','إشعار تلقائي: عند صدور إصدار جديد يظهر «يتوفر تحديث ← تحديث»']},

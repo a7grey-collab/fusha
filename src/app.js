@@ -245,7 +245,7 @@ function goalRing() {
   return '<div class="ring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="32" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="38" cy="38" r="32" fill="none" stroke="var(--gold)" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - p)).toFixed(1) + '"/></svg><b>' + Math.round(p * 100) + '%</b></div>';
 }
 function topBar() {
-  return '<header class="top"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
+  return '<header class="top"><span class="logo"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button>' + VTAG + '</span><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
 }
 function bannerHTML() {
   if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.newv', {v:newVer || VERSION + 1}) + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
@@ -359,12 +359,12 @@ function logView() {
 function onbView() {
   const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock();
+  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard();
   if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>';
   if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
   if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
   const last = ob.step === 3;
-  return '<div class="app"><header class="top"><span class="brand">FUSHA</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
+  return '<div class="app"><header class="top"><span class="logo"><span class="brand">FUSHA</span>' + VTAG + '</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
 }
 
 /* ----- lesson ----- */
@@ -433,6 +433,7 @@ function sheetHTML() {
 }
 
 /* ---------- install + updates ---------- */
+const VTAG = '<span class="ver" dir="ltr">V' + VERSION + '</span>';
 const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === window;
 const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);

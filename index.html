@@ -190,6 +190,7 @@ textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px
 .steps li{display:flex;gap:.7rem;align-items:flex-start}
 .steps .n{flex:none;inline-size:1.7rem;block-size:1.7rem;border-radius:50%;background:var(--gold);color:#1a1405;font-weight:800;display:grid;place-items:center;font-size:.9rem}
 .steps .shic{vertical-align:middle;color:var(--ink)}
+.logo{display:flex;align-items:baseline;gap:.45rem;margin-inline-end:auto;min-width:0}.logo .brand{margin:0}.ver{font:700 .8rem var(--sans);color:var(--gold-ink);background:var(--gold-soft);border-radius:.5rem;padding:.1rem .4rem;letter-spacing:.04em}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tg" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol></svg>
 <div id="root"></div>
@@ -197,8 +198,11 @@ textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px
 <noscript><p style="padding:1rem">FUSHA needs JavaScript.</p></noscript>
 <script>const PWA = true;
 /* ===== version ===== */
-const VERSION = 4;
+const VERSION = 5;
 const CHANGELOG = [
+ {v:5, ru:['Кнопки установки на экран теперь видны сразу, на первом экране','Номер версии (V5) показывается рядом с логотипом'],
+  en:['Install buttons are now visible right on the first screen','The version number (V5) is shown next to the logo'],
+  ar:['أزرار التثبيت تظهر الآن مباشرة في الشاشة الأولى','يظهر رقم الإصدار (V5) بجانب الشعار']},
  {v:4, ru:['Кнопки «Установить на экран»: Android — одним нажатием, iPhone/iPad — пошаговая инструкция','После установки кнопки исчезают, приложение открывается во весь экран','Автоуведомление: при выходе новой версии появляется «Доступно обновление → Обновить»'],
   en:['“Add to home screen” buttons: Android in one tap, iPhone/iPad with step-by-step instructions','After install the buttons disappear and the app opens full screen','Automatic notice: when a new version is out you see “Update available → Update”'],
   ar:['أزرار «إضافة إلى الشاشة الرئيسية»: أندرويد بضغطة واحدة، وآيفون/آيباد بخطوات مفصلة','بعد التثبيت تختفي الأزرار ويفتح التطبيق بملء الشاشة','إشعار تلقائي: عند صدور إصدار جديد يظهر «يتوفر تحديث ← تحديث»']},
@@ -624,7 +628,7 @@ function goalRing() {
   return '<div class="ring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="32" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="38" cy="38" r="32" fill="none" stroke="var(--gold)" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - p)).toFixed(1) + '"/></svg><b>' + Math.round(p * 100) + '%</b></div>';
 }
 function topBar() {
-  return '<header class="top"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
+  return '<header class="top"><span class="logo"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button>' + VTAG + '</span><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
 }
 function bannerHTML() {
   if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.newv', {v:newVer || VERSION + 1}) + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
@@ -738,12 +742,12 @@ function logView() {
 function onbView() {
   const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock();
+  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard();
   if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>';
   if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
   if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
   const last = ob.step === 3;
-  return '<div class="app"><header class="top"><span class="brand">FUSHA</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
+  return '<div class="app"><header class="top"><span class="logo"><span class="brand">FUSHA</span>' + VTAG + '</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
 }
 
 /* ----- lesson ----- */
@@ -812,6 +816,7 @@ function sheetHTML() {
 }
 
 /* ---------- install + updates ---------- */
+const VTAG = '<span class="ver" dir="ltr">V' + VERSION + '</span>';
 const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === window;
 const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
