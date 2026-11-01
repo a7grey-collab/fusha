@@ -23,9 +23,12 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const sample = (a, n) => shuffle(a).slice(0, n);
 const L2 = () => st.lang === 'ru' ? 'ru' : 'en';
 const sndOf = it => it.snd[L2()], glOf = it => it.gl[L2()];
-const labelOf = it => it.type === 'L' ? it.name : glOf(it);
+const labelOf = it => it.type === 'L' ? it.name : it.type === 'S' ? sndOf(it) : glOf(it);
 const norm = s => s.replace(/[ً-ٰٟـ]/g, '').replace(/[إأآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[،,؟?!.؛:]/g, ' ').replace(/\s+/g, ' ').trim();
-const LET = Object.values(ITEMS).filter(i => i.type === 'L'), WRD = Object.values(ITEMS).filter(i => i.type === 'W');
+const LET = Object.values(ITEMS).filter(i => i.type === 'L'), WRD = Object.values(ITEMS).filter(i => i.type === 'W'), SYL = Object.values(ITEMS).filter(i => i.type === 'S');
+const nearSyl = it => { const n = SYL.filter(x => x.c === it.c || x.v === it.v); return n.length >= 4 ? n : SYL; };
+const ZWJ = '\u200D', formsOf = ch => ({iso:ch, ini:ch + ZWJ, med:ZWJ + ch + ZWJ, fin:ZWJ + ch});
+function formsHTML(ch) { const f = formsOf(ch); return '<div class="forms">' + ['iso', 'ini', 'med', 'fin'].map(k => '<div><span class="ar" lang="ar" dir="rtl">' + esc(f[k]) + '</span><small>' + t('f.' + k) + '</small></div>').join('') + '</div>'; }
 const IC = {
  fire:'<svg viewBox="0 0 24 24"><path d="M12 2c1 4 5 5.500 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/></svg>',
  bolt:'<svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
@@ -79,8 +82,9 @@ function opts(correct, pool) {
 }
 function mk(k, it, extra) {
   const e = Object.assign({k, it}, extra || {});
-  if (k === 'sound') e.o = opts(sndOf(it), LET.map(sndOf));
-  if (k === 'letter') { e.o = opts(it.ar, LET.map(x => x.ar)); e.arOpt = true; }
+  if (k === 'sound') e.o = opts(sndOf(it), (it.type === 'S' ? nearSyl(it) : LET).map(sndOf));
+  if (k === 'letter') { e.o = opts(it.ar, (it.type === 'S' ? nearSyl(it) : LET).map(x => x.ar)); e.arOpt = true; }
+  if (k === 'form') { e.pos = sample(['ini', 'med', 'fin'], 1)[0]; e.o = opts(it.name, LET.map(x => x.name)); }
   if (k === 'tr') e.o = opts(glOf(it), WRD.map(glOf));
   if (k === 'pickar' || k === 'listen') { e.o = opts(it.ar, WRD.map(x => x.ar)); e.arOpt = true; }
   if (k === 'order') e.tokens = shuffle(it.ar.split(' ').map((w, i) => ({w, i})));
@@ -89,12 +93,18 @@ function mk(k, it, extra) {
 function mkMatch(its) {
   return {k:'match', items:its, left:shuffle(its.map(i => i.id)), right:shuffle(its.map(i => i.id))};
 }
-function buildQueue(ids) {
+function buildQueue(ids, intro) {
   const its = ids.map(i => ITEMS[i]), out = [];
-  if (its[0].type === 'L') {
+  if (intro) out.push({k:'info', intro});
+  if (its[0].type === 'S') {
     shuffle(its).forEach(i => out.push(mk('sound', i)));
     out.push(mkMatch(its));
     shuffle(its).forEach(i => out.push(mk('letter', i)));
+  } else if (its[0].type === 'L') {
+    shuffle(its).forEach(i => out.push(mk('sound', i)));
+    out.push(mkMatch(its));
+    shuffle(its).forEach(i => out.push(mk('letter', i)));
+    sample(its, 2).forEach(i => out.push(mk('form', i)));
     const h = its.find(i => i.hard); if (h) out.push(mk('speak', h));
   } else {
     shuffle(its).forEach(i => out.push(mk('tr', i)));
@@ -108,11 +118,11 @@ function buildQueue(ids) {
   return out;
 }
 function buildReview(ids) {
-  return ids.map(id => { const it = ITEMS[id]; return it.type === 'L' ? mk('sound', it) : mk(Math.random() < .5 ? 'tr' : 'pickar', it); });
+  return ids.map(id => { const it = ITEMS[id]; return it.type !== 'W' ? mk('sound', it) : mk(Math.random() < .5 ? 'tr' : 'pickar', it); });
 }
 function startLesson(l) {
   cleanupRec();
-  ls = {kind:'lesson', lesson:l, queue:buildQueue(l.items), i:0, first:0, total:0, itemRes:{}, sel:null, ans:null, typed:'', pick:[], m:null, done:false};
+  ls = {kind:'lesson', lesson:l, queue:buildQueue(l.items, l.intro), i:0, first:0, total:0, itemRes:{}, sel:null, ans:null, typed:'', pick:[], m:null, done:false};
   go('lesson');
 }
 function startReview(all) {
@@ -397,8 +407,10 @@ function exBody(ex) {
     return '<button class="' + c + '" data-act="opt" data-i="' + i + '"' + dis + '>' + (ex.arOpt ? '<span class="ar" lang="ar" dir="rtl">' + esc(o.l) + '</span>' : esc(o.l)) + '</button>';
   }).join('') + '</div>';
   switch (ex.k) {
-    case 'sound': q = tp('ex.sound'); body = '<div class="big ar">' + esc(ex.it.ar) + '</div>' + choice(); break;
-    case 'letter': q = tp('ex.letter', {name:ex.it.name}); body = choice(); break;
+    case 'sound': q = tp(ex.it.type === 'S' ? 'ex.syl' : 'ex.sound'); body = '<div class="big ar">' + esc(ex.it.ar) + '</div>' + choice(); break;
+    case 'letter': q = ex.it.type === 'S' ? tp('ex.sylpick', {name:labelOf(ex.it)}) : tp('ex.letter', {name:ex.it.name}); body = choice(); break;
+    case 'form': q = tp('ex.form'); body = '<div class="big ar">' + esc(formsOf(ex.it.ar)[ex.pos]) + '</div>' + (ls.ans ? formsHTML(ex.it.ar) : '') + choice(); break;
+    case 'info': { const x = ex.intro; q = x.t[st.lang] || x.t.en; body = '<p class="lead">' + esc(x.p[st.lang] || x.p.en) + '</p>' + (x.big ? '<div class="big ar introbig">' + esc(x.big) + '</div>' : '') + (x.forms ? formsHTML(x.forms) : ''); break; }
     case 'tr': q = tp('ex.tr'); body = '<div class="big w"><span class="ar">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.tr) + '</span></div>' + choice(); break;
     case 'pickar': q = tp('ex.pickar', {w:glOf(ex.it)}); body = choice(); break;
     case 'listen': q = tp('ex.listen'); body = '<button class="tts" data-act="say" data-t="' + esc(ex.it.ar) + '">' + IC.spk + ' ' + t('tts.play') + '</button>' + choice(); break;
@@ -435,7 +447,8 @@ function lessonView() {
   if (ls.ans) {
     const a = ls.ans;
     foot = '<div class="lfoot ' + (a.ok ? 'ok' : 'no') + '"><div class="fb">' + (a.ok ? '✓ ' + t('fb.ok') : '✗ ' + t('fb.no') + '<span class="ans">' + (ex.arOpt || ex.k === 'order' || ex.k === 'type' ? ar(a.correct) : esc(a.correct)) + '</span>') + '</div><button class="btn block" data-act="next">' + t('btn.cont') + '</button></div>';
-  } else if (ex.k === 'speak') foot = '<div class="lfoot"><button class="btn block" data-act="skipnext">' + t(rc.state === 'done' ? 'btn.cont' : 'btn.skip') + '</button></div>';
+  } else if (ex.k === 'info') foot = '<div class="lfoot"><button class="btn block" data-act="skipnext">' + t('btn.cont') + '</button></div>';
+  else if (ex.k === 'speak') foot = '<div class="lfoot"><button class="btn block" data-act="skipnext">' + t(rc.state === 'done' ? 'btn.cont' : 'btn.skip') + '</button></div>';
   else if (ex.k === 'match') foot = '';
   else {
     const can = ex.o ? ls.sel !== null : ex.k === 'order' ? ls.pick.length > 0 : ls.typed.trim().length > 0;
@@ -595,7 +608,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Backspace') { ls.typed = ls.typed.slice(0, -1); render(); }
     else if (e.key === 'Enter') check();
     else if (e.key.length === 1 && /[؀-ۿ ]/.test(e.key)) { ls.typed += e.key; render(); }
-  } else if (e.key === 'Enter') { if (ls.ans) next(); else if (ex.o) check(); }
+  } else if (e.key === 'Enter') { if (ls.ans || ex.k === 'info') next(); else if (ex.o) check(); }
 });
 window.addEventListener('hashchange', () => { if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
 window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });

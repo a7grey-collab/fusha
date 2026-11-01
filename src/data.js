@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 8;
+const VERSION = 9;
 const CHANGELOG = [
+ {v:9, ru:['Алфавит по порядку: 28 букв в 7 уроках, трудные звуки больше не отдельно','Формы буквы в слове: отдельно, в начале, в середине, в конце','Новый раздел «Огласовки»: фатха, дамма, касра, долгие гласные','Раздел «Читаем слова»: первые 8 слов с огласовками','Короткие пояснения перед уроками'],
+  en:['Alphabet in order: 28 letters in 7 lessons, hard sounds are no longer separate','Letter shapes inside a word: alone, start, middle, end','New “Vowel marks” unit: fatha, damma, kasra, long vowels','“Reading words” unit: first 8 words with vowel marks','Short explanations before lessons'],
+  ar:['الأبجدية بالترتيب: 28 حرفًا في 7 دروس، ولم تعد الأصوات الصعبة منفصلة','أشكال الحرف داخل الكلمة: منفرد، أول، وسط، آخر','وحدة جديدة «الحركات»: الفتحة والضمة والكسرة وحروف المد','وحدة «نقرأ كلمات»: أول 8 كلمات بالحركات','شروح قصيرة قبل الدروس']},
  {v:8, ru:['Вместо рисунка — фото Медины: вечерняя на первом экране и на главной, дневная с зелёным куполом на втором экране и в «Направлениях»'],
   en:['Photos of Al-Madinah instead of the drawing: dusk on the first screen and home, daytime with the Green Dome on the second screen and in “Tracks”'],
   ar:['صور للمدينة المنورة بدل الرسم: وقت الغروب في الشاشة الأولى والرئيسية، ونهارًا مع القبة الخضراء في الشاشة الثانية وفي «المسارات»']},
@@ -28,12 +31,12 @@ const CHANGELOG = [
 /* ===== letters: [glyph, name, soundRu, soundEn, hard] ===== */
 const LETTERS = [
  ['ا','alif','а (долгий)','a (long)',0],['ب','ba','б','b',0],['ت','ta','т','t',0],['ث','tha','«th» как в think','th (think)',1],
- ['ج','jim','дж','j (jam)',0],['خ','kha','х как в «хорошо»','kh (loch)',1],['د','dal','д','d',0],['ذ','dhal','«th» как в this','th (this)',1],
- ['ر','ra','р (раскатистая)','r (rolled)',0],['ز','zay','з','z',0],['س','sin','с','s',0],['ش','shin','ш','sh',0],
- ['ف','fa','ф','f',0],['ك','kaf','к','k',0],['ل','lam','л','l',0],['م','mim','м','m',0],
- ['ن','nun','н','n',0],['ه','ha (soft)','х (мягкий выдох)','h (soft)',0],['و','waw','в / долгий у','w / long u',0],['ي','ya','й / долгий и','y / long i',0],
- ['ص','Sad','с эмфатическое','emphatic s',1],['ض','Dad','д эмфатическое','emphatic d',1],['ط','Ta (emph.)','т эмфатическое','emphatic t',1],['ظ','Za (emph.)','з эмфатическое','emphatic z',1],
- ['ع','ayn','гортанный «айн»','ayn (throat)',1],['غ','ghayn','гъ (картавое)','gh (French r)',1],['ق','qaf','к глубокое','deep q',1],['ح','Ha (throat)','горловое «х»','throat h',1]
+ ['ج','jim','дж','j (jam)',0],['ح','Ha (throat)','горловое «х»','throat h',1],['خ','kha','х как в «хорошо»','kh (loch)',1],['د','dal','д','d',0],
+ ['ذ','dhal','«th» как в this','th (this)',1],['ر','ra','р (раскатистая)','r (rolled)',0],['ز','zay','з','z',0],['س','sin','с','s',0],
+ ['ش','shin','ш','sh',0],['ص','Sad','с эмфатическое','emphatic s',1],['ض','Dad','д эмфатическое','emphatic d',1],['ط','Ta (emph.)','т эмфатическое','emphatic t',1],
+ ['ظ','Za (emph.)','з эмфатическое','emphatic z',1],['ع','ayn','гортанный «айн»','ayn (throat)',1],['غ','ghayn','гъ (картавое)','gh (French r)',1],['ف','fa','ф','f',0],
+ ['ق','qaf','к глубокое','deep q',1],['ك','kaf','к','k',0],['ل','lam','л','l',0],['م','mim','м','m',0],
+ ['ن','nun','н','n',0],['ه','ha (soft)','х (мягкий выдох)','h (soft)',0],['و','waw','в / долгий у','w / long u',0],['ي','ya','й / долгий и','y / long i',0]
 ];
 /* ===== words: [id, ar, ru, en, translit] ===== */
 const WORDS = [
@@ -51,6 +54,8 @@ const WORDS = [
  ['please','من فضلك','пожалуйста (просьба)','please','min fadlik'],
  ['how','كيف حالك','как дела?','how are you?','kayfa haluk'],
  ['fine','بخير','хорошо (в порядке)','fine (well)','bikhayr'],
+ ['door','بَاب','дверь','door','bab'],['house','بَيْت','дом','house','bayt'],['book','كِتَاب','книга','book','kitab'],['pen','قَلَم','ручка','pen','qalam'],
+ ['boy','وَلَد','мальчик','boy','walad'],['sun','شَمْس','солнце','sun','shams'],['moon','قَمَر','луна','moon','qamar'],['fish','سَمَك','рыба','fish','samak'],
  ['n1','واحد','один','one','wahid'],['n2','اثنان','два','two','ithnan'],['n3','ثلاثة','три','three','thalatha'],
  ['n4','أربعة','четыре','four','arba‘a'],['n5','خمسة','пять','five','khamsa'],['n6','ستة','шесть','six','sitta'],
  ['n7','سبعة','семь','seven','sab‘a'],['n8','ثمانية','восемь','eight','thamaniya'],['n9','تسعة','девять','nine','tis‘a'],['n10','عشرة','десять','ten','‘ashara']
@@ -59,17 +64,55 @@ const ITEMS = {};
 LETTERS.forEach(l => { ITEMS['L:' + l[0]] = {id:'L:' + l[0], type:'L', ar:l[0], name:l[1], snd:{ru:l[2], en:l[3]}, hard:!!l[4]}; });
 WORDS.forEach(w => { ITEMS['W:' + w[0]] = {id:'W:' + w[0], type:'W', ar:w[1], gl:{ru:w[2], en:w[3]}, tr:w[4]}; });
 const L = g => 'L:' + g, W = i => 'W:' + i;
+/* ===== syllables: consonant + vowel ===== */
+const CONS = {'ب':['б','b'], 'ت':['т','t'], 'م':['м','m'], 'ل':['л','l'], 'ن':['н','n'], 'س':['с','s'], 'ك':['к','k'], 'ر':['р','r']};
+const VOWS = {a:['\u064E','а','a'], u:['\u064F','у','u'], i:['\u0650','и','i'], A:['\u064E\u0627','аа (долгий)','aa (long)'], U:['\u064F\u0648','уу (долгий)','uu (long)'], I:['\u0650\u064A','ии (долгий)','ii (long)']};
+const mkS = (c, v) => { const ar = c + VOWS[v][0], k = (v === 'A' || v === 'U' || v === 'I'); return {id:'S:' + ar, type:'S', ar, c, v, snd:{ru:CONS[c][0] + VOWS[v][1], en:CONS[c][1] + VOWS[v][2]}}; };
+const SYLS = [];
+'بتملنسكر'.split('').forEach(c => ['a', 'u', 'i', 'A', 'U', 'I'].forEach(v => { const s = mkS(c, v); SYLS.push(s); ITEMS[s.id] = s; }));
+const SY = (c, v) => 'S:' + c + VOWS[v][0];
+const W3 = a => a.map(w => 'W:' + w);
+/* ===== lesson intros (info cards) ===== */
+const INTRO = {
+ alpha1:{t:{ru:'Арабское письмо', en:'Arabic writing', ar:'الكتابة العربية'},
+  p:{ru:'Арабский пишется справа налево. В алфавите 28 букв. Внутри слова буква меняет форму: отдельно, в начале, в середине, в конце. Вот буква «ба» (ب) во всех четырёх формах.',
+     en:'Arabic is written from right to left. The alphabet has 28 letters. Inside a word a letter changes shape: on its own, at the start, in the middle, at the end. Here is the letter “ba” (ب) in all four forms.',
+     ar:'تُكتب العربية من اليمين إلى اليسار. في الأبجدية 28 حرفًا. وفي الكلمة يتغيّر شكل الحرف: منفردًا، في أولها، في وسطها، في آخرها. هذا حرف الباء (ب) بأشكاله الأربعة.'}, forms:'ب'},
+ alpha2:{t:{ru:'Буквы, которые не соединяются', en:'Letters that do not join', ar:'حروف لا تتصل بما بعدها'},
+  p:{ru:'Шесть букв не соединяются со следующей буквой, поэтому у них меньше форм. После них слово как будто «обрывается» и начинается заново.',
+     en:'Six letters do not join to the letter after them, so they have fewer forms. After them the word seems to “break” and start again.',
+     ar:'ستة حروف لا تتصل بالحرف الذي بعدها، لذلك أشكالها أقل. بعدها تنقطع الكلمة ثم تبدأ من جديد.'}, big:'ا  د  ذ  ر  ز  و'},
+ fatha:{t:{ru:'Короткие гласные: фатха', en:'Short vowels: fatha', ar:'الحركات: الفتحة'},
+  p:{ru:'Над или под буквой стоят маленькие знаки: это короткие гласные. Фатха, чёрточка над буквой, даёт звук «а». Например: بَ = ба.',
+     en:'Small marks above or below a letter are short vowels. Fatha, a stroke above the letter, gives the sound “a”. For example: بَ = ba.',
+     ar:'علامات صغيرة فوق الحرف أو تحته هي الحركات القصيرة. الفتحة، وهي شرطة فوق الحرف، تعطي صوت «a». مثال: بَ = ba.'}, big:'بَ  تَ  مَ  لَ'},
+ damma:{t:{ru:'Дамма', en:'Damma', ar:'الضمة'},
+  p:{ru:'Дамма, маленькая «و» над буквой, даёт звук «у». Например: بُ = бу.', en:'Damma, a tiny “و” above the letter, gives the sound “u”. For example: بُ = bu.', ar:'الضمة، وهي واو صغيرة فوق الحرف، تعطي صوت «u». مثال: بُ = bu.'}, big:'بُ  تُ  مُ  لُ'},
+ kasra:{t:{ru:'Касра', en:'Kasra', ar:'الكسرة'},
+  p:{ru:'Касра, чёрточка под буквой, даёт звук «и». Например: بِ = би.', en:'Kasra, a stroke below the letter, gives the sound “i”. For example: بِ = bi.', ar:'الكسرة، وهي شرطة تحت الحرف، تعطي صوت «i». مثال: بِ = bi.'}, big:'بِ  تِ  مِ  لِ'},
+ long:{t:{ru:'Долгие гласные', en:'Long vowels', ar:'حروف المد'},
+  p:{ru:'После фатхи стоит алиф (ا), после даммы вау (و), после касры йа (ي): гласный тянется вдвое дольше. بَا = баа, بُو = буу, بِي = бии.',
+     en:'Alif (ا) after fatha, waw (و) after damma, ya (ي) after kasra: the vowel is held twice as long. بَا = baa, بُو = buu, بِي = bii.',
+     ar:'الألف (ا) بعد الفتحة، والواو (و) بعد الضمة، والياء (ي) بعد الكسرة: يُمدّ الصوت ضعف المدة. بَا = baa، بُو = buu، بِي = bii.'}, big:'بَا  بُو  بِي'},
+ sukun:{t:{ru:'Сукун', en:'Sukun', ar:'السكون'},
+  p:{ru:'Сукун, маленький кружок над буквой, значит: после этой буквы нет гласного. Например: بَيْت = байт (дом). Теперь читаем целые слова.',
+     en:'Sukun, a tiny circle above a letter, means there is no vowel after it. For example: بَيْت = bayt (house). Now we read whole words.',
+     ar:'السكون، وهو دائرة صغيرة فوق الحرف، يعني أنه لا حركة بعده. مثال: بَيْت = bayt. والآن نقرأ كلمات كاملة.'}, big:'بَيْت'}
+};
+const LCH = (() => { const o = 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split(''), r = []; for (let k = 0; k < 28; k += 4) r.push(o.slice(k, k + 4).map(L)); return r; })();
 const UNITS = [
- {id:'u1', ic:'ا', premium:false, t:{ru:'Буквы и звуки', en:'Letters and sounds', ar:'الحروف والأصوات'}, lessons:[
-   ['ا','ب','ت','ث'].map(L), ['ج','خ','د','ذ'].map(L), ['ر','ز','س','ش'].map(L), ['ف','ك','ل','م'].map(L), ['ن','ه','و','ي'].map(L)]},
- {id:'u2', ic:'م', premium:false, t:{ru:'Приветствия', en:'Greetings', ar:'التحيات'}, lessons:[
+ {id:'ua', ic:'ا', premium:false, t:{ru:'Алфавит', en:'Alphabet', ar:'الأبجدية'}, lessons:LCH.map((items, k) => ({items, intro:k === 0 ? INTRO.alpha1 : k === 1 ? INTRO.alpha2 : null}))},
+ {id:'uh', ic:'بَ', premium:false, t:{ru:'Огласовки', en:'Vowel marks', ar:'الحركات'}, lessons:[
+   {items:['ب','ت','م','ل'].map(c => SY(c, 'a')), intro:INTRO.fatha}, {items:['ب','ت','م','ل'].map(c => SY(c, 'u')), intro:INTRO.damma}, {items:['ب','ت','م','ل'].map(c => SY(c, 'i')), intro:INTRO.kasra},
+   {items:[SY('ن','a'), SY('س','u'), SY('ك','i'), SY('ر','a')]}, {items:[SY('ب','A'), SY('ب','U'), SY('ب','I'), SY('م','A')], intro:INTRO.long}]},
+ {id:'ur', ic:'ك', premium:false, t:{ru:'Читаем слова', en:'Reading words', ar:'نقرأ كلمات'}, lessons:[
+   {items:W3(['door','house','book','pen']), intro:INTRO.sukun}, {items:W3(['boy','sun','moon','fish'])}]},
+ {id:'ug', ic:'م', premium:false, t:{ru:'Приветствия', en:'Greetings', ar:'التحيات'}, lessons:[
    ['marhaban','ahlan','salam','reply'].map(W), ['sabah','masa','bye','yes','no'].map(W), ['thanks','welcome','please','how','fine'].map(W)]},
- {id:'u3', ic:'ع', premium:false, t:{ru:'Трудные звуки', en:'Hard sounds', ar:'الأصوات الصعبة'}, lessons:[
-   ['ص','ض','ط','ظ'].map(L), ['ع','غ','ق','ح'].map(L)]},
- {id:'u4', ic:'٤', premium:true, t:{ru:'Числа 1–10', en:'Numbers 1–10', ar:'الأرقام 1-10'}, lessons:[
+ {id:'un', ic:'٤', premium:true, t:{ru:'Числа 1–10', en:'Numbers 1–10', ar:'الأرقام 1-10'}, lessons:[
    ['n1','n2','n3','n4','n5'].map(W), ['n6','n7','n8','n9','n10'].map(W)]}
 ];
-UNITS.forEach(u => u.lessons = u.lessons.map((items, i) => ({id:u.id + 'l' + (i + 1), unit:u, n:i + 1, items})));
+UNITS.forEach(u => u.lessons = u.lessons.map((x, i) => { const o = Array.isArray(x) ? {items:x} : x; return {id:u.id + 'l' + (i + 1), unit:u, n:i + 1, items:o.items, intro:o.intro || null}; }));
 const ALL_LESSONS = UNITS.flatMap(u => u.lessons);
 
 /* ===== tutor scenarios ===== */
@@ -116,6 +159,7 @@ ru:{
  'me.title':'Профиль','me.xp':'Всего XP','me.streak':'Серия, дн.','me.lessons':'Уроков пройдено','me.items':'Элементов выучено','me.settings':'Настройки','me.lang':'Язык','me.theme':'Тема','theme.auto':'Авто','theme.light':'Светлая','theme.dark':'Тёмная','me.daily':'Цель на день','me.demo':'Демо: открыть все уроки','me.reset':'Сбросить прогресс','me.reset.q':'Сбросить весь прогресс?','me.notes':'Заметки для следующей версии','me.notes.ph':'Что поправить, добавить, убрать…','me.copy':'Скопировать заметки','me.plans':'Тарифы и Plus','me.log':'Что нового','me.reco':'Рекомендуем начать с юнита {n}',
  'upd.title':'Приложение обновлено до v{v}','upd.new':'Доступно обновление','upd.reload':'Обновить','upd.close':'Понятно',
  'inst.title':'Установить на экран','inst.text':'Откроется как обычное приложение: во весь экран, быстрее, с запуском офлайн.','inst.android':'Android','inst.ios':'iPhone / iPad','inst.ios.title':'Как добавить на iPhone / iPad','inst.ios.s1':'Откройте эту страницу в Safari (в других браузерах кнопки «Поделиться» может не быть).','inst.ios.s2':'Нажмите «Поделиться» — квадрат со стрелкой вверх. На iPhone он внизу, на iPad вверху справа.','inst.ios.s3':'Прокрутите меню вниз и выберите «На экран «Домой»».','inst.ios.s4':'Нажмите «Добавить» в правом верхнем углу. Значок FUSHA появится на экране.','inst.ios.done':'Готово, добавил','inst.and.title':'Как установить на Android','inst.and.s1':'Откройте меню браузера — три точки ⋮ вверху справа.','inst.and.s2':'Выберите «Установить приложение» или «Добавить на главный экран».','inst.and.s3':'Подтвердите. Значок FUSHA появится на экране.','inst.close':'Закрыть','inst.ok':'Установлено. Ищите значок FUSHA на экране.','upd.newv':'Доступно обновление до v{v}',
+ 'ex.syl':'Как читается этот слог?','ex.sylpick':'Выберите слог «{name}»','ex.form':'Какая это буква? (форма внутри слова)','f.iso':'отдельно','f.ini':'в начале','f.med':'в середине','f.fin':'в конце',
  'toast.copied':'Скопировано','toast.sel':'Выделено. Скопируйте вручную','toast.demo':'Демо: оплата не выполняется','toast.reset':'Прогресс сброшен'
 },
 en:{
@@ -146,6 +190,7 @@ en:{
  'me.title':'Profile','me.xp':'Total XP','me.streak':'Streak, days','me.lessons':'Lessons completed','me.items':'Items learned','me.settings':'Settings','me.lang':'Language','me.theme':'Theme','theme.auto':'Auto','theme.light':'Light','theme.dark':'Dark','me.daily':'Daily goal','me.demo':'Demo: unlock all lessons','me.reset':'Reset progress','me.reset.q':'Reset all progress?','me.notes':'Notes for the next version','me.notes.ph':'What to fix, add or remove…','me.copy':'Copy notes','me.plans':'Plans and Plus','me.log':'What’s new','me.reco':'We recommend starting from unit {n}',
  'upd.title':'App updated to v{v}','upd.new':'Update available','upd.reload':'Update','upd.close':'Got it',
  'inst.title':'Add to home screen','inst.text':'Opens like a regular app: full screen, faster, and it starts offline.','inst.android':'Android','inst.ios':'iPhone / iPad','inst.ios.title':'How to add on iPhone / iPad','inst.ios.s1':'Open this page in Safari (other browsers may not have the Share button).','inst.ios.s2':'Tap Share, the square with an arrow pointing up. On iPhone it is at the bottom, on iPad at the top right.','inst.ios.s3':'Scroll the menu down and choose “Add to Home Screen”.','inst.ios.s4':'Tap “Add” in the top right corner. The FUSHA icon will appear on your screen.','inst.ios.done':'Done, I added it','inst.and.title':'How to install on Android','inst.and.s1':'Open the browser menu, the three dots ⋮ at the top right.','inst.and.s2':'Choose “Install app” or “Add to Home screen”.','inst.and.s3':'Confirm. The FUSHA icon will appear on your screen.','inst.close':'Close','inst.ok':'Installed. Look for the FUSHA icon on your screen.','upd.newv':'Update available: v{v}',
+ 'ex.syl':'How is this syllable read?','ex.sylpick':'Choose the syllable “{name}”','ex.form':'Which letter is this? (shape inside a word)','f.iso':'alone','f.ini':'start','f.med':'middle','f.fin':'end',
  'toast.copied':'Copied','toast.sel':'Selected. Copy it manually','toast.demo':'Demo: no payment is taken','toast.reset':'Progress reset'
 },
 ar:{
@@ -176,6 +221,7 @@ ar:{
  'me.title':'حسابي','me.xp':'مجموع XP','me.streak':'السلسلة، أيام','me.lessons':'الدروس المكتملة','me.items':'العناصر المتعلَّمة','me.settings':'الإعدادات','me.lang':'اللغة','me.theme':'المظهر','theme.auto':'تلقائي','theme.light':'فاتح','theme.dark':'داكن','me.daily':'الهدف اليومي','me.demo':'تجريبي: افتح كل الدروس','me.reset':'مسح التقدّم','me.reset.q':'هل تريد مسح كل التقدّم؟','me.notes':'ملاحظات للإصدار القادم','me.notes.ph':'ما الذي يجب تعديله أو إضافته أو حذفه…','me.copy':'انسخ الملاحظات','me.plans':'الخطط وPlus','me.log':'الجديد','me.reco':'نوصي بالبدء من الوحدة {n}',
  'upd.title':'تم تحديث التطبيق إلى v{v}','upd.new':'يتوفر تحديث','upd.reload':'تحديث','upd.close':'حسنًا',
  'inst.title':'إضافة إلى الشاشة الرئيسية','inst.text':'يفتح كتطبيق عادي: بملء الشاشة وأسرع ويبدأ دون اتصال.','inst.android':'Android','inst.ios':'iPhone / iPad','inst.ios.title':'كيف تضيف على آيفون / آيباد','inst.ios.s1':'افتح هذه الصفحة في Safari (قد لا يوجد زر المشاركة في متصفحات أخرى).','inst.ios.s2':'اضغط «مشاركة»: المربع الذي يخرج منه سهم لأعلى. في آيفون يكون في الأسفل، وفي آيباد أعلى الشاشة.','inst.ios.s3':'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية».','inst.ios.s4':'اضغط «إضافة» في الزاوية العلوية. ستظهر أيقونة FUSHA على شاشتك.','inst.ios.done':'تمّت الإضافة','inst.and.title':'كيف تثبّت على أندرويد','inst.and.s1':'افتح قائمة المتصفح: النقاط الثلاث ⋮ في الأعلى.','inst.and.s2':'اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».','inst.and.s3':'أكّد. ستظهر أيقونة FUSHA على شاشتك.','inst.close':'إغلاق','inst.ok':'تم التثبيت. ابحث عن أيقونة FUSHA على شاشتك.','upd.newv':'يتوفر تحديث: v{v}',
+ 'ex.syl':'كيف يُقرأ هذا المقطع؟','ex.sylpick':'اختر المقطع «{name}»','ex.form':'أي حرف هذا؟ (شكله داخل الكلمة)','f.iso':'منفرد','f.ini':'أول','f.med':'وسط','f.fin':'آخر',
  'toast.copied':'تم النسخ','toast.sel':'تم التحديد. انسخ يدويًا','toast.demo':'تجريبي: لا يتم أي دفع','toast.reset':'تم مسح التقدّم'
 }};
 const REGIONS = [['gcc', '14.99'], ['mena', '8.99'], ['west', '12.99'], ['row', '5.99']];
