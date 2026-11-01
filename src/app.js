@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 const KEY = 'fusha-app', LATEST = 'fusha-latest';
-const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0};
+const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0, installed:false};
 let st = load();
 function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { return Object.assign({}, DEF); } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
@@ -42,6 +42,7 @@ const IC = {
 };
 
 /* ---------- state ---------- */
+let deferred = null, newVer = 0;
 let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
 let TTS = false;
 function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
@@ -247,7 +248,7 @@ function topBar() {
   return '<header class="top"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
 }
 function bannerHTML() {
-  if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.new') + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
+  if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.newv', {v:newVer || VERSION + 1}) + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
   if (st.onboarded && st.seen > 0 && st.seen < VERSION) {
     const c = CHANGELOG.find(x => x.v === VERSION), items = (c[st.lang] || c.en).map(x => '<li>' + esc(x) + '</li>').join('');
     return '<div class="banner" role="status"><b>' + t('upd.title', {v:VERSION}) + '</b><ul>' + items + '</ul><div class="row"><button class="btn sm" data-act="updclose">' + t('upd.close') + '</button></div></div>';
@@ -260,7 +261,7 @@ function tabs(cur) {
 }
 function homeView() {
   const nl = nextLesson();
-  let h = '';
+  let h = installCard();
   h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
   if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
   h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
@@ -425,9 +426,49 @@ function lessonView() {
 }
 function sheetHTML() {
   if (!sheet) return '';
+  if (sheet === 'insios' || sheet === 'instand') return installSheet();
   if (sheet === 'quit') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('lesson.quit') + '</p><button class="btn gold block" data-act="stay">' + t('lesson.stay') + '</button><button class="btn ghost block" data-act="leave">' + t('lesson.leave') + '</button></div></div>';
   if (sheet === 'reset') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('me.reset.q') + '</p><button class="btn ghost block" data-act="sheetx">' + t('lesson.stay') + '</button><button class="btn block" style="background:var(--bad);border-color:var(--bad)" data-act="resetyes">' + t('me.reset') + '</button></div></div>';
   return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('sheet.title') + '</p><p class="muted">' + t(sheet === 'tutor' ? 'sheet.tutor' : 'sheet.unit') + '</p><button class="btn gold block" data-act="seeplans">' + t('sheet.see') + '</button><button class="btn ghost block" data-act="sheetx">' + t('sheet.later') + '</button></div></div>';
+}
+
+/* ---------- install + updates ---------- */
+const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === window;
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function installCard() {
+  if (!HOSTED || st.installed || isStandalone()) return '';
+  const A = '<button class="btn gold block" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold block" data-act="insios">' + t('inst.ios') + '</button>';
+  const btns = isIOS() ? I : /android/i.test(navigator.userAgent) ? A : A + I;
+  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><p class="muted">' + t('inst.text') + '</p>' + btns + '</div>';
+}
+function installSheet() {
+  const steps = sheet === 'insios' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : 'inst.and.';
+  const li = steps.map((s, i) => '<li><span class="n">' + (i + 1) + '</span><span>' + t(pre + s) + (sheet === 'insios' && s === 's2' ? ' ' + SHARE_IC : '') + '</span></li>').join('');
+  const done = sheet === 'insios' ? '<button class="btn gold block" data-act="instdone">' + t('inst.ios.done') + '</button>' : '';
+  return '<div class="scrim" data-act="sheetx"><div class="sheet sheet-tall" role="dialog" aria-modal="true"><p class="h2">' + t(pre + 'title') + '</p><ol class="steps">' + li + '</ol>' + done + '<button class="btn ghost block" data-act="sheetx">' + t('inst.close') + '</button></div></div>';
+}
+function installAndroid() {
+  if (!deferred) { sheet = 'instand'; render(); return; }
+  const ev = deferred; deferred = null;
+  ev.prompt();
+  ev.userChoice.then(c => { if (c && c.outcome === 'accepted') markInstalled(); }).catch(() => {});
+}
+function markInstalled() { if (st.installed) return; st.installed = true; save(); sheet = null; toast(tp('inst.ok')); render(); }
+function checkUpdate() {
+  if (!HOSTED) return;
+  fetch('version.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.json()).then(j => {
+    if (j && +j.version > VERSION && newVer !== +j.version) { newVer = +j.version; banner = 'new'; if (route() !== 'lesson' && route() !== 'reading') render(); }
+  }).catch(() => {});
+}
+if (HOSTED) {
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
+  window.addEventListener('appinstalled', markInstalled);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+  setInterval(checkUpdate, 600000);
+  checkUpdate();
 }
 
 /* ---------- render ---------- */
@@ -522,6 +563,9 @@ document.addEventListener('click', e => {
     case 'resetyes': { const keep = {lang:st.lang, theme:st.theme}; st = Object.assign({}, DEF, keep, {onboarded:true, seen:VERSION}); save(); sheet = null; tut = null; ls = null; toast(tp('toast.reset')); render(); break; }
     case 'updclose': st.seen = VERSION; save(); render(); break;
     case 'reload': location.reload(); break;
+    case 'instand': installAndroid(); break;
+    case 'insios': sheet = 'insios'; render(); break;
+    case 'instdone': markInstalled(); break;
   }
 });
 document.addEventListener('submit', e => { const f = e.target.closest('[data-form="tutor"]'); if (!f) return; e.preventDefault(); const i = $('#tin'); tutorSend(i.value); });
@@ -535,7 +579,7 @@ document.addEventListener('keydown', e => {
   } else if (e.key === 'Enter') { if (ls.ans) next(); else if (ex.o) check(); }
 });
 window.addEventListener('hashchange', () => { if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
-window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { banner = 'new'; render(); } });
+window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });
 initTTS();
 if (location.hash === '#/lesson' && !ls) location.hash = '#/home';
 render();

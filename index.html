@@ -7,6 +7,12 @@
 <meta name="theme-color" content="#0c3b30">
 <title>FUSHA</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c3b30'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23c1932f'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FUSHA">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 <style>:root{--bg:#f4f6f4;--surface:#fff;--card:#fff;--soft:#eaefec;--ink:#0c3b30;--text:#26362f;--muted:#566860;--line:#d3dcd7;--gold:#c1932f;--gold-soft:#f6ecd2;--gold-ink:#7a5b10;--ok:#1f7a5a;--ok-bg:#dff3ea;--bad:#b3392f;--bad-bg:#fbe4e1;--on-ink:#fff;color-scheme:light;
@@ -177,14 +183,25 @@ textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px
 .lead{font-size:1.05rem}
 
 .top button.brand{background:none;border:0;padding:0 .2rem;min-height:44px;text-align:start;cursor:pointer}
+
+.inst{display:grid;gap:.6rem;border-color:var(--gold)}
+.sheet-tall{max-height:90dvh;overflow:auto}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.steps li{display:flex;gap:.7rem;align-items:flex-start}
+.steps .n{flex:none;inline-size:1.7rem;block-size:1.7rem;border-radius:50%;background:var(--gold);color:#1a1405;font-weight:800;display:grid;place-items:center;font-size:.9rem}
+.steps .shic{vertical-align:middle;color:var(--ink)}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tg" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol></svg>
 <div id="root"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <noscript><p style="padding:1rem">FUSHA needs JavaScript.</p></noscript>
-<script>/* ===== version ===== */
-const VERSION = 3;
+<script>const PWA = true;
+/* ===== version ===== */
+const VERSION = 4;
 const CHANGELOG = [
+ {v:4, ru:['Кнопки «Установить на экран»: Android — одним нажатием, iPhone/iPad — пошаговая инструкция','После установки кнопки исчезают, приложение открывается во весь экран','Автоуведомление: при выходе новой версии появляется «Доступно обновление → Обновить»'],
+  en:['“Add to home screen” buttons: Android in one tap, iPhone/iPad with step-by-step instructions','After install the buttons disappear and the app opens full screen','Automatic notice: when a new version is out you see “Update available → Update”'],
+  ar:['أزرار «إضافة إلى الشاشة الرئيسية»: أندرويد بضغطة واحدة، وآيفون/آيباد بخطوات مفصلة','بعد التثبيت تختفي الأزرار ويفتح التطبيق بملء الشاشة','إشعار تلقائي: عند صدور إصدار جديد يظهر «يتوفر تحديث ← تحديث»']},
  {v:3, ru:['Логотип FUSHA в шапке теперь ведёт на главную'], en:['The FUSHA logo in the header now takes you to the home screen'], ar:['شعار FUSHA في الأعلى يعيدك الآن إلى الشاشة الرئيسية']},
  {v:2, ru:['Добавлен автор: Хамза аш-Шишани аль-Мадани','Экран «Направления»: от первой буквы до чтения Корана, хифз, Kids, Академия','Демо «Проверка чтения» (таджвид с ИИ, макет)','Иджаза только через квалифицированного шейха'],
   en:['Author added: Hamza ash-Shishani al-Madani','New “Tracks” screen: from the first letter to Quran reading, hifz, Kids, Academy','“Reading check” demo (tajweed with AI, mock-up)','Ijazah only through a qualified sheikh'],
@@ -284,6 +301,7 @@ ru:{
  'sheet.title':'Нужен Plus','sheet.unit':'Этот юнит входит в Plus.','sheet.tutor':'Бесплатный лимит сообщений на сегодня исчерпан.','sheet.see':'Смотреть тарифы','sheet.later':'Позже',
  'me.title':'Профиль','me.xp':'Всего XP','me.streak':'Серия, дн.','me.lessons':'Уроков пройдено','me.items':'Элементов выучено','me.settings':'Настройки','me.lang':'Язык','me.theme':'Тема','theme.auto':'Авто','theme.light':'Светлая','theme.dark':'Тёмная','me.daily':'Цель на день','me.demo':'Демо: открыть все уроки','me.reset':'Сбросить прогресс','me.reset.q':'Сбросить весь прогресс?','me.notes':'Заметки для следующей версии','me.notes.ph':'Что поправить, добавить, убрать…','me.copy':'Скопировать заметки','me.plans':'Тарифы и Plus','me.log':'Что нового','me.reco':'Рекомендуем начать с юнита {n}',
  'upd.title':'Приложение обновлено до v{v}','upd.new':'Доступно обновление','upd.reload':'Обновить','upd.close':'Понятно',
+ 'inst.title':'Установить на экран','inst.text':'Откроется как обычное приложение: во весь экран, быстрее, с запуском офлайн.','inst.android':'Установить на Android','inst.ios':'Добавить на iPhone / iPad','inst.ios.title':'Как добавить на iPhone / iPad','inst.ios.s1':'Откройте эту страницу в Safari (в других браузерах кнопки «Поделиться» может не быть).','inst.ios.s2':'Нажмите «Поделиться» — квадрат со стрелкой вверх. На iPhone он внизу, на iPad вверху справа.','inst.ios.s3':'Прокрутите меню вниз и выберите «На экран «Домой»».','inst.ios.s4':'Нажмите «Добавить» в правом верхнем углу. Значок FUSHA появится на экране.','inst.ios.done':'Готово, добавил','inst.and.title':'Как установить на Android','inst.and.s1':'Откройте меню браузера — три точки ⋮ вверху справа.','inst.and.s2':'Выберите «Установить приложение» или «Добавить на главный экран».','inst.and.s3':'Подтвердите. Значок FUSHA появится на экране.','inst.close':'Закрыть','inst.ok':'Установлено. Ищите значок FUSHA на экране.','upd.newv':'Доступно обновление до v{v}',
  'toast.copied':'Скопировано','toast.sel':'Выделено. Скопируйте вручную','toast.demo':'Демо: оплата не выполняется','toast.reset':'Прогресс сброшен'
 },
 en:{
@@ -313,6 +331,7 @@ en:{
  'sheet.title':'Plus required','sheet.unit':'This unit is part of Plus.','sheet.tutor':'You have used today’s free messages.','sheet.see':'See plans','sheet.later':'Later',
  'me.title':'Profile','me.xp':'Total XP','me.streak':'Streak, days','me.lessons':'Lessons completed','me.items':'Items learned','me.settings':'Settings','me.lang':'Language','me.theme':'Theme','theme.auto':'Auto','theme.light':'Light','theme.dark':'Dark','me.daily':'Daily goal','me.demo':'Demo: unlock all lessons','me.reset':'Reset progress','me.reset.q':'Reset all progress?','me.notes':'Notes for the next version','me.notes.ph':'What to fix, add or remove…','me.copy':'Copy notes','me.plans':'Plans and Plus','me.log':'What’s new','me.reco':'We recommend starting from unit {n}',
  'upd.title':'App updated to v{v}','upd.new':'Update available','upd.reload':'Update','upd.close':'Got it',
+ 'inst.title':'Add to home screen','inst.text':'Opens like a regular app: full screen, faster, and it starts offline.','inst.android':'Install on Android','inst.ios':'Add to iPhone / iPad','inst.ios.title':'How to add on iPhone / iPad','inst.ios.s1':'Open this page in Safari (other browsers may not have the Share button).','inst.ios.s2':'Tap Share, the square with an arrow pointing up. On iPhone it is at the bottom, on iPad at the top right.','inst.ios.s3':'Scroll the menu down and choose “Add to Home Screen”.','inst.ios.s4':'Tap “Add” in the top right corner. The FUSHA icon will appear on your screen.','inst.ios.done':'Done, I added it','inst.and.title':'How to install on Android','inst.and.s1':'Open the browser menu, the three dots ⋮ at the top right.','inst.and.s2':'Choose “Install app” or “Add to Home screen”.','inst.and.s3':'Confirm. The FUSHA icon will appear on your screen.','inst.close':'Close','inst.ok':'Installed. Look for the FUSHA icon on your screen.','upd.newv':'Update available: v{v}',
  'toast.copied':'Copied','toast.sel':'Selected. Copy it manually','toast.demo':'Demo: no payment is taken','toast.reset':'Progress reset'
 },
 ar:{
@@ -342,6 +361,7 @@ ar:{
  'sheet.title':'يلزم Plus','sheet.unit':'هذه الوحدة ضمن Plus.','sheet.tutor':'انتهت رسائلك المجانية اليوم.','sheet.see':'عرض الخطط','sheet.later':'لاحقًا',
  'me.title':'حسابي','me.xp':'مجموع XP','me.streak':'السلسلة، أيام','me.lessons':'الدروس المكتملة','me.items':'العناصر المتعلَّمة','me.settings':'الإعدادات','me.lang':'اللغة','me.theme':'المظهر','theme.auto':'تلقائي','theme.light':'فاتح','theme.dark':'داكن','me.daily':'الهدف اليومي','me.demo':'تجريبي: افتح كل الدروس','me.reset':'مسح التقدّم','me.reset.q':'هل تريد مسح كل التقدّم؟','me.notes':'ملاحظات للإصدار القادم','me.notes.ph':'ما الذي يجب تعديله أو إضافته أو حذفه…','me.copy':'انسخ الملاحظات','me.plans':'الخطط وPlus','me.log':'الجديد','me.reco':'نوصي بالبدء من الوحدة {n}',
  'upd.title':'تم تحديث التطبيق إلى v{v}','upd.new':'يتوفر تحديث','upd.reload':'تحديث','upd.close':'حسنًا',
+ 'inst.title':'إضافة إلى الشاشة الرئيسية','inst.text':'يفتح كتطبيق عادي: بملء الشاشة وأسرع ويبدأ دون اتصال.','inst.android':'تثبيت على أندرويد','inst.ios':'إضافة إلى آيفون / آيباد','inst.ios.title':'كيف تضيف على آيفون / آيباد','inst.ios.s1':'افتح هذه الصفحة في Safari (قد لا يوجد زر المشاركة في متصفحات أخرى).','inst.ios.s2':'اضغط «مشاركة»: المربع الذي يخرج منه سهم لأعلى. في آيفون يكون في الأسفل، وفي آيباد أعلى الشاشة.','inst.ios.s3':'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية».','inst.ios.s4':'اضغط «إضافة» في الزاوية العلوية. ستظهر أيقونة FUSHA على شاشتك.','inst.ios.done':'تمّت الإضافة','inst.and.title':'كيف تثبّت على أندرويد','inst.and.s1':'افتح قائمة المتصفح: النقاط الثلاث ⋮ في الأعلى.','inst.and.s2':'اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».','inst.and.s3':'أكّد. ستظهر أيقونة FUSHA على شاشتك.','inst.close':'إغلاق','inst.ok':'تم التثبيت. ابحث عن أيقونة FUSHA على شاشتك.','upd.newv':'يتوفر تحديث: v{v}',
  'toast.copied':'تم النسخ','toast.sel':'تم التحديد. انسخ يدويًا','toast.demo':'تجريبي: لا يتم أي دفع','toast.reset':'تم مسح التقدّم'
 }};
 const REGIONS = [['gcc', '14.99'], ['mena', '8.99'], ['west', '12.99'], ['row', '5.99']];
@@ -360,7 +380,7 @@ const BASMALA = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّ
 (function () {
 'use strict';
 const KEY = 'fusha-app', LATEST = 'fusha-latest';
-const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0};
+const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0, installed:false};
 let st = load();
 function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { return Object.assign({}, DEF); } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
@@ -401,6 +421,7 @@ const IC = {
 };
 
 /* ---------- state ---------- */
+let deferred = null, newVer = 0;
 let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
 let TTS = false;
 function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
@@ -606,7 +627,7 @@ function topBar() {
   return '<header class="top"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
 }
 function bannerHTML() {
-  if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.new') + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
+  if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.newv', {v:newVer || VERSION + 1}) + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
   if (st.onboarded && st.seen > 0 && st.seen < VERSION) {
     const c = CHANGELOG.find(x => x.v === VERSION), items = (c[st.lang] || c.en).map(x => '<li>' + esc(x) + '</li>').join('');
     return '<div class="banner" role="status"><b>' + t('upd.title', {v:VERSION}) + '</b><ul>' + items + '</ul><div class="row"><button class="btn sm" data-act="updclose">' + t('upd.close') + '</button></div></div>';
@@ -619,7 +640,7 @@ function tabs(cur) {
 }
 function homeView() {
   const nl = nextLesson();
-  let h = '';
+  let h = installCard();
   h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
   if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
   h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
@@ -784,9 +805,49 @@ function lessonView() {
 }
 function sheetHTML() {
   if (!sheet) return '';
+  if (sheet === 'insios' || sheet === 'instand') return installSheet();
   if (sheet === 'quit') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('lesson.quit') + '</p><button class="btn gold block" data-act="stay">' + t('lesson.stay') + '</button><button class="btn ghost block" data-act="leave">' + t('lesson.leave') + '</button></div></div>';
   if (sheet === 'reset') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('me.reset.q') + '</p><button class="btn ghost block" data-act="sheetx">' + t('lesson.stay') + '</button><button class="btn block" style="background:var(--bad);border-color:var(--bad)" data-act="resetyes">' + t('me.reset') + '</button></div></div>';
   return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('sheet.title') + '</p><p class="muted">' + t(sheet === 'tutor' ? 'sheet.tutor' : 'sheet.unit') + '</p><button class="btn gold block" data-act="seeplans">' + t('sheet.see') + '</button><button class="btn ghost block" data-act="sheetx">' + t('sheet.later') + '</button></div></div>';
+}
+
+/* ---------- install + updates ---------- */
+const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === window;
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function installCard() {
+  if (!HOSTED || st.installed || isStandalone()) return '';
+  const A = '<button class="btn gold block" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold block" data-act="insios">' + t('inst.ios') + '</button>';
+  const btns = isIOS() ? I : /android/i.test(navigator.userAgent) ? A : A + I;
+  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><p class="muted">' + t('inst.text') + '</p>' + btns + '</div>';
+}
+function installSheet() {
+  const steps = sheet === 'insios' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : 'inst.and.';
+  const li = steps.map((s, i) => '<li><span class="n">' + (i + 1) + '</span><span>' + t(pre + s) + (sheet === 'insios' && s === 's2' ? ' ' + SHARE_IC : '') + '</span></li>').join('');
+  const done = sheet === 'insios' ? '<button class="btn gold block" data-act="instdone">' + t('inst.ios.done') + '</button>' : '';
+  return '<div class="scrim" data-act="sheetx"><div class="sheet sheet-tall" role="dialog" aria-modal="true"><p class="h2">' + t(pre + 'title') + '</p><ol class="steps">' + li + '</ol>' + done + '<button class="btn ghost block" data-act="sheetx">' + t('inst.close') + '</button></div></div>';
+}
+function installAndroid() {
+  if (!deferred) { sheet = 'instand'; render(); return; }
+  const ev = deferred; deferred = null;
+  ev.prompt();
+  ev.userChoice.then(c => { if (c && c.outcome === 'accepted') markInstalled(); }).catch(() => {});
+}
+function markInstalled() { if (st.installed) return; st.installed = true; save(); sheet = null; toast(tp('inst.ok')); render(); }
+function checkUpdate() {
+  if (!HOSTED) return;
+  fetch('version.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.json()).then(j => {
+    if (j && +j.version > VERSION && newVer !== +j.version) { newVer = +j.version; banner = 'new'; if (route() !== 'lesson' && route() !== 'reading') render(); }
+  }).catch(() => {});
+}
+if (HOSTED) {
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
+  window.addEventListener('appinstalled', markInstalled);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+  setInterval(checkUpdate, 600000);
+  checkUpdate();
 }
 
 /* ---------- render ---------- */
@@ -881,6 +942,9 @@ document.addEventListener('click', e => {
     case 'resetyes': { const keep = {lang:st.lang, theme:st.theme}; st = Object.assign({}, DEF, keep, {onboarded:true, seen:VERSION}); save(); sheet = null; tut = null; ls = null; toast(tp('toast.reset')); render(); break; }
     case 'updclose': st.seen = VERSION; save(); render(); break;
     case 'reload': location.reload(); break;
+    case 'instand': installAndroid(); break;
+    case 'insios': sheet = 'insios'; render(); break;
+    case 'instdone': markInstalled(); break;
   }
 });
 document.addEventListener('submit', e => { const f = e.target.closest('[data-form="tutor"]'); if (!f) return; e.preventDefault(); const i = $('#tin'); tutorSend(i.value); });
@@ -894,7 +958,7 @@ document.addEventListener('keydown', e => {
   } else if (e.key === 'Enter') { if (ls.ans) next(); else if (ex.o) check(); }
 });
 window.addEventListener('hashchange', () => { if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
-window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { banner = 'new'; render(); } });
+window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });
 initTTS();
 if (location.hash === '#/lesson' && !ls) location.hash = '#/home';
 render();

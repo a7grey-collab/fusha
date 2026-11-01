@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0c3b30">
+<title>FUSHA</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c3b30'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23c1932f'/%3E%3C/svg%3E">
+</head>
+<body>
+<style>:root{--bg:#f4f6f4;--surface:#fff;--card:#fff;--soft:#eaefec;--ink:#0c3b30;--text:#26362f;--muted:#566860;--line:#d3dcd7;--gold:#c1932f;--gold-soft:#f6ecd2;--gold-ink:#7a5b10;--ok:#1f7a5a;--ok-bg:#dff3ea;--bad:#b3392f;--bad-bg:#fbe4e1;--on-ink:#fff;color-scheme:light;
+ --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;--serif:Georgia,"Noto Serif","Times New Roman",serif;
+ --arf:"Noto Naskh Arabic","Amiri","Geeza Pro","Traditional Arabic","Times New Roman",serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1511;--surface:#12211b;--card:#162a23;--soft:#1b332b;--ink:#e6efe9;--text:#cfdcd5;--muted:#9db3a8;--line:#27433a;--gold:#d6a640;--gold-soft:#2c2711;--gold-ink:#e0b858;--ok:#4cc79a;--ok-bg:#12372a;--bad:#ff8d82;--bad-bg:#3b1c19;--on-ink:#0b1511;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1511;--surface:#12211b;--card:#162a23;--soft:#1b332b;--ink:#e6efe9;--text:#cfdcd5;--muted:#9db3a8;--line:#27433a;--gold:#d6a640;--gold-soft:#2c2711;--gold-ink:#e0b858;--ok:#4cc79a;--ok-bg:#12372a;--bad:#ff8d82;--bad-bg:#3b1c19;--on-ink:#0b1511;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.5 var(--sans);overflow-wrap:anywhere;min-height:100vh;min-height:100dvh}
+h1,h2,h3,p,ul{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.ar{font-family:var(--arf);direction:rtl;unicode-bidi:isolate;letter-spacing:0}
+html[lang="ar"] body{line-height:1.7}
+html[lang="ar"] *{letter-spacing:0!important}
+.app{max-width:30rem;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);position:relative}
+@media (min-width:640px){body{background:linear-gradient(160deg,#0c3b30,#0b1511)}.app{box-shadow:0 0 0 1px var(--line),0 20px 60px rgba(0,0,0,.35);min-height:100vh}}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:.5rem;min-height:56px;padding:.3rem .9rem;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font:700 1.15rem var(--serif);letter-spacing:.08em;color:var(--ink);margin-inline-end:auto}
+.chip{display:inline-flex;align-items:center;gap:.3rem;min-height:36px;padding:0 .7rem;border-radius:999px;background:var(--soft);font-weight:700;color:var(--ink);font-size:.95rem}
+.chip svg{width:18px;height:18px}
+.chip.fire svg{fill:#e8742a}.chip.bolt svg{fill:var(--gold)}
+main{flex:1;padding:1rem .9rem 6.5rem}
+main>*+*{margin-top:1rem}
+.h1{font:700 1.5rem/1.25 var(--serif);color:var(--ink)}
+.h2{font:700 1.1rem/1.3 var(--sans);color:var(--ink)}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:1.1rem;padding:1rem}
+.card>*+*{margin-top:.55rem}
+.row{display:flex;align-items:center;gap:.7rem}
+.row.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:48px;padding:0 1.3rem;border-radius:.9rem;border:2px solid var(--ink);background:var(--ink);color:var(--on-ink);font-weight:700;text-align:center}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#241a02}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.block{display:flex;width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.sm{min-height:40px;padding:0 .9rem;font-size:.9rem}
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:30rem;z-index:25;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{display:grid;justify-items:center;align-content:center;gap:.1rem;min-height:60px;padding:.3rem .1rem;border:0;background:none;color:var(--muted);font-size:.68rem;font-weight:700;line-height:1.15;min-width:0}
+.tabs svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabs button[aria-current="page"]{color:var(--ink)}
+.tabs button[aria-current="page"] svg{stroke:var(--gold)}
+.tabs span{max-width:100%;text-align:center;overflow-wrap:anywhere}
+/* onboarding */
+.opts{display:grid;gap:.5rem}
+.opt{display:flex;align-items:center;gap:.7rem;min-height:52px;padding:.5rem .9rem;border:2px solid var(--line);border-radius:.9rem;background:var(--card);text-align:start;font-weight:600}
+.opt[aria-pressed="true"],.opt.sel{border-color:var(--gold);background:var(--gold-soft)}
+.dots{display:flex;gap:.4rem;justify-content:center}
+.dots i{width:.6rem;height:.6rem;border-radius:50%;background:var(--line)}.dots i.on{background:var(--gold)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:2px solid var(--line);border-radius:.9rem;overflow:hidden}
+.seg button{min-height:44px;border:0;background:var(--card);font-weight:700;color:var(--text)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+/* home */
+.goal{display:flex;align-items:center;gap:1rem}
+.ring{flex:none;width:76px;height:76px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:.95rem;color:var(--ink)}
+.unit{margin-top:1.4rem}
+.unit h2{display:flex;align-items:center;gap:.6rem}
+.uic{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:.7rem;background:var(--ink);color:var(--gold);font-size:1.5rem;line-height:1;flex:none}
+.plus{font:700 .7rem var(--sans);padding:.1rem .45rem;border-radius:999px;background:var(--gold);color:#241a02;letter-spacing:.04em;direction:ltr}
+.path{display:grid;gap:.6rem;margin-top:.8rem}
+.node{display:flex;align-items:center;gap:.8rem;min-height:64px;padding:.5rem .8rem;border:2px solid var(--line);border-radius:1rem;background:var(--card);text-align:start;width:100%}
+.node .nb{flex:none;display:grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:50%;background:var(--soft);color:var(--ink);font-weight:700}
+.node.done .nb{background:var(--ok);color:#fff}
+.node.next{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.node.next .nb{background:var(--gold);color:#241a02}
+.node.lock{opacity:.65}
+.node svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.node .tx{min-width:0;flex:1}.node .tx b{display:block;color:var(--ink)}.node .tx span{font-size:.82rem;color:var(--muted)}
+.glyphs{display:flex;gap:.3rem;flex-wrap:wrap;font-size:1.3rem;line-height:1.3}
+/* lesson */
+.lesson{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.lhead{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem}
+.x{flex:none;width:44px;height:44px;border-radius:.8rem;border:0;background:var(--soft);color:var(--ink);display:grid;place-items:center}
+.x svg{width:22px;height:22px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
+.bar{flex:1;height:.9rem;border-radius:999px;background:var(--soft);overflow:hidden}.bar i{display:block;height:100%;background:var(--gold);transition:width .25s}
+.lbody{flex:1;padding:.4rem .9rem 1rem;display:flex;flex-direction:column;gap:1rem}
+.q{font:700 1.25rem/1.35 var(--serif);color:var(--ink)}
+.big{display:grid;place-items:center;min-height:9rem;border-radius:1.2rem;background:var(--card);border:1px solid var(--line);font-size:5rem;line-height:1.4;color:var(--ink)}
+.big.w{font-size:2.6rem;padding:.6rem}
+.big .tr{font:600 .95rem var(--sans);color:var(--muted);direction:ltr}
+.choices{display:grid;gap:.6rem}
+.choices.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ch{min-height:56px;padding:.5rem .9rem;border-radius:.9rem;border:2px solid var(--line);background:var(--card);font-weight:600;text-align:center;line-height:1.35}
+.ch.ar{font-size:1.9rem;line-height:1.5;font-weight:400}
+.ch.sel{border-color:var(--gold);background:var(--gold-soft)}
+.ch.ok{border-color:var(--ok);background:var(--ok-bg)}.ch.bad{border-color:var(--bad);background:var(--bad-bg)}
+.lfoot{position:sticky;bottom:0;padding:.8rem .9rem calc(.8rem + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line)}
+.lfoot.ok{background:var(--ok-bg)}.lfoot.no{background:var(--bad-bg)}
+.fb{margin-bottom:.6rem;font-weight:700}.lfoot.ok .fb{color:var(--ok)}.lfoot.no .fb{color:var(--bad)}
+.fb .ans{display:block;margin-top:.2rem;font-weight:600;color:var(--text)}
+.match{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.match .col{display:grid;gap:.6rem;align-content:start}
+.mt{min-height:56px;padding:.4rem .5rem;border-radius:.9rem;border:2px solid var(--line);background:var(--card);font-weight:600;line-height:1.3}
+.mt.ar{font-size:1.6rem;font-weight:400}
+.mt.sel{border-color:var(--gold);background:var(--gold-soft)}.mt.done{visibility:hidden}.mt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.line{min-height:64px;padding:.5rem;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:.5rem;direction:rtl;align-items:center;border-radius:.4rem}
+.bank{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;direction:rtl}
+.tok{min-height:48px;padding:.2rem .9rem;border-radius:.8rem;border:2px solid var(--line);background:var(--card);font-size:1.6rem;font-family:var(--arf)}
+.tok.used{opacity:.25;pointer-events:none}
+.typed{min-height:72px;padding:.5rem .9rem;border:2px solid var(--line);border-radius:.9rem;background:var(--card);font-size:2rem;line-height:1.6;direction:rtl;font-family:var(--arf);text-align:start;display:flex;align-items:center}
+.kb{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.3rem;direction:rtl}
+.kb button{min-height:44px;border-radius:.6rem;border:1px solid var(--line);background:var(--card);font:1.5rem/1 var(--arf);color:var(--ink);padding:0}
+.kb button.wide{grid-column:span 2;font:600 .85rem var(--sans)}
+.kb button.sp{grid-column:span 4}
+.tts{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;width:100%;min-height:56px;border-radius:.9rem;border:2px solid var(--gold);background:var(--gold-soft);color:var(--ink);font-weight:700}
+.tts svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rec{display:grid;gap:.7rem;justify-items:center;text-align:center}
+.recb{width:84px;height:84px;border-radius:50%;border:0;background:var(--bad);color:#fff;display:grid;place-items:center}
+.recb svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.recb.on{animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 14px rgba(179,57,47,.2)}}
+@media (prefers-reduced-motion:reduce){.recb.on{animation:none}.bar i{transition:none}}
+.mock{border:2px dashed var(--gold);border-radius:1rem;padding:.8rem;background:var(--gold-soft);text-align:start}
+.mock>*+*{margin-top:.4rem}
+.meter{height:.6rem;border-radius:999px;background:var(--soft);overflow:hidden}.meter i{display:block;height:100%;background:var(--gold)}
+audio{width:100%}
+.res{text-align:center;padding-top:1.5rem}
+.res .trophy{font-size:4rem}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:1rem;padding:.8rem;text-align:center}
+.stat b{display:block;font:700 1.5rem var(--serif);color:var(--ink)}.stat span{font-size:.82rem;color:var(--muted)}
+/* tutor */
+.chat{display:grid;gap:.6rem}
+.msg{max-width:88%;padding:.6rem .9rem;border-radius:1.1rem;line-height:1.45}
+.msg.t{background:var(--card);border:1px solid var(--line);justify-self:start;border-end-start-radius:.3rem}
+.msg.u{background:var(--ink);color:var(--on-ink);justify-self:end;border-end-end-radius:.3rem}
+.msg .ar{display:block;font-size:1.5rem;line-height:1.5}
+.msg .tr{display:block;font-size:.85rem;opacity:.8}
+.msg.f{background:var(--gold-soft);border:1px solid var(--gold);justify-self:start;font-size:.92rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.cbtn{min-height:44px;padding:0 1rem;border-radius:999px;border:2px solid var(--gold);background:var(--gold-soft);font-family:var(--arf);font-size:1.25rem;color:var(--ink)}
+.send{display:flex;gap:.5rem}
+.send input{flex:1;min-width:0;min-height:48px;padding:0 .9rem;border-radius:.9rem;border:2px solid var(--line);background:var(--card);color:var(--text);font:1.2rem var(--arf);direction:rtl}
+/* plans */
+.price{font:700 2rem var(--serif);color:var(--ink)}.price small{font:600 .9rem var(--sans);color:var(--muted)}
+.feat{list-style:none;padding:0}.feat li{position:relative;padding-inline-start:1.5rem;margin:.35rem 0}.feat li::before{content:"✓";position:absolute;inset-inline-start:0;color:var(--ok);font-weight:700}
+.soon{display:grid;gap:.4rem}.soon div{display:flex;gap:.6rem;align-items:center}.soon b{direction:ltr;color:var(--ink)}
+textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px solid var(--line);background:var(--card);color:var(--text);font:inherit;resize:vertical}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:48px}
+.sw{flex:none;width:52px;height:30px;border-radius:999px;border:0;background:var(--line);position:relative}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:inset-inline-start .15s}
+.sw[aria-pressed="true"]{background:var(--ok)}.sw[aria-pressed="true"]::after{inset-inline-start:25px}
+/* sheet, toast, banner */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:30rem;background:var(--surface);border-radius:1.4rem 1.4rem 0 0;padding:1.2rem 1rem calc(1.2rem + env(safe-area-inset-bottom));display:grid;gap:.8rem}
+.toast{position:fixed;inset-inline:1rem;bottom:5rem;z-index:70;margin:0 auto;max-width:24rem;padding:.7rem 1rem;border-radius:.9rem;background:var(--ink);color:var(--on-ink);text-align:center;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.banner{display:grid;gap:.4rem;padding:.8rem .9rem;background:var(--gold-soft);border-bottom:2px solid var(--gold);position:relative;z-index:21}
+.banner ul{padding-inline-start:1.2rem;margin:0}.banner .row{flex-wrap:wrap}
+.sign{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;font-size:.9rem;color:var(--muted);direction:ltr;justify-content:center}
+.sign a{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;color:var(--gold-ink);font-weight:700;text-decoration:none}
+.sign .ico{width:1.1rem;height:1.1rem;fill:currentColor}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.author{display:grid;gap:.1rem;padding:.7rem 0 .2rem;border-top:1px solid var(--line);margin-top:.4rem}
+.author b{font:700 1.15rem var(--serif);color:var(--ink);line-height:1.3}
+.author .acal{font-size:1.5rem;color:var(--gold-ink);line-height:1.5}
+.tbtn{display:grid;gap:.15rem;text-align:start;width:100%;border-color:var(--gold);cursor:pointer;color:var(--text)}
+.tbtn b{color:var(--ink)}
+.tcard{align-items:center}.tcard .tx{flex:1;min-width:0;display:grid}.tcard .tx b{color:var(--ink)}
+.tcard .uic{width:2.2rem;height:2.2rem;font-size:1.1rem;font-family:var(--sans);font-weight:700}
+.tag{display:inline-block;padding:.1rem .6rem;border-radius:999px;background:var(--soft);color:var(--gold-ink);font-size:.78rem;font-weight:700;flex:none}
+.tag.open{background:var(--ok);color:#fff}.tag.demo{background:var(--gold);color:#241a02}
+.note{background:var(--gold-soft);border:1px solid var(--gold);border-radius:1rem;padding:.8rem 1rem}
+.lead{font-size:1.05rem}
+
+.top button.brand{background:none;border:0;padding:0 .2rem;min-height:44px;text-align:start;cursor:pointer}
+
+.inst{display:grid;gap:.6rem;border-color:var(--gold)}
+.sheet-tall{max-height:90dvh;overflow:auto}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.steps li{display:flex;gap:.7rem;align-items:flex-start}
+.steps .n{flex:none;inline-size:1.7rem;block-size:1.7rem;border-radius:50%;background:var(--gold);color:#1a1405;font-weight:800;display:grid;place-items:center;font-size:.9rem}
+.steps .shic{vertical-align:middle;color:var(--ink)}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="tg" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></symbol></svg>
+<div id="root"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:1rem">FUSHA needs JavaScript.</p></noscript>
+<script>const PWA = false;
+/* ===== version ===== */
+const VERSION = 4;
+const CHANGELOG = [
+ {v:4, ru:['Кнопки «Установить на экран»: Android — одним нажатием, iPhone/iPad — пошаговая инструкция','После установки кнопки исчезают, приложение открывается во весь экран','Автоуведомление: при выходе новой версии появляется «Доступно обновление → Обновить»'],
+  en:['“Add to home screen” buttons: Android in one tap, iPhone/iPad with step-by-step instructions','After install the buttons disappear and the app opens full screen','Automatic notice: when a new version is out you see “Update available → Update”'],
+  ar:['أزرار «إضافة إلى الشاشة الرئيسية»: أندرويد بضغطة واحدة، وآيفون/آيباد بخطوات مفصلة','بعد التثبيت تختفي الأزرار ويفتح التطبيق بملء الشاشة','إشعار تلقائي: عند صدور إصدار جديد يظهر «يتوفر تحديث ← تحديث»']},
+ {v:3, ru:['Логотип FUSHA в шапке теперь ведёт на главную'], en:['The FUSHA logo in the header now takes you to the home screen'], ar:['شعار FUSHA في الأعلى يعيدك الآن إلى الشاشة الرئيسية']},
+ {v:2, ru:['Добавлен автор: Хамза аш-Шишани аль-Мадани','Экран «Направления»: от первой буквы до чтения Корана, хифз, Kids, Академия','Демо «Проверка чтения» (таджвид с ИИ, макет)','Иджаза только через квалифицированного шейха'],
+  en:['Author added: Hamza ash-Shishani al-Madani','New “Tracks” screen: from the first letter to Quran reading, hifz, Kids, Academy','“Reading check” demo (tajweed with AI, mock-up)','Ijazah only through a qualified sheikh'],
+  ar:['إضافة المؤلف: حمزة الشيشاني المدني','شاشة «المسارات»: من الحرف الأول إلى قراءة القرآن والحفظ وKids والأكاديمية','عرض «فحص القراءة» (التجويد بالذكاء الاصطناعي، تصوّر)','الإجازة لا تُمنح إلا عبر شيخ مؤهَّل']},
+ {v:1, ru:['Первый рабочий прототип сервиса','Путь по урокам: буквы, приветствия, трудные звуки, числа','6 типов упражнений, повторение по интервалам, XP и серия','AI-тьютор (демо по сценариям), запись голоса, тарифы по регионам','Русский, English, العربية с зеркальным интерфейсом'],
+  en:['First working prototype of the service','Lesson path: letters, greetings, hard sounds, numbers','6 exercise types, spaced repetition, XP and streak','AI tutor (scripted demo), voice recording, regional plans','Russian, English and Arabic with a mirrored interface'],
+  ar:['أول نموذج عملي للخدمة','مسار الدروس: الحروف والتحيات والأصوات الصعبة والأرقام','6 أنواع من التمارين ومراجعة متباعدة ونقاط وسلسلة أيام','معلّم ذكي (عرض تجريبي) وتسجيل الصوت وخطط حسب المنطقة','الروسية والإنجليزية والعربية بواجهة معكوسة']}
+];
+
+/* ===== letters: [glyph, name, soundRu, soundEn, hard] ===== */
+const LETTERS = [
+ ['ا','alif','а (долгий)','a (long)',0],['ب','ba','б','b',0],['ت','ta','т','t',0],['ث','tha','«th» как в think','th (think)',1],
+ ['ج','jim','дж','j (jam)',0],['خ','kha','х как в «хорошо»','kh (loch)',1],['د','dal','д','d',0],['ذ','dhal','«th» как в this','th (this)',1],
+ ['ر','ra','р (раскатистая)','r (rolled)',0],['ز','zay','з','z',0],['س','sin','с','s',0],['ش','shin','ш','sh',0],
+ ['ف','fa','ф','f',0],['ك','kaf','к','k',0],['ل','lam','л','l',0],['م','mim','м','m',0],
+ ['ن','nun','н','n',0],['ه','ha (soft)','х (мягкий выдох)','h (soft)',0],['و','waw','в / долгий у','w / long u',0],['ي','ya','й / долгий и','y / long i',0],
+ ['ص','Sad','с эмфатическое','emphatic s',1],['ض','Dad','д эмфатическое','emphatic d',1],['ط','Ta (emph.)','т эмфатическое','emphatic t',1],['ظ','Za (emph.)','з эмфатическое','emphatic z',1],
+ ['ع','ayn','гортанный «айн»','ayn (throat)',1],['غ','ghayn','гъ (картавое)','gh (French r)',1],['ق','qaf','к глубокое','deep q',1],['ح','Ha (throat)','горловое «х»','throat h',1]
+];
+/* ===== words: [id, ar, ru, en, translit] ===== */
+const WORDS = [
+ ['marhaban','مرحبا','привет','hello','marhaban'],
+ ['ahlan','أهلا','здравствуйте (рад вас видеть)','hi (welcome)','ahlan'],
+ ['salam','السلام عليكم','мир вам (приветствие)','peace be upon you (greeting)','as-salamu alaykum'],
+ ['reply','وعليكم السلام','и вам мир (ответ)','and peace be upon you (reply)','wa alaykum as-salam'],
+ ['sabah','صباح الخير','доброе утро','good morning','sabah al-khayr'],
+ ['masa','مساء الخير','добрый вечер','good evening','masa’ al-khayr'],
+ ['bye','مع السلامة','до свидания','goodbye','ma‘a as-salama'],
+ ['yes','نعم','да','yes','na‘am'],
+ ['no','لا','нет','no','la'],
+ ['thanks','شكرا','спасибо','thank you','shukran'],
+ ['welcome','عفوا','не за что','you’re welcome','‘afwan'],
+ ['please','من فضلك','пожалуйста (просьба)','please','min fadlik'],
+ ['how','كيف حالك','как дела?','how are you?','kayfa haluk'],
+ ['fine','بخير','хорошо (в порядке)','fine (well)','bikhayr'],
+ ['n1','واحد','один','one','wahid'],['n2','اثنان','два','two','ithnan'],['n3','ثلاثة','три','three','thalatha'],
+ ['n4','أربعة','четыре','four','arba‘a'],['n5','خمسة','пять','five','khamsa'],['n6','ستة','шесть','six','sitta'],
+ ['n7','سبعة','семь','seven','sab‘a'],['n8','ثمانية','восемь','eight','thamaniya'],['n9','تسعة','девять','nine','tis‘a'],['n10','عشرة','десять','ten','‘ashara']
+];
+const ITEMS = {};
+LETTERS.forEach(l => { ITEMS['L:' + l[0]] = {id:'L:' + l[0], type:'L', ar:l[0], name:l[1], snd:{ru:l[2], en:l[3]}, hard:!!l[4]}; });
+WORDS.forEach(w => { ITEMS['W:' + w[0]] = {id:'W:' + w[0], type:'W', ar:w[1], gl:{ru:w[2], en:w[3]}, tr:w[4]}; });
+const L = g => 'L:' + g, W = i => 'W:' + i;
+const UNITS = [
+ {id:'u1', ic:'ا', premium:false, t:{ru:'Буквы и звуки', en:'Letters and sounds', ar:'الحروف والأصوات'}, lessons:[
+   ['ا','ب','ت','ث'].map(L), ['ج','خ','د','ذ'].map(L), ['ر','ز','س','ش'].map(L), ['ف','ك','ل','م'].map(L), ['ن','ه','و','ي'].map(L)]},
+ {id:'u2', ic:'م', premium:false, t:{ru:'Приветствия', en:'Greetings', ar:'التحيات'}, lessons:[
+   ['marhaban','ahlan','salam','reply'].map(W), ['sabah','masa','bye','yes','no'].map(W), ['thanks','welcome','please','how','fine'].map(W)]},
+ {id:'u3', ic:'ع', premium:false, t:{ru:'Трудные звуки', en:'Hard sounds', ar:'الأصوات الصعبة'}, lessons:[
+   ['ص','ض','ط','ظ'].map(L), ['ع','غ','ق','ح'].map(L)]},
+ {id:'u4', ic:'٤', premium:true, t:{ru:'Числа 1–10', en:'Numbers 1–10', ar:'الأرقام 1-10'}, lessons:[
+   ['n1','n2','n3','n4','n5'].map(W), ['n6','n7','n8','n9','n10'].map(W)]}
+];
+UNITS.forEach(u => u.lessons = u.lessons.map((items, i) => ({id:u.id + 'l' + (i + 1), unit:u, n:i + 1, items})));
+const ALL_LESSONS = UNITS.flatMap(u => u.lessons);
+
+/* ===== tutor scenarios ===== */
+const SCEN = {
+ meet:{ steps:[
+  {say:{ar:'السلام عليكم', ru:'Мир вам (приветствие)', en:'Peace be upon you (greeting)'}, ok:n => n.includes('وعليكم السلام'), chips:['وعليكم السلام']},
+  {say:{ar:'ما اسمك؟', ru:'Как вас зовут?', en:'What is your name?'}, ok:n => n.startsWith('اسمي') && n.length > 4, chips:['اسمي علي']},
+  {say:{ar:'كيف حالك؟', ru:'Как у вас дела?', en:'How are you?'}, ok:n => n.includes('بخير'), chips:['أنا بخير، شكرا']},
+  {say:{ar:'مع السلامة', ru:'До свидания', en:'Goodbye'}, ok:n => n.includes('مع السلامه') || n.includes('السلام'), chips:['مع السلامة']}
+ ], close:null},
+ cafe:{ steps:[
+  {say:{ar:'أهلا! ماذا تريد؟', ru:'Здравствуйте! Что вы хотите?', en:'Hello! What would you like?'}, ok:n => n.includes('اريد') && n.length > 5, chips:['أريد قهوة','أريد شاي']},
+  {say:{ar:'تفضل', ru:'Пожалуйста, вот ваш заказ', en:'Here you are'}, ok:n => n.includes('شكرا'), chips:['شكرا']}
+ ], close:{ar:'عفوا', ru:'Не за что', en:'You’re welcome'}}
+};
+
+/* ===== UI strings ===== */
+const S = {
+ru:{
+ 'author.label':'Автор','tracks.title':'Направления','tracks.lead':'Один путь: от первой буквы до свободного арабского и уверенного чтения Корана','tracks.open':'Открыть','st.open':'Доступно','st.demo':'Демо','st.soon':'Скоро','tracks.ijaza':'Иджаза выдаётся только квалифицированным шейхом с соответствующей цепочкой передачи, а не автоматически через ИИ.',
+ 'read.title':'Проверка чтения','read.sub':'Прочитайте аят','read.src':'Текст взят из заметок автора. В сервисе текст берётся из проверенного источника и сверяется шейхом.','read.how':'Система оценивает чтение в пределах возможностей распознавания речи и отмечает предполагаемые ошибки. Сложные вопросы таджвида передаются преподавателю.','read.sample':'Пример замечаний (макет)','read.madd':'Мадд в «الرَّحْمَٰنِ»: естественный мадд, два счёта. Возможная ошибка, проверьте.','read.teacher':'Отправить преподавателю (макет)','read.sent':'Макет: в сервисе запись уйдёт преподавателю',
+ 'tab.path':'Путь','tab.review':'Повтор','tab.tutor':'Тьютор','tab.me':'Профиль',
+ 'onb.welcome':'Учите арабский (фусха) вместе с Institute TOBA','onb.lang':'Язык интерфейса','onb.goal':'Зачем вам арабский?',
+ 'goal.talk':'Свободное общение','goal.quran':'Язык Корана','goal.work':'Работа и учёба',
+ 'onb.level':'Ваш уровень','level.zero':'Начинаю с нуля','level.letters':'Знаю буквы','level.some':'Немного читаю и говорю',
+ 'onb.daily':'Цель на день','daily.10':'Лёгкая · 10 XP','daily.20':'Обычная · 20 XP','daily.40':'Серьёзная · 40 XP',
+ 'onb.start':'Начать','onb.next':'Далее','onb.back':'Назад',
+ 'home.goal':'Цель дня','home.goalval':'{a} из {b} XP','home.continue':'Продолжить','home.start':'Начать','home.lesson':'Урок {n}','home.locked':'Сначала пройдите предыдущий урок','home.done':'Пройден',
+ 'lesson.quit':'Выйти из урока? Прогресс этого урока будет потерян.','lesson.stay':'Остаться','lesson.leave':'Выйти',
+ 'ex.sound':'Какой звук у этой буквы?','ex.letter':'Выберите букву «{name}»','ex.tr':'Что значит это слово?','ex.pickar':'Выберите по-арабски: «{w}»','ex.listen':'Что вы услышали?','ex.match':'Соедините пары','ex.order':'Составьте фразу: «{w}»','ex.type':'Напишите по-арабски: «{w}»','ex.speak':'Произнесите вслух',
+ 'btn.check':'Проверить','btn.cont':'Далее','btn.skip':'Пропустить','fb.ok':'Верно!','fb.no':'Не совсем. Правильно:',
+ 'tts.off':'Озвучка арабского недоступна на этом устройстве. В сервисе будет аудио носителей языка.','tts.play':'Послушать',
+ 'mic.rec':'Записать','mic.stop':'Остановить','mic.again':'Ещё раз','mic.err':'Нет доступа к микрофону. Разрешите его в настройках браузера.','mic.len':'Длительность: {s} с','mic.level':'Громкость записи: {p}%','mic.mock':'Пример оценки (макет). В сервисе оценку даст подключённый провайдер распознавания речи.','mic.overall':'Общая оценка','mic.hint':'Подсказка по артикуляции: звук идёт из глубины горла, язык не касается зубов.',
+ 'res.done':'Урок пройден!','res.xp':'+{n} XP','res.acc':'Точность: {n}%','res.learned':'Новых элементов в повторении: {n}','res.streak':'Серия: {n} дн.','res.back':'К пути',
+ 'rev.title':'Повторение','rev.due':'К повторению сегодня: {n}','rev.learned':'Выучено элементов: {n}','rev.start':'Начать повторение','rev.none':'Пока нечего повторять. Пройдите первый урок.','rev.all':'Повторить всё выученное (демо)','rev.why':'Буквы и слова возвращаются через 1, 3, 7 и 14 дней, чтобы остаться в памяти.',
+ 'tutor.title':'AI-тьютор','tutor.demo':'Демо: ответы по сценарию. В сервисе тьютор работает на Claude и понимает свободный текст.','tutor.pick':'Выберите сценарий','sc.meet':'Знакомство','sc.cafe':'В кафе','tutor.ph':'Напишите по-арабски…','tutor.send':'Отправить','tutor.hint':'Подсказка','tutor.try':'Почти. Попробуйте так:','tutor.good':'Отлично!','tutor.end':'Сценарий завершён','tutor.again':'Другой сценарий','tutor.left':'Бесплатно сегодня: осталось {n} из {m}','tutor.tap':'Нажмите на фразу или напишите свою',
+ 'pay.title':'Тарифы','pay.region':'Ваш регион','reg.gcc':'Саудовская Аравия и GCC','reg.mena':'MENA (вне GCC)','reg.west':'Северная Америка и Европа','reg.row':'Остальной мир','per':'/ мес.',
+ 'plan.free':'Бесплатно','plan.plus':'Plus',
+ 'free.1':'Юниты 1–3: буквы, приветствия, трудные звуки','free.2':'Повторение по интервалам','free.3':'5 сообщений тьютору в день',
+ 'plus.1':'Все юниты и новые уроки','plus.2':'AI-тьютор без лимита','plus.3':'Голосовой диалог и проверка произношения','plus.4':'Персональный план обучения',
+ 'pay.buy':'Оформить Plus (демо)','pay.cancel':'Отключить Plus (демо)','pay.active':'Plus активен (демо)','pay.demo':'Демо: оплата не выполняется.','pay.illus':'Цены иллюстративные. Итоговую сетку определим после закрытой беты.','pay.soon':'Скоро',
+ 'soon.live':'занятия с преподавателями','soon.q':'язык Корана','soon.c':'экзамены и иджаза','soon.k':'для детей',
+ 'sheet.title':'Нужен Plus','sheet.unit':'Этот юнит входит в Plus.','sheet.tutor':'Бесплатный лимит сообщений на сегодня исчерпан.','sheet.see':'Смотреть тарифы','sheet.later':'Позже',
+ 'me.title':'Профиль','me.xp':'Всего XP','me.streak':'Серия, дн.','me.lessons':'Уроков пройдено','me.items':'Элементов выучено','me.settings':'Настройки','me.lang':'Язык','me.theme':'Тема','theme.auto':'Авто','theme.light':'Светлая','theme.dark':'Тёмная','me.daily':'Цель на день','me.demo':'Демо: открыть все уроки','me.reset':'Сбросить прогресс','me.reset.q':'Сбросить весь прогресс?','me.notes':'Заметки для следующей версии','me.notes.ph':'Что поправить, добавить, убрать…','me.copy':'Скопировать заметки','me.plans':'Тарифы и Plus','me.log':'Что нового','me.reco':'Рекомендуем начать с юнита {n}',
+ 'upd.title':'Приложение обновлено до v{v}','upd.new':'Доступно обновление','upd.reload':'Обновить','upd.close':'Понятно',
+ 'inst.title':'Установить на экран','inst.text':'Откроется как обычное приложение: во весь экран, быстрее, с запуском офлайн.','inst.android':'Установить на Android','inst.ios':'Добавить на iPhone / iPad','inst.ios.title':'Как добавить на iPhone / iPad','inst.ios.s1':'Откройте эту страницу в Safari (в других браузерах кнопки «Поделиться» может не быть).','inst.ios.s2':'Нажмите «Поделиться» — квадрат со стрелкой вверх. На iPhone он внизу, на iPad вверху справа.','inst.ios.s3':'Прокрутите меню вниз и выберите «На экран «Домой»».','inst.ios.s4':'Нажмите «Добавить» в правом верхнем углу. Значок FUSHA появится на экране.','inst.ios.done':'Готово, добавил','inst.and.title':'Как установить на Android','inst.and.s1':'Откройте меню браузера — три точки ⋮ вверху справа.','inst.and.s2':'Выберите «Установить приложение» или «Добавить на главный экран».','inst.and.s3':'Подтвердите. Значок FUSHA появится на экране.','inst.close':'Закрыть','inst.ok':'Установлено. Ищите значок FUSHA на экране.','upd.newv':'Доступно обновление до v{v}',
+ 'toast.copied':'Скопировано','toast.sel':'Выделено. Скопируйте вручную','toast.demo':'Демо: оплата не выполняется','toast.reset':'Прогресс сброшен'
+},
+en:{
+ 'author.label':'Author','tracks.title':'Tracks','tracks.lead':'One path: from the first letter to fluent Arabic and confident Quran reading','tracks.open':'Open','st.open':'Available','st.demo':'Demo','st.soon':'Soon','tracks.ijaza':'Ijazah is granted only by a qualified sheikh with a proper chain of transmission, never automatically by AI.',
+ 'read.title':'Reading check','read.sub':'Read the verse','read.src':'Text taken from the author’s notes. In the service the text comes from a verified source and is reviewed by a sheikh.','read.how':'The system evaluates your reading within the limits of speech recognition and flags suspected mistakes. Complex tajweed questions go to a teacher.','read.sample':'Sample remarks (mock-up)','read.madd':'Madd in “الرَّحْمَٰنِ”: natural madd, two counts. Possible mistake, please check.','read.teacher':'Send to a teacher (mock-up)','read.sent':'Mock-up: in the service the recording goes to a teacher',
+ 'tab.path':'Path','tab.review':'Review','tab.tutor':'Tutor','tab.me':'Profile',
+ 'onb.welcome':'Learn Arabic (Fusha) with Institute TOBA','onb.lang':'Interface language','onb.goal':'Why do you want Arabic?',
+ 'goal.talk':'Everyday communication','goal.quran':'The language of the Quran','goal.work':'Work and study',
+ 'onb.level':'Your level','level.zero':'Starting from zero','level.letters':'I know the letters','level.some':'I read and speak a little',
+ 'onb.daily':'Daily goal','daily.10':'Light · 10 XP','daily.20':'Regular · 20 XP','daily.40':'Serious · 40 XP',
+ 'onb.start':'Start','onb.next':'Next','onb.back':'Back',
+ 'home.goal':'Daily goal','home.goalval':'{a} of {b} XP','home.continue':'Continue','home.start':'Start','home.lesson':'Lesson {n}','home.locked':'Finish the previous lesson first','home.done':'Completed',
+ 'lesson.quit':'Leave the lesson? Progress in this lesson will be lost.','lesson.stay':'Stay','lesson.leave':'Leave',
+ 'ex.sound':'What sound does this letter make?','ex.letter':'Choose the letter “{name}”','ex.tr':'What does this mean?','ex.pickar':'Choose in Arabic: “{w}”','ex.listen':'What did you hear?','ex.match':'Match the pairs','ex.order':'Build the phrase: “{w}”','ex.type':'Write in Arabic: “{w}”','ex.speak':'Say it out loud',
+ 'btn.check':'Check','btn.cont':'Continue','btn.skip':'Skip','fb.ok':'Correct!','fb.no':'Not quite. Correct answer:',
+ 'tts.off':'Arabic speech is not available on this device. The service will use native-speaker audio.','tts.play':'Listen',
+ 'mic.rec':'Record','mic.stop':'Stop','mic.again':'Again','mic.err':'No microphone access. Allow it in your browser settings.','mic.len':'Length: {s} s','mic.level':'Recording level: {p}%','mic.mock':'Sample result (mock-up). In the service, a speech-recognition provider will score this.','mic.overall':'Overall','mic.hint':'Articulation tip: the sound comes from deep in the throat; the tongue does not touch the teeth.',
+ 'res.done':'Lesson complete!','res.xp':'+{n} XP','res.acc':'Accuracy: {n}%','res.learned':'New items in review: {n}','res.streak':'Streak: {n} days','res.back':'Back to path',
+ 'rev.title':'Review','rev.due':'Due today: {n}','rev.learned':'Items learned: {n}','rev.start':'Start review','rev.none':'Nothing to review yet. Complete your first lesson.','rev.all':'Review everything learned (demo)','rev.why':'Letters and words return after 1, 3, 7 and 14 days so they stick.',
+ 'tutor.title':'AI tutor','tutor.demo':'Demo: scripted replies. In the service the tutor runs on Claude and understands free text.','tutor.pick':'Choose a scenario','sc.meet':'Meeting someone','sc.cafe':'At the café','tutor.ph':'Write in Arabic…','tutor.send':'Send','tutor.hint':'Hint','tutor.try':'Close. Try this:','tutor.good':'Great!','tutor.end':'Scenario complete','tutor.again':'Another scenario','tutor.left':'Free today: {n} of {m} left','tutor.tap':'Tap a phrase or write your own',
+ 'pay.title':'Plans','pay.region':'Your region','reg.gcc':'Saudi Arabia & GCC','reg.mena':'MENA (outside GCC)','reg.west':'North America & Europe','reg.row':'Rest of world','per':'/ mo',
+ 'plan.free':'Free','plan.plus':'Plus',
+ 'free.1':'Units 1–3: letters, greetings, hard sounds','free.2':'Spaced repetition','free.3':'5 tutor messages per day',
+ 'plus.1':'All units and new lessons','plus.2':'Unlimited AI tutor','plus.3':'Voice dialogue and pronunciation check','plus.4':'Personal study plan',
+ 'pay.buy':'Get Plus (demo)','pay.cancel':'Turn off Plus (demo)','pay.active':'Plus is active (demo)','pay.demo':'Demo: no payment is taken.','pay.illus':'Prices are illustrative. The final grid will be set after the closed beta.','pay.soon':'Coming soon',
+ 'soon.live':'lessons with teachers','soon.q':'the language of the Quran','soon.c':'exams and ijazah','soon.k':'for children',
+ 'sheet.title':'Plus required','sheet.unit':'This unit is part of Plus.','sheet.tutor':'You have used today’s free messages.','sheet.see':'See plans','sheet.later':'Later',
+ 'me.title':'Profile','me.xp':'Total XP','me.streak':'Streak, days','me.lessons':'Lessons completed','me.items':'Items learned','me.settings':'Settings','me.lang':'Language','me.theme':'Theme','theme.auto':'Auto','theme.light':'Light','theme.dark':'Dark','me.daily':'Daily goal','me.demo':'Demo: unlock all lessons','me.reset':'Reset progress','me.reset.q':'Reset all progress?','me.notes':'Notes for the next version','me.notes.ph':'What to fix, add or remove…','me.copy':'Copy notes','me.plans':'Plans and Plus','me.log':'What’s new','me.reco':'We recommend starting from unit {n}',
+ 'upd.title':'App updated to v{v}','upd.new':'Update available','upd.reload':'Update','upd.close':'Got it',
+ 'inst.title':'Add to home screen','inst.text':'Opens like a regular app: full screen, faster, and it starts offline.','inst.android':'Install on Android','inst.ios':'Add to iPhone / iPad','inst.ios.title':'How to add on iPhone / iPad','inst.ios.s1':'Open this page in Safari (other browsers may not have the Share button).','inst.ios.s2':'Tap Share, the square with an arrow pointing up. On iPhone it is at the bottom, on iPad at the top right.','inst.ios.s3':'Scroll the menu down and choose “Add to Home Screen”.','inst.ios.s4':'Tap “Add” in the top right corner. The FUSHA icon will appear on your screen.','inst.ios.done':'Done, I added it','inst.and.title':'How to install on Android','inst.and.s1':'Open the browser menu, the three dots ⋮ at the top right.','inst.and.s2':'Choose “Install app” or “Add to Home screen”.','inst.and.s3':'Confirm. The FUSHA icon will appear on your screen.','inst.close':'Close','inst.ok':'Installed. Look for the FUSHA icon on your screen.','upd.newv':'Update available: v{v}',
+ 'toast.copied':'Copied','toast.sel':'Selected. Copy it manually','toast.demo':'Demo: no payment is taken','toast.reset':'Progress reset'
+},
+ar:{
+ 'author.label':'المؤلف','tracks.title':'المسارات','tracks.lead':'مسار واحد: من الحرف الأول إلى العربية الفصيحة وقراءة القرآن بثقة','tracks.open':'افتح','st.open':'متاح','st.demo':'تجريبي','st.soon':'قريبًا','tracks.ijaza':'الإجازة لا يمنحها إلا شيخ مؤهَّل بسند متصل، وليست تلقائية عبر الذكاء الاصطناعي.',
+ 'read.title':'فحص القراءة','read.sub':'اقرأ الآية','read.src':'النص مأخوذ من ملاحظات المؤلف. في الخدمة يؤخذ النص من مصدر موثوق ويراجعه شيخ.','read.how':'يقيّم النظام قراءتك في حدود إمكانات التعرّف على الكلام ويشير إلى الأخطاء المحتملة، وتُحال مسائل التجويد الدقيقة إلى معلّم.','read.sample':'نموذج للملاحظات (تصوّر)','read.madd':'المدّ في «الرَّحْمَٰنِ»: مدّ طبيعي بمقدار حركتين. خطأ محتمل، يرجى التحقق.','read.teacher':'أرسل إلى معلّم (تصوّر)','read.sent':'تصوّر: في الخدمة يُرسل التسجيل إلى معلّم',
+ 'tab.path':'المسار','tab.review':'المراجعة','tab.tutor':'المعلّم','tab.me':'حسابي',
+ 'onb.welcome':'تعلّم العربية الفصحى مع Institute TOBA','onb.lang':'لغة الواجهة','onb.goal':'لماذا تريد تعلّم العربية؟',
+ 'goal.talk':'التواصل اليومي','goal.quran':'لغة القرآن','goal.work':'العمل والدراسة',
+ 'onb.level':'مستواك','level.zero':'مبتدئ من الصفر','level.letters':'أعرف الحروف','level.some':'أقرأ وأتحدث قليلًا',
+ 'onb.daily':'هدفك اليومي','daily.10':'خفيف · 10 XP','daily.20':'عادي · 20 XP','daily.40':'جاد · 40 XP',
+ 'onb.start':'ابدأ','onb.next':'التالي','onb.back':'رجوع',
+ 'home.goal':'هدف اليوم','home.goalval':'{a} من {b} XP','home.continue':'تابع','home.start':'ابدأ','home.lesson':'الدرس {n}','home.locked':'أكمل الدرس السابق أولًا','home.done':'مكتمل',
+ 'lesson.quit':'هل تريد مغادرة الدرس؟ سيُفقد تقدّم هذا الدرس.','lesson.stay':'ابقَ','lesson.leave':'مغادرة',
+ 'ex.sound':'ما صوت هذا الحرف؟','ex.letter':'اختر الحرف «{name}»','ex.tr':'ما معنى هذه الكلمة؟','ex.pickar':'اختر بالعربية: «{w}»','ex.listen':'ماذا سمعت؟','ex.match':'طابِق بين الأزواج','ex.order':'رتّب العبارة: «{w}»','ex.type':'اكتب بالعربية: «{w}»','ex.speak':'انطق بصوت عالٍ',
+ 'btn.check':'تحقّق','btn.cont':'التالي','btn.skip':'تخطَّ','fb.ok':'أحسنت!','fb.no':'ليست صحيحة. الإجابة الصحيحة:',
+ 'tts.off':'النطق العربي غير متاح على هذا الجهاز. ستستخدم الخدمة تسجيلات صوتية لمتحدثين أصليين.','tts.play':'استمع',
+ 'mic.rec':'سجّل','mic.stop':'أوقف','mic.again':'أعد','mic.err':'لا يمكن الوصول إلى الميكروفون. اسمح به من إعدادات المتصفح.','mic.len':'المدة: {s} ث','mic.level':'مستوى التسجيل: {p}%','mic.mock':'نموذج للنتيجة (تصوّر). في الخدمة سيقيّم مزوّد التعرّف على الكلام نطقك.','mic.overall':'التقييم العام','mic.hint':'نصيحة للنطق: يخرج الصوت من عمق الحلق ولا يلمس اللسان الأسنان.',
+ 'res.done':'اكتمل الدرس!','res.xp':'+{n} XP','res.acc':'الدقة: {n}%','res.learned':'عناصر جديدة في المراجعة: {n}','res.streak':'السلسلة: {n} يوم','res.back':'العودة إلى المسار',
+ 'rev.title':'المراجعة','rev.due':'للمراجعة اليوم: {n}','rev.learned':'العناصر المتعلَّمة: {n}','rev.start':'ابدأ المراجعة','rev.none':'لا شيء للمراجعة بعد. أكمل الدرس الأول.','rev.all':'راجع كل ما تعلّمته (تجريبي)','rev.why':'تعود الحروف والكلمات بعد 1 و3 و7 و14 يومًا لترسخ في الذاكرة.',
+ 'tutor.title':'المعلّم الذكي','tutor.demo':'تجريبي: ردود جاهزة. في الخدمة يعمل المعلّم بنموذج Claude ويفهم النص الحر.','tutor.pick':'اختر موقفًا','sc.meet':'التعارف','sc.cafe':'في المقهى','tutor.ph':'اكتب بالعربية…','tutor.send':'إرسال','tutor.hint':'تلميح','tutor.try':'قريب. جرّب هذا:','tutor.good':'ممتاز!','tutor.end':'انتهى الموقف','tutor.again':'موقف آخر','tutor.left':'المجاني اليوم: بقي {n} من {m}','tutor.tap':'اضغط على عبارة أو اكتب عبارتك',
+ 'pay.title':'الخطط','pay.region':'منطقتك','reg.gcc':'السعودية ودول الخليج','reg.mena':'الشرق الأوسط وشمال أفريقيا (خارج الخليج)','reg.west':'أمريكا الشمالية وأوروبا','reg.row':'بقية العالم','per':'/ شهر',
+ 'plan.free':'مجاني','plan.plus':'Plus',
+ 'free.1':'الوحدات 1-3: الحروف والتحيات والأصوات الصعبة','free.2':'مراجعة متباعدة','free.3':'5 رسائل يوميًا للمعلّم',
+ 'plus.1':'كل الوحدات والدروس الجديدة','plus.2':'معلّم ذكي بلا حدود','plus.3':'حوار صوتي وفحص النطق','plus.4':'خطة تعلّم شخصية',
+ 'pay.buy':'اشترك في Plus (تجريبي)','pay.cancel':'أوقف Plus (تجريبي)','pay.active':'Plus مفعّل (تجريبي)','pay.demo':'تجريبي: لا يتم أي دفع.','pay.illus':'الأسعار توضيحية؛ سنحدد الشبكة النهائية بعد النسخة التجريبية المغلقة.','pay.soon':'قريبًا',
+ 'soon.live':'دروس مع معلّمين','soon.q':'لغة القرآن','soon.c':'اختبارات وإجازة','soon.k':'للأطفال',
+ 'sheet.title':'يلزم Plus','sheet.unit':'هذه الوحدة ضمن Plus.','sheet.tutor':'انتهت رسائلك المجانية اليوم.','sheet.see':'عرض الخطط','sheet.later':'لاحقًا',
+ 'me.title':'حسابي','me.xp':'مجموع XP','me.streak':'السلسلة، أيام','me.lessons':'الدروس المكتملة','me.items':'العناصر المتعلَّمة','me.settings':'الإعدادات','me.lang':'اللغة','me.theme':'المظهر','theme.auto':'تلقائي','theme.light':'فاتح','theme.dark':'داكن','me.daily':'الهدف اليومي','me.demo':'تجريبي: افتح كل الدروس','me.reset':'مسح التقدّم','me.reset.q':'هل تريد مسح كل التقدّم؟','me.notes':'ملاحظات للإصدار القادم','me.notes.ph':'ما الذي يجب تعديله أو إضافته أو حذفه…','me.copy':'انسخ الملاحظات','me.plans':'الخطط وPlus','me.log':'الجديد','me.reco':'نوصي بالبدء من الوحدة {n}',
+ 'upd.title':'تم تحديث التطبيق إلى v{v}','upd.new':'يتوفر تحديث','upd.reload':'تحديث','upd.close':'حسنًا',
+ 'inst.title':'إضافة إلى الشاشة الرئيسية','inst.text':'يفتح كتطبيق عادي: بملء الشاشة وأسرع ويبدأ دون اتصال.','inst.android':'تثبيت على أندرويد','inst.ios':'إضافة إلى آيفون / آيباد','inst.ios.title':'كيف تضيف على آيفون / آيباد','inst.ios.s1':'افتح هذه الصفحة في Safari (قد لا يوجد زر المشاركة في متصفحات أخرى).','inst.ios.s2':'اضغط «مشاركة»: المربع الذي يخرج منه سهم لأعلى. في آيفون يكون في الأسفل، وفي آيباد أعلى الشاشة.','inst.ios.s3':'مرّر القائمة لأسفل واختر «إضافة إلى الشاشة الرئيسية».','inst.ios.s4':'اضغط «إضافة» في الزاوية العلوية. ستظهر أيقونة FUSHA على شاشتك.','inst.ios.done':'تمّت الإضافة','inst.and.title':'كيف تثبّت على أندرويد','inst.and.s1':'افتح قائمة المتصفح: النقاط الثلاث ⋮ في الأعلى.','inst.and.s2':'اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».','inst.and.s3':'أكّد. ستظهر أيقونة FUSHA على شاشتك.','inst.close':'إغلاق','inst.ok':'تم التثبيت. ابحث عن أيقونة FUSHA على شاشتك.','upd.newv':'يتوفر تحديث: v{v}',
+ 'toast.copied':'تم النسخ','toast.sel':'تم التحديد. انسخ يدويًا','toast.demo':'تجريبي: لا يتم أي دفع','toast.reset':'تم مسح التقدّم'
+}};
+const REGIONS = [['gcc', '14.99'], ['mena', '8.99'], ['west', '12.99'], ['row', '5.99']];
+
+const AUTHOR = {ru:'Хамза аш-Шишани аль-Мадани', en:'Hamza ash-Shishani al-Madani', ar:'حمزة الشيشاني المدني'};
+const TRACKS = [
+ {id:'zero', st:'open', n:{ru:'Арабский с нуля', en:'Arabic from zero', ar:'العربية من الصفر'}, d:{ru:'Буквы, слова, грамматика, речь', en:'Letters, words, grammar, speech', ar:'الحروف والكلمات والقواعد والمحادثة'}},
+ {id:'quran', st:'soon', n:{ru:'Чтение Корана', en:'Quran reading', ar:'قراءة القرآن'}, d:{ru:'От алиф до чтения мусхафа', en:'From alif to reading the mushaf', ar:'من الألف إلى قراءة المصحف'}},
+ {id:'tajweed', st:'demo', n:{ru:'Таджвид с ИИ', en:'Tajweed with AI', ar:'التجويد بالذكاء الاصطناعي'}, d:{ru:'Практика и анализ произношения', en:'Practice and pronunciation analysis', ar:'تدريب وتحليل للنطق'}},
+ {id:'hifz', st:'soon', n:{ru:'Хифз', en:'Hifz', ar:'الحفظ'}, d:{ru:'Заучивание и повторение', en:'Memorisation and review', ar:'الحفظ والمراجعة'}},
+ {id:'kids', st:'soon', n:{ru:'FUSHA Kids', en:'FUSHA Kids', ar:'FUSHA Kids'}, d:{ru:'Игровое обучение детей', en:'Game-based learning for children', ar:'تعلّم الأطفال بالألعاب'}},
+ {id:'academy', st:'soon', n:{ru:'Академия', en:'Academy', ar:'الأكاديمية'}, d:{ru:'Учителя, экзамены, сертификаты', en:'Teachers, exams, certificates', ar:'معلّمون واختبارات وشهادات'}}
+];
+const BASMALA = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+
+(function () {
+'use strict';
+const KEY = 'fusha-app', LATEST = 'fusha-latest';
+const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0, installed:false};
+let st = load();
+function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { return Object.assign({}, DEF); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+try { const lv = +localStorage.getItem(LATEST) || 0; if (lv < VERSION) localStorage.setItem(LATEST, String(VERSION)); } catch (e) {}
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, '0');
+const dstr = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const today = () => dstr(new Date());
+const yest = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dstr(d); };
+const xpToday = () => st.xpDay.d === today() ? st.xpDay.n : 0;
+const streakNow = () => (st.streak.last === today() || st.streak.last === yest()) ? st.streak.n : 0;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
+function t(k, p) { let s = (S[st.lang] && S[st.lang][k]) || S.en[k] || S.ru[k] || k; if (p) for (const x in p) s = s.replace('{' + x + '}', '<bdi>' + p[x] + '</bdi>'); return s; }
+function tp(k, p) { let s = (S[st.lang] && S[st.lang][k]) || S.en[k] || S.ru[k] || k; if (p) for (const x in p) s = s.replace('{' + x + '}', p[x]); return s; }
+const ar = (s, c) => '<span class="ar ' + (c || '') + '" lang="ar" dir="rtl">' + esc(s) + '</span>';
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sample = (a, n) => shuffle(a).slice(0, n);
+const L2 = () => st.lang === 'ru' ? 'ru' : 'en';
+const sndOf = it => it.snd[L2()], glOf = it => it.gl[L2()];
+const labelOf = it => it.type === 'L' ? it.name : glOf(it);
+const norm = s => s.replace(/[ً-ٰٟـ]/g, '').replace(/[إأآ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/[،,؟?!.؛:]/g, ' ').replace(/\s+/g, ' ').trim();
+const LET = Object.values(ITEMS).filter(i => i.type === 'L'), WRD = Object.values(ITEMS).filter(i => i.type === 'W');
+const IC = {
+ fire:'<svg viewBox="0 0 24 24"><path d="M12 2c1 4 5 5.500 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/></svg>',
+ bolt:'<svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
+ path:'<svg viewBox="0 0 24 24"><path d="M4 20V10l8-6 8 6v10h-5v-6H9v6z"/></svg>',
+ rev:'<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4L4 9M4 4v5h5M4 13a8 8 0 0 0 14 4l2-2M20 20v-5h-5"/></svg>',
+ chat:'<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+ me:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg>',
+ x:'<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></svg>',
+ check:'<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>',
+ lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+ spk:'<svg viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10zM16 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></svg>',
+ mic:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+ stop:'<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>'
+};
+
+/* ---------- state ---------- */
+let deferred = null, newVer = 0;
+let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
+let TTS = false;
+function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
+function say(text) {
+  if (!TTS) { toast(tp('tts.off')); return; }
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+}
+function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove('on'), 2400); }
+function go(h) { if (location.hash === '#/' + h) render(); else location.hash = '#/' + h; }
+const route = () => (location.hash.replace(/^#\/?/, '') || 'home');
+
+/* ---------- progress logic ---------- */
+function lockOf(l) {
+  const i = ALL_LESSONS.indexOf(l);
+  if (l.unit.premium && !st.premium) return 'plus';
+  if (!st.unlockAll && i > 0 && !st.done[ALL_LESSONS[i - 1].id]) return 'seq';
+  return null;
+}
+function nextLesson() { return ALL_LESSONS.find(l => !st.done[l.id] && !lockOf(l)) || null; }
+function learnedIds() { return Object.keys(st.srs); }
+function dueIds() { const n = Date.now(); return learnedIds().filter(i => st.srs[i].due <= n); }
+function addXp(n) {
+  st.xp += n;
+  if (st.xpDay.d !== today()) st.xpDay = {d:today(), n:0};
+  st.xpDay.n += n;
+  if (st.streak.last !== today()) { st.streak.n = (st.streak.last === yest()) ? st.streak.n + 1 : 1; st.streak.last = today(); }
+}
+const INT = [0, 1, 3, 7, 14];
+
+/* ---------- exercises ---------- */
+function opts(correct, pool) {
+  const d = sample([...new Set(pool.filter(x => x !== correct))], 3);
+  return shuffle([{l:correct, ok:true}, ...d.map(l => ({l, ok:false}))]);
+}
+function mk(k, it, extra) {
+  const e = Object.assign({k, it}, extra || {});
+  if (k === 'sound') e.o = opts(sndOf(it), LET.map(sndOf));
+  if (k === 'letter') { e.o = opts(it.ar, LET.map(x => x.ar)); e.arOpt = true; }
+  if (k === 'tr') e.o = opts(glOf(it), WRD.map(glOf));
+  if (k === 'pickar' || k === 'listen') { e.o = opts(it.ar, WRD.map(x => x.ar)); e.arOpt = true; }
+  if (k === 'order') e.tokens = shuffle(it.ar.split(' ').map((w, i) => ({w, i})));
+  return e;
+}
+function mkMatch(its) {
+  return {k:'match', items:its, left:shuffle(its.map(i => i.id)), right:shuffle(its.map(i => i.id))};
+}
+function buildQueue(ids) {
+  const its = ids.map(i => ITEMS[i]), out = [];
+  if (its[0].type === 'L') {
+    shuffle(its).forEach(i => out.push(mk('sound', i)));
+    out.push(mkMatch(its));
+    shuffle(its).forEach(i => out.push(mk('letter', i)));
+    const h = its.find(i => i.hard); if (h) out.push(mk('speak', h));
+  } else {
+    shuffle(its).forEach(i => out.push(mk('tr', i)));
+    if (its.length >= 3) out.push(mkMatch(its.slice(0, 4)));
+    shuffle(its).forEach(i => out.push(mk('pickar', i)));
+    if (TTS) sample(its, 2).forEach(i => out.push(mk('listen', i)));
+    its.filter(i => i.ar.includes(' ')).slice(0, 2).forEach(i => out.push(mk('order', i)));
+    sample(its.filter(i => i.ar.length <= 10), 2).forEach(i => out.push(mk('type', i)));
+    out.push(mk('speak', its[0]));
+  }
+  return out;
+}
+function buildReview(ids) {
+  return ids.map(id => { const it = ITEMS[id]; return it.type === 'L' ? mk('sound', it) : mk(Math.random() < .5 ? 'tr' : 'pickar', it); });
+}
+function startLesson(l) {
+  cleanupRec();
+  ls = {kind:'lesson', lesson:l, queue:buildQueue(l.items), i:0, first:0, total:0, itemRes:{}, sel:null, ans:null, typed:'', pick:[], m:null, done:false};
+  go('lesson');
+}
+function startReview(all) {
+  let ids = all ? learnedIds() : dueIds();
+  if (!ids.length) return;
+  ids = sample(ids, 8);
+  cleanupRec();
+  ls = {kind:'review', ids, queue:buildReview(ids), i:0, first:0, total:0, itemRes:{}, sel:null, ans:null, typed:'', pick:[], m:null, done:false};
+  go('lesson');
+}
+function curEx() { return ls.queue[ls.i]; }
+function resetEx() { ls.sel = null; ls.ans = null; ls.typed = ''; ls.pick = []; ls.m = null; ls.spoken = false; cleanupRec(); }
+function grade(ok, correctText) {
+  const ex = curEx();
+  ls.ans = {ok, correct:correctText};
+  if (!ex.retry && ex.k !== 'speak') {
+    ls.total++; if (ok) ls.first++;
+    const ids = ex.k === 'match' ? ex.items.map(i => i.id) : [ex.it.id];
+    ids.forEach(id => { if (ls.itemRes[id] === undefined) ls.itemRes[id] = ok; else if (!ok) ls.itemRes[id] = false; });
+  }
+  if (!ok && !ex.retry && ex.k !== 'match') ls.queue.push(Object.assign({}, ex, {retry:true, o:ex.o && shuffle(ex.o), tokens:ex.tokens && shuffle(ex.tokens)}));
+  render();
+}
+function check() {
+  const ex = curEx();
+  if (ex.o) {
+    if (ls.sel === null) return;
+    const c = ex.o.find(o => o.ok);
+    return grade(ex.o[ls.sel].ok, c.l);
+  }
+  if (ex.k === 'order') {
+    const got = ls.pick.map(i => ex.tokens[i].w).join(' ');
+    return grade(norm(got) === norm(ex.it.ar), ex.it.ar);
+  }
+  if (ex.k === 'type') {
+    if (!ls.typed.trim()) return;
+    return grade(norm(ls.typed) === norm(ex.it.ar), ex.it.ar);
+  }
+}
+function next() {
+  if (ls.i + 1 >= ls.queue.length) return finish();
+  ls.i++; resetEx(); render();
+}
+function finish() {
+  const acc = ls.total ? Math.round(ls.first * 100 / ls.total) : 100;
+  let xp, learned = 0;
+  if (ls.kind === 'lesson') {
+    xp = 10 + ls.first * 2;
+    ls.lesson.items.forEach(id => { if (!st.srs[id]) { st.srs[id] = {box:1, due:Date.now() + 864e5}; learned++; } });
+    Object.keys(ls.itemRes).forEach(id => { if (ls.itemRes[id] === false && st.srs[id]) st.srs[id] = {box:1, due:Date.now()}; });
+    st.done[ls.lesson.id] = {acc, n:((st.done[ls.lesson.id] || {}).n || 0) + 1};
+  } else {
+    xp = 5 + ls.first * 2;
+    Object.keys(ls.itemRes).forEach(id => {
+      const s = st.srs[id] || {box:1};
+      if (ls.itemRes[id]) { const b = Math.min(s.box + 1, 4); st.srs[id] = {box:b, due:Date.now() + INT[b] * 864e5}; }
+      else st.srs[id] = {box:1, due:Date.now()};
+    });
+  }
+  addXp(xp); save();
+  ls.done = true; ls.result = {xp, acc, learned, streak:streakNow()};
+  render();
+}
+
+/* ---------- recorder ---------- */
+const rc = {state:'idle', url:null, dur:0, peak:0};
+function cleanupRec() {
+  try { if (rc.mr && rc.mr.state === 'recording') { rc.mr.onstop = null; rc.mr.stop(); } } catch (e) {}
+  try { if (rc.stream) rc.stream.getTracks().forEach(x => x.stop()); } catch (e) {}
+  try { cancelAnimationFrame(rc.raf); if (rc.ac) rc.ac.close(); } catch (e) {}
+  if (rc.url) { try { URL.revokeObjectURL(rc.url); } catch (e) {} }
+  rc.state = 'idle'; rc.url = null; rc.mr = null; rc.stream = null; rc.ac = null;
+}
+async function recStart() {
+  cleanupRec();
+  try {
+    if (!navigator.mediaDevices || !window.MediaRecorder) throw new Error('nomic');
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    rc.stream = stream; rc.chunks = []; rc.peak = 0;
+    const mr = new MediaRecorder(stream); rc.mr = mr;
+    mr.ondataavailable = e => { if (e.data && e.data.size) rc.chunks.push(e.data); };
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)(); rc.ac = ac;
+      const an = ac.createAnalyser(); an.fftSize = 512; ac.createMediaStreamSource(stream).connect(an);
+      const buf = new Uint8Array(an.fftSize);
+      const tick = () => { an.getByteTimeDomainData(buf); let m = 0; for (let i = 0; i < buf.length; i++) m = Math.max(m, Math.abs(buf[i] - 128)); rc.peak = Math.max(rc.peak, m / 128); rc.raf = requestAnimationFrame(tick); };
+      tick();
+    } catch (e) {}
+    mr.onstop = () => {
+      rc.dur = (Date.now() - rc.t0) / 1000;
+      rc.url = URL.createObjectURL(new Blob(rc.chunks, {type:mr.mimeType || 'audio/webm'}));
+      rc.state = 'done';
+      try { cancelAnimationFrame(rc.raf); stream.getTracks().forEach(x => x.stop()); rc.ac && rc.ac.close(); } catch (e) {}
+      updateRec();
+    };
+    rc.t0 = Date.now(); mr.start(); rc.state = 'rec'; updateRec();
+  } catch (e) { rc.state = 'err'; updateRec(); }
+}
+function recStop() { try { if (rc.mr && rc.mr.state === 'recording') rc.mr.stop(); } catch (e) {} }
+function recHTML(mode) {
+  mode = mode || (route() === 'reading' ? 'read' : '');
+  if (rc.state === 'err') return '<p class="small" style="color:var(--bad)">' + esc(tp('mic.err')) + '</p><button class="btn ghost sm" data-act="rec">' + t('mic.again') + '</button>';
+  if (rc.state === 'rec') return '<button class="recb on" data-act="recstop" aria-label="' + esc(tp('mic.stop')) + '">' + IC.stop + '</button><b>' + t('mic.stop') + '</b>';
+  if (rc.state === 'done') {
+    const lv = Math.min(100, Math.round(rc.peak * 100));
+    if (mode === 'read') return '<audio controls src="' + rc.url + '"></audio><p class="small muted">' + t('mic.len', {s:rc.dur.toFixed(1)}) + ' · ' + t('mic.level', {p:lv}) + '</p>' +
+      '<div class="mock"><b>' + t('read.sample') + '</b><p class="small">' + t('read.madd') + '</p><p class="small muted">' + t('mic.mock') + '</p></div><button class="btn gold block" data-act="sendteacher">' + t('read.teacher') + '</button><button class="btn ghost sm" data-act="rec">' + t('mic.again') + '</button>';
+    return '<audio controls src="' + rc.url + '"></audio><p class="small muted">' + t('mic.len', {s:rc.dur.toFixed(1)}) + ' · ' + t('mic.level', {p:lv}) + '</p>' +
+      '<div class="mock"><b>' + t('mic.overall') + ': <bdi>82%</bdi></b><div class="meter"><i style="width:82%"></i></div><p class="small">' + t('mic.hint') + '</p><p class="small muted">' + t('mic.mock') + '</p></div>' +
+      '<button class="btn ghost sm" data-act="rec">' + t('mic.again') + '</button>';
+  }
+  return '<button class="recb" data-act="rec" aria-label="' + esc(tp('mic.rec')) + '">' + IC.mic + '</button><b>' + t('mic.rec') + '</b>';
+}
+function updateRec() { const b = $('#recbox'); if (b) b.innerHTML = recHTML(); }
+
+/* ---------- views ---------- */
+function authorBlock() { return '<div class="author"><span class="small muted">' + t('author.label') + '</span><b>' + esc(AUTHOR[st.lang]) + '</b>' + (st.lang !== 'ar' ? ar(AUTHOR.ar, 'acal') : '') + '</div>'; }
+function tracksView() {
+  const stl = {open:'st.open', demo:'st.demo', soon:'st.soon'};
+  let h = '<h1 class="h1">' + t('tracks.title') + '</h1><p class="lead">' + t('tracks.lead') + '</p><div class="opts">';
+  TRACKS.forEach((k, i) => { h += '<button class="opt tcard" data-act="track" data-id="' + k.id + '"><span class="uic">' + (i + 1) + '</span><span class="tx"><b>' + esc(k.n[st.lang]) + '</b><span class="small muted">' + esc(k.d[st.lang]) + '</span></span><span class="tag ' + k.st + '">' + t(stl[k.st]) + '</span></button>'; });
+  h += '</div><div class="note"><p class="small">' + t('tracks.ijaza') + '</p></div>';
+  return h;
+}
+function readingView() {
+  return '<h1 class="h1">' + t('read.title') + '</h1><p class="muted">' + t('read.how') + '</p><div class="card"><p class="small muted">' + t('read.sub') + '</p><div class="big w"><span class="ar" style="font-size:2rem;line-height:1.9">' + esc(BASMALA) + '</span></div><p class="small muted">' + t('read.src') + '</p><div class="rec" id="recbox">' + recHTML('read') + '</div></div>';
+}
+function goalRing() {
+  const p = Math.min(1, xpToday() / st.daily), c = 2 * Math.PI * 32;
+  return '<div class="ring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="32" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="38" cy="38" r="32" fill="none" stroke="var(--gold)" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - p)).toFixed(1) + '"/></svg><b>' + Math.round(p * 100) + '%</b></div>';
+}
+function topBar() {
+  return '<header class="top"><button class="brand" data-act="nav" data-to="home" aria-label="FUSHA · ' + esc(tp('tab.path')) + '">FUSHA</button><span class="chip fire" title="streak">' + IC.fire + '<bdi>' + streakNow() + '</bdi></span><span class="chip bolt" title="XP">' + IC.bolt + '<bdi>' + st.xp + '</bdi></span></header>';
+}
+function bannerHTML() {
+  if (banner === 'new') return '<div class="banner" role="status"><b>' + t('upd.newv', {v:newVer || VERSION + 1}) + '</b><div class="row"><button class="btn sm" data-act="reload">' + t('upd.reload') + '</button></div></div>';
+  if (st.onboarded && st.seen > 0 && st.seen < VERSION) {
+    const c = CHANGELOG.find(x => x.v === VERSION), items = (c[st.lang] || c.en).map(x => '<li>' + esc(x) + '</li>').join('');
+    return '<div class="banner" role="status"><b>' + t('upd.title', {v:VERSION}) + '</b><ul>' + items + '</ul><div class="row"><button class="btn sm" data-act="updclose">' + t('upd.close') + '</button></div></div>';
+  }
+  return '';
+}
+function tabs(cur) {
+  const T = [['home', 'path', 'tab.path'], ['review', 'rev', 'tab.review'], ['tutor', 'chat', 'tab.tutor'], ['me', 'me', 'tab.me']];
+  return '<nav class="tabs" aria-label="Menu">' + T.map(x => '<button data-act="nav" data-to="' + x[0] + '"' + (cur === x[0] ? ' aria-current="page"' : '') + '>' + IC[x[1]] + '<span>' + t(x[2]) + '</span></button>').join('') + '</nav>';
+}
+function homeView() {
+  const nl = nextLesson();
+  let h = installCard();
+  h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
+  if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
+  h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
+  if (nl) h += '<button class="btn gold block" data-act="lesson" data-id="' + nl.id + '">' + t('home.continue') + ' · ' + esc(nl.unit.t[st.lang]) + ' ' + nl.n + '</button>';
+  UNITS.forEach(u => {
+    h += '<section class="unit"><h2 class="h2"><span class="uic ar">' + u.ic + '</span><span>' + esc(u.t[st.lang]) + '</span>' + (u.premium ? '<span class="plus">Plus</span>' : '') + '</h2><div class="path">';
+    u.lessons.forEach(l => {
+      const lock = lockOf(l), done = st.done[l.id], isNext = nl && nl.id === l.id;
+      const glyphs = l.items.map(i => ITEMS[i].ar).slice(0, 5).map(g => ar(g)).join(' ');
+      const cls = 'node' + (done ? ' done' : '') + (isNext ? ' next' : '') + (lock ? ' lock' : '');
+      const nb = done ? IC.check : lock ? IC.lock : '<bdi>' + l.n + '</bdi>';
+      h += '<button class="' + cls + '" data-act="lesson" data-id="' + l.id + '"><span class="nb">' + nb + '</span><span class="tx"><b>' + t('home.lesson', {n:l.n}) + '</b><span class="glyphs">' + glyphs + '</span></span></button>';
+    });
+    h += '</div></section>';
+  });
+  return h;
+}
+function reviewView() {
+  const due = dueIds().length, learned = learnedIds().length;
+  let h = '<h1 class="h1">' + t('rev.title') + '</h1>';
+  if (!learned) return h + '<div class="card"><p>' + t('rev.none') + '</p></div>';
+  h += '<div class="stats"><div class="stat"><b>' + due + '</b><span>' + tp('rev.due', {n:''}).replace(/:\s*$/, '') + '</span></div><div class="stat"><b>' + learned + '</b><span>' + tp('rev.learned', {n:''}).replace(/:\s*$/, '') + '</span></div></div>';
+  h += '<p class="muted">' + t('rev.why') + '</p>';
+  h += due ? '<button class="btn gold block" data-act="rev">' + t('rev.start') + '</button>' : '';
+  h += '<button class="btn ghost block" data-act="revall">' + t('rev.all') + '</button>';
+  return h;
+}
+function tutorLeft() { const used = st.tutorDay.d === today() ? st.tutorDay.n : 0; return Math.max(0, 5 - used); }
+function tutorView() {
+  let h = '<h1 class="h1">' + t('tutor.title') + '</h1><p class="small muted">' + t('tutor.demo') + '</p>';
+  if (!st.premium) h += '<p class="small">' + t('tutor.left', {n:tutorLeft(), m:5}) + '</p>';
+  if (!tut) {
+    h += '<h2 class="h2">' + t('tutor.pick') + '</h2><div class="opts"><button class="opt" data-act="scen" data-id="meet">👋 ' + t('sc.meet') + '</button><button class="opt" data-act="scen" data-id="cafe">☕ ' + t('sc.cafe') + '</button></div>';
+    return h;
+  }
+  h += '<div class="chat" id="chat">' + tut.msgs.map(m => {
+    if (m.r === 'f') return '<div class="msg f">' + m.h + '</div>';
+    if (m.r === 'u') return '<div class="msg u">' + ar(m.ar) + '</div>';
+    return '<div class="msg t">' + ar(m.say.ar) + '<span class="tr">' + esc(m.say[L2()]) + '</span><button class="btn ghost sm" style="margin-top:.4rem" data-act="say" data-t="' + esc(m.say.ar) + '">' + IC.spk.replace('<svg', '<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2"') + ' ' + t('tts.play') + '</button></div>';
+  }).join('') + '</div>';
+  if (tut.done) h += '<div class="card"><b>' + t('tutor.end') + '</b><button class="btn gold block" data-act="scenreset">' + t('tutor.again') + '</button></div>';
+  else {
+    const step = SCEN[tut.sc].steps[tut.step];
+    h += '<p class="small muted">' + t('tutor.tap') + '</p><div class="chips">' + step.chips.map((c, i) => '<button class="cbtn" data-act="chip" data-i="' + i + '">' + esc(c) + '</button>').join('') + '</div>';
+    h += '<form class="send" data-form="tutor"><input id="tin" lang="ar" dir="rtl" autocomplete="off" placeholder="' + esc(tp('tutor.ph')) + '" aria-label="' + esc(tp('tutor.ph')) + '"><button class="btn" type="submit">' + t('tutor.send') + '</button></form>';
+  }
+  return h;
+}
+function tutorSend(text) {
+  text = (text || '').trim(); if (!text || !tut || tut.done) return;
+  if (!st.premium && tutorLeft() <= 0) { sheet = 'tutor'; render(); return; }
+  if (st.tutorDay.d !== today()) st.tutorDay = {d:today(), n:0};
+  st.tutorDay.n++; save();
+  tut.msgs.push({r:'u', ar:text});
+  const sc = SCEN[tut.sc], step = sc.steps[tut.step];
+  if (step.ok(norm(text))) {
+    tut.msgs.push({r:'f', h:'✓ ' + esc(tp('tutor.good'))});
+    tut.step++;
+    if (tut.step < sc.steps.length) tut.msgs.push({r:'t', say:sc.steps[tut.step].say});
+    else { if (sc.close) tut.msgs.push({r:'t', say:sc.close}); tut.done = true; }
+  } else {
+    tut.msgs.push({r:'f', h:esc(tp('tutor.try')) + ' ' + ar(step.chips[0])});
+  }
+  render();
+}
+function payView() {
+  const r = REGIONS.find(x => x[0] === st.region) || REGIONS[0];
+  let h = '<h1 class="h1">' + t('pay.title') + '</h1><p class="small muted">' + t('pay.demo') + ' ' + t('pay.illus') + '</p>';
+  h += '<h2 class="h2">' + t('pay.region') + '</h2><div class="opts">' + REGIONS.map(x => '<button class="opt" data-act="region" data-r="' + x[0] + '" aria-pressed="' + (x[0] === st.region) + '">' + t('reg.' + x[0]) + '<span style="margin-inline-start:auto;direction:ltr">$' + x[1] + '</span></button>').join('') + '</div>';
+  h += '<div class="card"><h2 class="h2">' + t('plan.free') + '</h2><ul class="feat"><li>' + t('free.1') + '</li><li>' + t('free.2') + '</li><li>' + t('free.3') + '</li></ul></div>';
+  h += '<div class="card" style="border-color:var(--gold)"><h2 class="h2">' + t('plan.plus') + '</h2><p class="price"><span dir="ltr">$' + r[1] + '</span> <small>' + t('per') + '</small></p><ul class="feat"><li>' + t('plus.1') + '</li><li>' + t('plus.2') + '</li><li>' + t('plus.3') + '</li><li>' + t('plus.4') + '</li></ul>';
+  h += st.premium ? '<p><b>' + t('pay.active') + '</b></p><button class="btn ghost block" data-act="cancelplus">' + t('pay.cancel') + '</button>' : '<button class="btn gold block" data-act="buy">' + t('pay.buy') + '</button>';
+  h += '</div><div class="card"><h2 class="h2">' + t('pay.soon') + '</h2><div class="soon"><div><b>Live</b><span>' + t('soon.live') + '</span></div><div><b>Quranic Arabic</b><span>' + t('soon.q') + '</span></div><div><b>Certification</b><span>' + t('soon.c') + '</span></div><div><b>Kids</b><span>' + t('soon.k') + '</span></div></div></div>';
+  return h;
+}
+function segHTML(act, cur, list) { return '<div class="seg">' + list.map(x => '<button data-act="' + act + '" data-v="' + x[0] + '" aria-pressed="' + (String(cur) === String(x[0])) + '"' + (x[2] ? ' lang="' + x[2] + '"' : '') + '>' + x[1] + '</button>').join('') + '</div>'; }
+const LANGS = [['ru', 'Русский', 'ru'], ['en', 'English', 'en'], ['ar', 'العربية', 'ar']];
+function meView() {
+  const lessons = Object.keys(st.done).length;
+  let h = '<h1 class="h1">' + t('me.title') + '</h1>';
+  h += '<div class="stats"><div class="stat"><b>' + st.xp + '</b><span>' + t('me.xp') + '</span></div><div class="stat"><b>' + streakNow() + '</b><span>' + t('me.streak') + '</span></div><div class="stat"><b>' + lessons + '</b><span>' + t('me.lessons') + '</span></div><div class="stat"><b>' + learnedIds().length + '</b><span>' + t('me.items') + '</span></div></div>';
+  h += '<button class="btn gold block" data-act="nav" data-to="pay">' + t('me.plans') + (st.premium ? ' ✓' : '') + '</button>';
+  h += '<div class="card"><h2 class="h2">' + t('me.settings') + '</h2><p class="small muted">' + t('me.lang') + '</p>' + segHTML('lang', st.lang, LANGS) + '<p class="small muted">' + t('me.theme') + '</p>' + segHTML('theme', st.theme, [['auto', tp('theme.auto')], ['light', tp('theme.light')], ['dark', tp('theme.dark')]]) + '<p class="small muted">' + t('me.daily') + '</p>' + segHTML('daily', st.daily, [[10, '10'], [20, '20'], [40, '40']]) +
+    '<div class="toggle"><span>' + t('me.demo') + '</span><button class="sw" data-act="unlock" aria-pressed="' + st.unlockAll + '" aria-label="' + esc(tp('me.demo')) + '"></button></div></div>';
+  h += '<div class="card">' + authorBlock() + '<button class="btn ghost block" data-act="nav" data-to="tracks">' + t('tracks.title') + '</button></div>';
+  h += '<div class="card"><h2 class="h2">' + t('me.notes') + '</h2><textarea id="notes" placeholder="' + esc(tp('me.notes.ph')) + '">' + esc(st.notes) + '</textarea><button class="btn ghost block" data-act="copynotes">' + t('me.copy') + '</button></div>';
+  h += '<button class="btn ghost block" data-act="nav" data-to="log">' + t('me.log') + ' · v' + VERSION + '</button>';
+  h += '<button class="btn ghost block" data-act="reset" style="color:var(--bad);border-color:var(--bad)">' + t('me.reset') + '</button>';
+  h += '<p class="sign"><span>Developer Alex Grey</span><a href="https://t.me/a7grey" target="_blank" rel="noopener noreferrer"><svg class="ico" aria-hidden="true"><use href="#tg" xlink:href="#tg"/></svg>@a7grey</a></p>';
+  return h;
+}
+function logView() {
+  return '<h1 class="h1">' + t('me.log') + '</h1>' + CHANGELOG.slice().reverse().map(c => '<div class="card"><h2 class="h2">v' + c.v + '</h2><ul class="feat">' + (c[st.lang] || c.en).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>').join('');
+}
+function onbView() {
+  const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
+  let body = '';
+  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock();
+  if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>';
+  if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
+  if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
+  const last = ob.step === 3;
+  return '<div class="app"><header class="top"><span class="brand">FUSHA</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
+}
+
+/* ----- lesson ----- */
+const KB = 'ابتثجحخدذرزسشصضطظعغفقكلمنهويةءأى';
+function exBody(ex) {
+  let q = '', body = '';
+  const dis = ls.ans ? ' disabled' : '';
+  const choice = () => '<div class="choices' + (ex.arOpt ? ' g2' : '') + '">' + ex.o.map((o, i) => {
+    let c = 'ch' + (ex.arOpt ? ' ar' : '') + (ls.sel === i ? ' sel' : '');
+    if (ls.ans) { if (o.ok) c = 'ch' + (ex.arOpt ? ' ar' : '') + ' ok'; else if (ls.sel === i) c = 'ch' + (ex.arOpt ? ' ar' : '') + ' bad'; }
+    return '<button class="' + c + '" data-act="opt" data-i="' + i + '"' + dis + '>' + (ex.arOpt ? '<span class="ar" lang="ar" dir="rtl">' + esc(o.l) + '</span>' : esc(o.l)) + '</button>';
+  }).join('') + '</div>';
+  switch (ex.k) {
+    case 'sound': q = tp('ex.sound'); body = '<div class="big ar">' + esc(ex.it.ar) + '</div>' + choice(); break;
+    case 'letter': q = tp('ex.letter', {name:ex.it.name}); body = choice(); break;
+    case 'tr': q = tp('ex.tr'); body = '<div class="big w"><span class="ar">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.tr) + '</span></div>' + choice(); break;
+    case 'pickar': q = tp('ex.pickar', {w:glOf(ex.it)}); body = choice(); break;
+    case 'listen': q = tp('ex.listen'); body = '<button class="tts" data-act="say" data-t="' + esc(ex.it.ar) + '">' + IC.spk + ' ' + t('tts.play') + '</button>' + choice(); break;
+    case 'order': {
+      q = tp('ex.order', {w:glOf(ex.it)});
+      body = '<div class="line">' + ls.pick.map((ti, n) => '<button class="tok" data-act="untok" data-n="' + n + '"' + dis + '>' + esc(ex.tokens[ti].w) + '</button>').join('') + '</div><div class="bank">' +
+        ex.tokens.map((tk, i) => '<button class="tok' + (ls.pick.includes(i) ? ' used' : '') + '" data-act="tok" data-i="' + i + '"' + dis + '>' + esc(tk.w) + '</button>').join('') + '</div>';
+      break; }
+    case 'type': {
+      q = tp('ex.type', {w:glOf(ex.it)});
+      body = '<div class="typed" lang="ar" dir="rtl">' + esc(ls.typed) + '</div><div class="kb">' + KB.split('').map(c => '<button data-act="key" data-c="' + c + '"' + dis + '>' + c + '</button>').join('') + '<button class="sp" data-act="key" data-c=" "' + dis + '>␣</button><button class="wide" data-act="bksp" style="grid-column:span 4"' + dis + '>⌫</button></div>';
+      break; }
+    case 'match': {
+      q = tp('ex.match'); if (!ls.m) ls.m = {L:null, R:null, done:{}, bad:null, mistake:false, busy:false}; const m = ls.m;
+      const cell = (id, side) => { const it = ITEMS[id]; const done = m.done[id]; const sel = m[side] === id; const bad = m.bad && m.bad[side] === id;
+        return '<button class="mt' + (side === 'L' ? ' ar' : '') + (sel ? ' sel' : '') + (done ? ' done' : '') + (bad ? ' bad' : '') + '" data-act="m' + side + '" data-id="' + id + '">' + (side === 'L' ? '<span class="ar" lang="ar" dir="rtl">' + esc(it.ar) + '</span>' : esc(labelOf(it))) + '</button>'; };
+      body = '<div class="match"><div class="col">' + ex.left.map(id => cell(id, 'L')).join('') + '</div><div class="col">' + ex.right.map(id => cell(id, 'R')).join('') + '</div></div>';
+      break; }
+    case 'speak':
+      q = tp('ex.speak'); body = '<div class="big w"><span class="ar" style="font-size:' + (ex.it.type === 'L' ? '4.5rem' : '2.6rem') + '">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.type === 'L' ? sndOf(ex.it) : ex.it.tr) + '</span></div><button class="tts" data-act="say" data-t="' + esc(ex.it.ar) + '">' + IC.spk + ' ' + t('tts.play') + '</button><div class="rec" id="recbox">' + recHTML() + '</div>';
+      break;
+  }
+  return '<h1 class="q">' + esc(q) + '</h1>' + body;
+}
+function lessonView() {
+  if (!ls) { setTimeout(() => go('home'), 0); return ''; }
+  if (ls.done) {
+    const r = ls.result;
+    return '<div class="app"><main class="res"><div class="trophy" aria-hidden="true">🏆</div><h1 class="h1">' + t('res.done') + '</h1><div class="stats"><div class="stat"><b>' + t('res.xp', {n:r.xp}) + '</b></div><div class="stat"><b>' + r.acc + '%</b><span>' + tp('res.acc', {n:''}).replace(/:\s*%?$/, '') + '</span></div></div>' +
+      (r.learned ? '<p class="muted">' + t('res.learned', {n:r.learned}) + '</p>' : '') + '<p class="muted">' + t('res.streak', {n:r.streak}) + '</p><button class="btn gold block" data-act="resdone">' + t('res.back') + '</button></main></div>';
+  }
+  const ex = curEx(), pct = Math.round(ls.i / ls.queue.length * 100);
+  let foot = '';
+  if (ls.ans) {
+    const a = ls.ans;
+    foot = '<div class="lfoot ' + (a.ok ? 'ok' : 'no') + '"><div class="fb">' + (a.ok ? '✓ ' + t('fb.ok') : '✗ ' + t('fb.no') + '<span class="ans">' + (ex.arOpt || ex.k === 'order' || ex.k === 'type' ? ar(a.correct) : esc(a.correct)) + '</span>') + '</div><button class="btn block" data-act="next">' + t('btn.cont') + '</button></div>';
+  } else if (ex.k === 'speak') foot = '<div class="lfoot"><button class="btn block" data-act="skipnext">' + t(rc.state === 'done' ? 'btn.cont' : 'btn.skip') + '</button></div>';
+  else if (ex.k === 'match') foot = '';
+  else {
+    const can = ex.o ? ls.sel !== null : ex.k === 'order' ? ls.pick.length > 0 : ls.typed.trim().length > 0;
+    foot = '<div class="lfoot"><button class="btn block" data-act="check"' + (can ? '' : ' disabled') + '>' + t('btn.check') + '</button></div>';
+  }
+  return '<div class="app lesson"><div class="lhead"><button class="x" data-act="quit" aria-label="' + esc(tp('lesson.leave')) + '">' + IC.x + '</button><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div></div><div class="lbody">' + exBody(ex) + '</div>' + foot + '</div>';
+}
+function sheetHTML() {
+  if (!sheet) return '';
+  if (sheet === 'insios' || sheet === 'instand') return installSheet();
+  if (sheet === 'quit') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('lesson.quit') + '</p><button class="btn gold block" data-act="stay">' + t('lesson.stay') + '</button><button class="btn ghost block" data-act="leave">' + t('lesson.leave') + '</button></div></div>';
+  if (sheet === 'reset') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('me.reset.q') + '</p><button class="btn ghost block" data-act="sheetx">' + t('lesson.stay') + '</button><button class="btn block" style="background:var(--bad);border-color:var(--bad)" data-act="resetyes">' + t('me.reset') + '</button></div></div>';
+  return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('sheet.title') + '</p><p class="muted">' + t(sheet === 'tutor' ? 'sheet.tutor' : 'sheet.unit') + '</p><button class="btn gold block" data-act="seeplans">' + t('sheet.see') + '</button><button class="btn ghost block" data-act="sheetx">' + t('sheet.later') + '</button></div></div>';
+}
+
+/* ---------- install + updates ---------- */
+const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === window;
+const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+function installCard() {
+  if (!HOSTED || st.installed || isStandalone()) return '';
+  const A = '<button class="btn gold block" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold block" data-act="insios">' + t('inst.ios') + '</button>';
+  const btns = isIOS() ? I : /android/i.test(navigator.userAgent) ? A : A + I;
+  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><p class="muted">' + t('inst.text') + '</p>' + btns + '</div>';
+}
+function installSheet() {
+  const steps = sheet === 'insios' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : 'inst.and.';
+  const li = steps.map((s, i) => '<li><span class="n">' + (i + 1) + '</span><span>' + t(pre + s) + (sheet === 'insios' && s === 's2' ? ' ' + SHARE_IC : '') + '</span></li>').join('');
+  const done = sheet === 'insios' ? '<button class="btn gold block" data-act="instdone">' + t('inst.ios.done') + '</button>' : '';
+  return '<div class="scrim" data-act="sheetx"><div class="sheet sheet-tall" role="dialog" aria-modal="true"><p class="h2">' + t(pre + 'title') + '</p><ol class="steps">' + li + '</ol>' + done + '<button class="btn ghost block" data-act="sheetx">' + t('inst.close') + '</button></div></div>';
+}
+function installAndroid() {
+  if (!deferred) { sheet = 'instand'; render(); return; }
+  const ev = deferred; deferred = null;
+  ev.prompt();
+  ev.userChoice.then(c => { if (c && c.outcome === 'accepted') markInstalled(); }).catch(() => {});
+}
+function markInstalled() { if (st.installed) return; st.installed = true; save(); sheet = null; toast(tp('inst.ok')); render(); }
+function checkUpdate() {
+  if (!HOSTED) return;
+  fetch('version.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.json()).then(j => {
+    if (j && +j.version > VERSION && newVer !== +j.version) { newVer = +j.version; banner = 'new'; if (route() !== 'lesson' && route() !== 'reading') render(); }
+  }).catch(() => {});
+}
+if (HOSTED) {
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
+  window.addEventListener('appinstalled', markInstalled);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
+  setInterval(checkUpdate, 600000);
+  checkUpdate();
+}
+
+/* ---------- render ---------- */
+function render() {
+  const de = document.documentElement;
+  de.lang = st.lang; de.dir = st.lang === 'ar' ? 'rtl' : 'ltr';
+  if (st.theme === 'auto') de.removeAttribute('data-theme'); else de.setAttribute('data-theme', st.theme);
+  let r = route();
+  if (!st.onboarded) r = 'onb';
+  else if (r === 'onb') r = 'home';
+  let html;
+  if (r === 'onb') html = onbView();
+  else if (r === 'lesson') html = lessonView();
+  else {
+    const map = {home:homeView, review:reviewView, tutor:tutorView, me:meView, pay:payView, log:logView, tracks:tracksView, reading:readingView};
+    const fn = map[r] || homeView;
+    const tabCur = r === 'pay' || r === 'log' ? 'me' : (r === 'tracks' || r === 'reading') ? 'home' : (map[r] ? r : 'home');
+    html = '<div class="app">' + bannerHTML() + topBar() + '<main>' + fn() + '</main>' + tabs(tabCur) + '</div>';
+  }
+  $('#root').innerHTML = html + sheetHTML();
+  document.title = 'FUSHA';
+  afterRender(r);
+}
+function afterRender(r) {
+  if (r === 'tutor' && tut) { const c = $('#chat'); if (c) c.lastElementChild && c.lastElementChild.scrollIntoView({block:'nearest'}); }
+  if (r === 'lesson' && ls && !ls.done && !ls.ans) { const ex = curEx(); if (ex.k === 'listen' && !ls.spoken) { ls.spoken = true; if (TTS) say(ex.it.ar); } }
+  const n = $('#notes'); if (n) n.addEventListener('input', () => { st.notes = n.value; save(); });
+}
+
+/* ---------- events ---------- */
+function copyText(txt) {
+  const fallback = () => { try { const a = document.createElement('textarea'); a.value = txt; a.style.cssText = 'position:fixed;top:0;opacity:0'; document.body.appendChild(a); a.select(); const ok = document.execCommand('copy'); document.body.removeChild(a); return ok; } catch (e) { return false; } };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(() => toast(tp('toast.copied')), () => toast(fallback() ? tp('toast.copied') : tp('toast.sel')));
+  else toast(fallback() ? tp('toast.copied') : tp('toast.sel'));
+}
+function matchTap(side, id) {
+  const m = ls.m; if (m.done[id] || m.busy) return;
+  m[side] = id;
+  if (m.L && m.R) {
+    if (m.L === m.R) { m.done[m.L] = 1; m.L = m.R = null; if (Object.keys(m.done).length === curEx().items.length) { grade(!m.mistake); return; } }
+    else { m.mistake = true; m.bad = {L:m.L, R:m.R}; m.busy = true; render(); setTimeout(() => { m.bad = null; m.L = m.R = null; m.busy = false; render(); }, 450); return; }
+  }
+  render();
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, d = b.dataset;
+  if (a === 'sheetx' && e.target.closest('.sheet') && !e.target.closest('button')) return;
+  switch (a) {
+    case 'nav': sheet = null; go(d.to); window.scrollTo(0, 0); break;
+    case 'lang': st.lang = d.v; save(); render(); break;
+    case 'theme': st.theme = d.v; save(); render(); break;
+    case 'daily': st.daily = +d.v; save(); render(); break;
+    case 'goal': st.goal = d.v; render(); break;
+    case 'level': st.level = d.v; render(); break;
+    case 'onbnext': ob.step++; render(); break;
+    case 'onbback': ob.step--; render(); break;
+    case 'onbdone': st.onboarded = true; st.seen = VERSION; save(); go('home'); break;
+    case 'lesson': { const l = ALL_LESSONS.find(x => x.id === d.id), lock = lockOf(l); if (lock === 'plus') { sheet = 'unit'; render(); } else if (lock) toast(tp('home.locked')); else startLesson(l); break; }
+    case 'opt': if (!ls.ans) { ls.sel = +d.i; render(); } break;
+    case 'check': check(); break;
+    case 'next': next(); break;
+    case 'skipnext': ls.ans = null; next(); break;
+    case 'tok': if (!ls.ans) { ls.pick.push(+d.i); render(); } break;
+    case 'untok': if (!ls.ans) { ls.pick.splice(+d.n, 1); render(); } break;
+    case 'key': if (!ls.ans && ls.typed.length < 40) { ls.typed += d.c; render(); } break;
+    case 'bksp': if (!ls.ans) { ls.typed = ls.typed.slice(0, -1); render(); } break;
+    case 'mL': case 'mR': {
+      if (!ls.m) ls.m = {L:null, R:null, done:{}, bad:null, mistake:false, busy:false};
+      matchTap(a === 'mL' ? 'L' : 'R', d.id); break; }
+    case 'say': say(d.t); break;
+    case 'track': if (d.id === 'zero') go('home'); else if (d.id === 'tajweed') { cleanupRec(); go('reading'); } else toast(tp('st.soon')); break;
+    case 'sendteacher': toast(tp('read.sent')); break;
+    case 'rec': recStart(); break;
+    case 'recstop': recStop(); break;
+    case 'quit': sheet = 'quit'; render(); break;
+    case 'stay': case 'sheetx': sheet = null; render(); break;
+    case 'leave': sheet = null; cleanupRec(); ls = null; go('home'); break;
+    case 'resdone': ls = null; go(route() === 'lesson' ? 'home' : 'home'); break;
+    case 'rev': startReview(false); break;
+    case 'revall': startReview(true); break;
+    case 'scen': tut = {sc:d.id, step:0, msgs:[{r:'t', say:SCEN[d.id].steps[0].say}], done:false}; render(); break;
+    case 'scenreset': tut = null; render(); break;
+    case 'chip': tutorSend(SCEN[tut.sc].steps[tut.step].chips[+d.i]); break;
+    case 'region': st.region = d.r; save(); render(); break;
+    case 'buy': st.premium = true; save(); toast(tp('toast.demo')); render(); break;
+    case 'cancelplus': st.premium = false; save(); render(); break;
+    case 'seeplans': sheet = null; go('pay'); break;
+    case 'unlock': st.unlockAll = !st.unlockAll; save(); render(); break;
+    case 'copynotes': copyText(st.notes || ''); break;
+    case 'reset': sheet = 'reset'; render(); break;
+    case 'resetyes': { const keep = {lang:st.lang, theme:st.theme}; st = Object.assign({}, DEF, keep, {onboarded:true, seen:VERSION}); save(); sheet = null; tut = null; ls = null; toast(tp('toast.reset')); render(); break; }
+    case 'updclose': st.seen = VERSION; save(); render(); break;
+    case 'reload': location.reload(); break;
+    case 'instand': installAndroid(); break;
+    case 'insios': sheet = 'insios'; render(); break;
+    case 'instdone': markInstalled(); break;
+  }
+});
+document.addEventListener('submit', e => { const f = e.target.closest('[data-form="tutor"]'); if (!f) return; e.preventDefault(); const i = $('#tin'); tutorSend(i.value); });
+document.addEventListener('keydown', e => {
+  if (!ls || ls.done || route() !== 'lesson' || e.target.closest('input,textarea')) return;
+  const ex = curEx();
+  if (ex.k === 'type' && !ls.ans) {
+    if (e.key === 'Backspace') { ls.typed = ls.typed.slice(0, -1); render(); }
+    else if (e.key === 'Enter') check();
+    else if (e.key.length === 1 && /[؀-ۿ ]/.test(e.key)) { ls.typed += e.key; render(); }
+  } else if (e.key === 'Enter') { if (ls.ans) next(); else if (ex.o) check(); }
+});
+window.addEventListener('hashchange', () => { if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
+window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });
+initTTS();
+if (location.hash === '#/lesson' && !ls) location.hash = '#/home';
+render();
+window.__fusha = {get st() { return st; }, get ls() { return ls; }, buildQueue, ITEMS};
+})();
+</script>
+</body>
+</html>

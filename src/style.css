@@ -166,3 +166,10 @@ textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px
 .lead{font-size:1.05rem}
 
 .top button.brand{background:none;border:0;padding:0 .2rem;min-height:44px;text-align:start;cursor:pointer}
+
+.inst{display:grid;gap:.6rem;border-color:var(--gold)}
+.sheet-tall{max-height:90dvh;overflow:auto}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.steps li{display:flex;gap:.7rem;align-items:flex-start}
+.steps .n{flex:none;inline-size:1.7rem;block-size:1.7rem;border-radius:50%;background:var(--gold);color:#1a1405;font-weight:800;display:grid;place-items:center;font-size:.9rem}
+.steps .shic{vertical-align:middle;color:var(--ink)}
