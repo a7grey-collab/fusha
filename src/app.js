@@ -414,6 +414,7 @@ function meView() {
   h += '<div class="card"><h2 class="h2">' + t('me.notes') + '</h2><textarea id="notes" placeholder="' + esc(tp('me.notes.ph')) + '">' + esc(st.notes) + '</textarea><button class="btn ghost block" data-act="copynotes">' + t('me.copy') + '</button></div>';
   h += '<button class="btn ghost block" data-act="nav" data-to="log">' + t('me.log') + ' · v' + VERSION + '</button>';
   h += '<button class="btn ghost block" data-act="reset" style="color:var(--bad);border-color:var(--bad)">' + t('me.reset') + '</button>';
+  if (typeof AUD !== 'undefined' && AUD['L:ب']) h += '<p class="small muted" style="text-align:center;margin:.6rem 0">Voice: Al-Qa\'ida al-Madaniyyah · Sheikh Dr. Abdulmohsen Al-Qasim</p>';
   h += '<p class="sign"><span>Developer Alex Grey</span><a href="https://t.me/a7grey" target="_blank" rel="noopener noreferrer"><svg class="ico" aria-hidden="true"><use href="#tg" xlink:href="#tg"/></svg>@a7grey</a></p>';
   return h;
 }

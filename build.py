@@ -11,7 +11,7 @@ img = lambda n: "data:image/jpeg;base64," + base64.b64encode((src / "img" / n).r
 IMGJS = "const IMG = {night:'" + img("medina-night.jpg") + "', day:'" + img("medina-day.jpg") + "'};"
 import json
 import os
-adir = src / ("audio_synth" if os.environ.get("FUSHA_SYNTH") else "audio_real")
+adir = pathlib.Path(os.environ["FUSHA_AUDIO_DIR"]) if os.environ.get("FUSHA_AUDIO_DIR") else src / ("audio_synth" if os.environ.get("FUSHA_SYNTH") else "audio_real")
 man = json.loads((adir / "manifest.json").read_text(encoding="utf-8"))
 AUDJS = "const AUD = " + json.dumps({k: "data:audio/mpeg;base64," + base64.b64encode((adir / v).read_bytes()).decode() for k, v in man.items()}, ensure_ascii=False) + ";"
 ver = re.search(r"const VERSION = (\d+);", data).group(1)

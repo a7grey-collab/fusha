@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 14;
+const VERSION = 15;
 const CHANGELOG = [
+ {v:15, ru:['Настоящий голос: названия и звуки всех 28 букв из «Мединского каиды» (чтец — школа шейха д-ра Абдулмухсина аль-Касима)','Кнопка «Послушать» у букв и слогов с фатхой','Синтезированного голоса в приложении нет'],
+  en:['Real human voice: names and sounds of all 28 letters from the Madinah Qa’ida (narrated by Sheikh Dr. Abdulmohsen Al-Qasim’s school)','“Listen” button on letters and fatha syllables','No synthesized voice anywhere in the app'],
+  ar:['صوت بشري حقيقي: أسماء وأصوات الحروف الثمانية والعشرين من القاعدة المدنية (بصوت مدرسة الشيخ د. عبدالمحسن القاسم)','زر «استمع» عند الحروف والمقاطع المفتوحة','لا يوجد صوت مُصطنع في التطبيق']},
  {v:14, ru:['Голоса известных чтецов (аль-Хусари, аль-Миншави, Абдуль-Басит, ас-Судайс, аль-Афаси): Басмала и Аль-Фатиха на экране «Проверка чтения»','Синтезированный голос убран: звук на буквах и словах появится только в записях живых дикторов'],
   en:['Famous reciters (Al-Husary, Al-Minshawi, Abdul Basit, As-Sudais, Al-Afasy): Basmala and Al-Fatiha on the “Reading check” screen','Synthesized voice removed: audio on letters and words will appear only with recordings of live speakers'],
   ar:['أصوات قرّاء مشهورين (الحصري، المنشاوي، عبد الباسط، السديس، العفاسي): البسملة والفاتحة في شاشة «فحص القراءة»','إزالة الصوت الاصطناعي: سيظهر الصوت على الحروف والكلمات فقط بتسجيلات متحدثين حقيقيين']},
