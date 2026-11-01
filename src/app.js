@@ -440,9 +440,8 @@ const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.
 const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 function installCard() {
   if (!HOSTED || st.installed || isStandalone()) return '';
-  const A = '<button class="btn gold block" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold block" data-act="insios">' + t('inst.ios') + '</button>';
-  const btns = isIOS() ? I : /android/i.test(navigator.userAgent) ? A : A + I;
-  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><p class="muted">' + t('inst.text') + '</p>' + btns + '</div>';
+  const A = '<button class="btn gold sm" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold sm" data-act="insios">' + t('inst.ios') + '</button>';
+  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><div class="irow">' + (isIOS() ? I + A : A + I) + '</div></div>';
 }
 function installSheet() {
   const steps = sheet === 'insios' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : 'inst.and.';
