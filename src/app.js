@@ -49,7 +49,15 @@ let deferred = null, newVer = 0, instNow = false, landing = false;
 let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
 let TTS = false;
 function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
+let curAudio = null;
+function play(id) {
+  const src = typeof AUD !== 'undefined' && AUD[id];
+  if (!src) return false;
+  try { if (curAudio) curAudio.pause(); curAudio = new Audio(src); const pr = curAudio.play(); if (pr && pr.catch) pr.catch(() => {}); return true; } catch (e) { return false; }
+}
+const lb = it => '<button class="tts sm" data-act="play" data-id="' + esc(it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button>';
 function say(text) {
+  if (play('T:' + text)) return;
   if (!TTS) { toast(tp('tts.off')); return; }
   try { const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
 }
@@ -110,7 +118,7 @@ function buildQueue(ids, intro) {
     shuffle(its).forEach(i => out.push(mk('tr', i)));
     if (its.length >= 3) out.push(mkMatch(its.slice(0, 4)));
     shuffle(its).forEach(i => out.push(mk('pickar', i)));
-    if (TTS) sample(its, 2).forEach(i => out.push(mk('listen', i)));
+    sample(its, 2).forEach(i => out.push(mk('listen', i)));
     its.filter(i => i.ar.includes(' ')).slice(0, 2).forEach(i => out.push(mk('order', i)));
     sample(its.filter(i => i.ar.length <= 10), 2).forEach(i => out.push(mk('type', i)));
     out.push(mk('speak', its[0]));
@@ -408,13 +416,13 @@ function exBody(ex) {
     return '<button class="' + c + '" data-act="opt" data-i="' + i + '"' + dis + '>' + (ex.arOpt ? '<span class="ar" lang="ar" dir="rtl">' + esc(o.l) + '</span>' : esc(o.l)) + '</button>';
   }).join('') + '</div>';
   switch (ex.k) {
-    case 'sound': q = tp(ex.it.type === 'S' ? 'ex.syl' : 'ex.sound'); body = '<div class="big ar">' + esc(ex.it.ar) + '</div>' + choice(); break;
-    case 'letter': q = ex.it.type === 'S' ? tp('ex.sylpick', {name:labelOf(ex.it)}) : tp('ex.letter', {name:ex.it.name}); body = choice(); break;
-    case 'form': q = tp('ex.form'); body = '<div class="big ar">' + esc(formsOf(ex.it.ar)[ex.pos]) + '</div>' + (ls.ans ? formsHTML(ex.it.ar) : '') + choice(); break;
+    case 'sound': q = tp(ex.it.type === 'S' ? 'ex.syl' : 'ex.sound'); body = '<div class="big ar">' + esc(ex.it.ar) + '</div>' + lb(ex.it) + choice(); break;
+    case 'letter': q = ex.it.type === 'S' ? tp('ex.sylpick', {name:labelOf(ex.it)}) : tp('ex.letter', {name:ex.it.name}); body = choice() + (ls.ans ? lb(ex.it) : ''); break;
+    case 'form': q = tp('ex.form'); body = '<div class="big ar">' + esc(formsOf(ex.it.ar)[ex.pos]) + '</div>' + (ls.ans ? formsHTML(ex.it.ar) + lb(ex.it) : '') + choice(); break;
     case 'info': { const x = ex.intro; q = x.t[st.lang] || x.t.en; body = '<p class="lead">' + esc(x.p[st.lang] || x.p.en) + '</p>' + (x.big ? '<div class="big ar introbig">' + esc(x.big) + '</div>' : '') + (x.forms ? formsHTML(x.forms) : ''); break; }
-    case 'tr': q = tp('ex.tr'); body = '<div class="big w"><span class="ar">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.tr) + '</span></div>' + choice(); break;
-    case 'pickar': q = tp('ex.pickar', {w:glOf(ex.it)}); body = choice(); break;
-    case 'listen': q = tp('ex.listen'); body = '<button class="tts" data-act="say" data-t="' + esc(ex.it.ar) + '">' + IC.spk + ' ' + t('tts.play') + '</button>' + choice(); break;
+    case 'tr': q = tp('ex.tr'); body = '<div class="big w"><span class="ar">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.tr) + '</span></div>' + lb(ex.it) + choice(); break;
+    case 'pickar': q = tp('ex.pickar', {w:glOf(ex.it)}); body = choice() + (ls.ans ? lb(ex.it) : ''); break;
+    case 'listen': q = tp('ex.listen'); body = '<button class="tts" data-act="play" data-id="' + esc(ex.it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button>' + choice(); break;
     case 'order': {
       q = tp('ex.order', {w:glOf(ex.it)});
       body = '<div class="line">' + ls.pick.map((ti, n) => '<button class="tok" data-act="untok" data-n="' + n + '"' + dis + '>' + esc(ex.tokens[ti].w) + '</button>').join('') + '</div><div class="bank">' +
@@ -431,7 +439,7 @@ function exBody(ex) {
       body = '<div class="match"><div class="col">' + ex.left.map(id => cell(id, 'L')).join('') + '</div><div class="col">' + ex.right.map(id => cell(id, 'R')).join('') + '</div></div>';
       break; }
     case 'speak':
-      q = tp('ex.speak'); body = '<div class="big w"><span class="ar" style="font-size:' + (ex.it.type === 'L' ? '4.5rem' : '2.6rem') + '">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.type === 'L' ? sndOf(ex.it) : ex.it.tr) + '</span></div><button class="tts" data-act="say" data-t="' + esc(ex.it.ar) + '">' + IC.spk + ' ' + t('tts.play') + '</button><div class="rec" id="recbox">' + recHTML() + '</div>';
+      q = tp('ex.speak'); body = '<div class="big w"><span class="ar" style="font-size:' + (ex.it.type === 'L' ? '4.5rem' : '2.6rem') + '">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.type === 'L' ? sndOf(ex.it) : ex.it.tr) + '</span></div><button class="tts" data-act="play" data-id="' + esc(ex.it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button><div class="rec" id="recbox">' + recHTML() + '</div>';
       break;
   }
   return '<h1 class="q">' + esc(q) + '</h1>' + body;
@@ -529,7 +537,7 @@ function render() {
 }
 function afterRender(r) {
   if (r === 'tutor' && tut) { const c = $('#chat'); if (c) c.lastElementChild && c.lastElementChild.scrollIntoView({block:'nearest'}); }
-  if (r === 'lesson' && ls && !ls.done && !ls.ans) { const ex = curEx(); if (ex.k === 'listen' && !ls.spoken) { ls.spoken = true; if (TTS) say(ex.it.ar); } }
+  if (r === 'lesson' && ls && !ls.done && !ls.ans) { const ex = curEx(); if (ex.k === 'listen' && !ls.spoken) { ls.spoken = true; play(ex.it.id); } }
   const n = $('#notes'); if (n) n.addEventListener('input', () => { st.notes = n.value; save(); });
 }
 
@@ -576,6 +584,7 @@ document.addEventListener('click', e => {
       if (!ls.m) ls.m = {L:null, R:null, done:{}, bad:null, mistake:false, busy:false};
       matchTap(a === 'mL' ? 'L' : 'R', d.id); break; }
     case 'say': say(d.t); break;
+    case 'play': play(d.id); break;
     case 'track': if (d.id === 'zero') go('home'); else if (d.id === 'tajweed') { cleanupRec(); go('reading'); } else toast(tp('st.soon')); break;
     case 'sendteacher': toast(tp('read.sent')); break;
     case 'rec': recStart(); break;

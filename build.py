@@ -9,6 +9,9 @@ tg = (src / "tg-symbol.svg").read_text(encoding="utf-8")
 import base64
 img = lambda n: "data:image/jpeg;base64," + base64.b64encode((src / "img" / n).read_bytes()).decode()
 IMGJS = "const IMG = {night:'" + img("medina-night.jpg") + "', day:'" + img("medina-day.jpg") + "'};"
+import json
+man = json.loads((src / "audio" / "manifest.json").read_text(encoding="utf-8"))
+AUDJS = "const AUD = " + json.dumps({k: "data:audio/mpeg;base64," + base64.b64encode((src / "audio" / v).read_bytes()).decode() for k, v in man.items()}, ensure_ascii=False) + ";"
 ver = re.search(r"const VERSION = (\d+);", data).group(1)
 body = f'''<style>{css}</style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">{tg}</svg>
@@ -17,6 +20,7 @@ body = f'''<style>{css}</style>
 <noscript><p style="padding:1rem">FUSHA needs JavaScript.</p></noscript>
 <script>const PWA = __PWA__;
 {IMGJS}
+{AUDJS}
 {data}
 {app}</script>
 '''

@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 11;
+const VERSION = 12;
 const CHANGELOG = [
+ {v:12, ru:['Озвучка внутри приложения: кнопка «Послушать» у каждой буквы, слога и слова, без интернета и без голоса на телефоне','Упражнение «Что вы услышали?» теперь есть во всех уроках со словами','Фразы тьютора тоже озвучены'],
+  en:['Built-in audio: a “Listen” button for every letter, syllable and word, no internet or phone voice needed','“What did you hear?” exercise now appears in every word lesson','Tutor phrases are voiced too'],
+  ar:['صوت مدمج في التطبيق: زر «استمع» لكل حرف ومقطع وكلمة، دون إنترنت ودون صوت من الهاتف','تمرين «ماذا سمعت؟» في كل درس كلمات','عبارات المعلّم مسموعة أيضًا']},
  {v:11, ru:['Ссылка всегда открывает приветственную страницу: язык, автор, Медина и кнопки установки','Кнопка «Открыть приложение» ведёт на ваш путь; в установленном приложении сразу открывается путь'],
   en:['The link always opens the welcome page: language, author, Al-Madinah and install buttons','The “Open the app” button takes you to your path; the installed app opens the path directly'],
   ar:['الرابط يفتح دائمًا صفحة الترحيب: اللغة والمؤلف والمدينة وأزرار التثبيت','زر «افتح التطبيق» يقودك إلى مسارك؛ والتطبيق المثبّت يفتح المسار مباشرة']},
