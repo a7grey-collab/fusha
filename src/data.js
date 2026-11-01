@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 7;
+const VERSION = 8;
 const CHANGELOG = [
+ {v:8, ru:['Вместо рисунка — фото Медины: вечерняя на первом экране и на главной, дневная с зелёным куполом на втором экране и в «Направлениях»'],
+  en:['Photos of Al-Madinah instead of the drawing: dusk on the first screen and home, daytime with the Green Dome on the second screen and in “Tracks”'],
+  ar:['صور للمدينة المنورة بدل الرسم: وقت الغروب في الشاشة الأولى والرئيسية، ونهارًا مع القبة الخضراء في الشاشة الثانية وفي «المسارات»']},
  {v:7, ru:['На главной и на первом экране нарисована Медина: Масджид ан-Набави с зелёным куполом','Имя автора мельче и умещается в одну строку'],
   en:['Al-Madinah illustration on the home and first screens: the Prophet’s Mosque with its green dome','Author name is smaller and fits on one line'],
   ar:['رسم للمدينة المنورة في الشاشة الرئيسية والأولى: المسجد النبوي بقبته الخضراء','اسم المؤلف أصغر ويتسع في سطر واحد']},

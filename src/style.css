@@ -178,3 +178,4 @@ textarea{width:100%;min-height:7rem;padding:.7rem;border-radius:.9rem;border:2px
 .top{flex-wrap:wrap;row-gap:.2rem}.brand,.ver{white-space:nowrap}.logo{flex:0 0 auto}.top .chip{margin-inline-start:0}.top .logo+.chip{margin-inline-start:auto}
 .top{gap:.4rem;padding-inline:.7rem}.brand{font-size:1rem;letter-spacing:.05em}.top .chip{padding:0 .5rem;min-height:32px;font-size:.85rem;gap:.2rem}.top .chip svg{width:15px;height:15px}.ver{font-size:.7rem;padding:.05rem .3rem}
 .mdwrap{margin:.8rem 0}.medina{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--line)}
+.photo{display:block;width:100%;height:auto;border-radius:1rem;border:1px solid var(--line);background:var(--soft)}

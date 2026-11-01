@@ -230,7 +230,11 @@ function updateRec() { const b = $('#recbox'); if (b) b.innerHTML = recHTML(); }
 
 /* ---------- views ---------- */
 function authorBlock() { return '<div class="author"><span class="small muted">' + t('author.label') + '</span><b>' + esc(AUTHOR[st.lang]) + '</b>' + (st.lang !== 'ar' ? ar(AUTHOR.ar, 'acal') : '') + '</div>'; }
-function medina() {
+function photo(k) {
+  const alt = k === 'night' ? 'Al-Madinah at dusk: the Prophet’s Mosque' : 'Al-Madinah by day: the Green Dome and minarets';
+  return '<div class="mdwrap"><img class="photo" src="' + IMG[k] + '" alt="' + alt + '" width="' + (k === 'night' ? 690 : 720) + '" height="' + (k === 'night' ? 445 : 488) + '" decoding="async"></div>';
+}
+function medinaOld() {
   const min = x => '<g transform="translate(' + x + ' 0)"><rect x="-4" y="34" width="8" height="70" fill="#e4dcc0"/><rect x="-4" y="34" width="3" height="70" fill="#cfc59f"/><rect x="-7" y="46" width="14" height="4" fill="#bfb283"/><rect x="-7" y="66" width="14" height="4" fill="#bfb283"/><path d="M-5 34 L0 18 L5 34 Z" fill="#2a9d73"/><circle cx="0" cy="16" r="2" fill="#e6c35c"/></g>';
   const palm = x => '<g transform="translate(' + x + ' 0)"><path d="M0 104 C1 92 -1 84 0 76" stroke="#5b4a2a" stroke-width="3" fill="none"/><path d="M0 76 q-14 -2 -20 8 M0 76 q-10 -9 -18 -6 M0 76 q14 -2 20 8 M0 76 q10 -9 18 -6 M0 76 q0 -12 0 -14" stroke="#2a9d73" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>';
   let w = '';
@@ -247,7 +251,7 @@ function medina() {
 }
 function tracksView() {
   const stl = {open:'st.open', demo:'st.demo', soon:'st.soon'};
-  let h = '<h1 class="h1">' + t('tracks.title') + '</h1><p class="lead">' + t('tracks.lead') + '</p><div class="opts">';
+  let h = '<h1 class="h1">' + t('tracks.title') + '</h1><p class="lead">' + t('tracks.lead') + '</p>' + photo('day') + '<div class="opts">';
   TRACKS.forEach((k, i) => { h += '<button class="opt tcard" data-act="track" data-id="' + k.id + '"><span class="uic">' + (i + 1) + '</span><span class="tx"><b>' + esc(k.n[st.lang]) + '</b><span class="small muted">' + esc(k.d[st.lang]) + '</span></span><span class="tag ' + k.st + '">' + t(stl[k.st]) + '</span></button>'; });
   h += '</div><div class="note"><p class="small">' + t('tracks.ijaza') + '</p></div>';
   return h;
@@ -276,7 +280,7 @@ function tabs(cur) {
 }
 function homeView() {
   const nl = nextLesson();
-  let h = '<div class="mdwrap">' + medina() + '</div>' + installCard();
+  let h = photo('night') + installCard();
   h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
   if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
   h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
@@ -374,8 +378,8 @@ function logView() {
 function onbView() {
   const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard() + '<div class="mdwrap">' + medina() + '</div>';
-  if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>';
+  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard() + photo('night');
+  if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>' + photo('day');
   if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
   if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
   const last = ob.step === 3;
