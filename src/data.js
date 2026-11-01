@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 10;
+const VERSION = 11;
 const CHANGELOG = [
+ {v:11, ru:['Ссылка всегда открывает приветственную страницу: язык, автор, Медина и кнопки установки','Кнопка «Открыть приложение» ведёт на ваш путь; в установленном приложении сразу открывается путь'],
+  en:['The link always opens the welcome page: language, author, Al-Madinah and install buttons','The “Open the app” button takes you to your path; the installed app opens the path directly'],
+  ar:['الرابط يفتح دائمًا صفحة الترحيب: اللغة والمؤلف والمدينة وأزرار التثبيت','زر «افتح التطبيق» يقودك إلى مسارك؛ والتطبيق المثبّت يفتح المسار مباشرة']},
  {v:10, ru:['Кнопки установки больше не пропадают навсегда: если приложение удалили с телефона, они снова появятся','Кнопки скрываются только в установленном приложении и сразу после установки'],
   en:['Install buttons no longer disappear for good: if you removed the app from your phone they come back','Buttons are hidden only inside the installed app and right after installing'],
   ar:['لم تعد أزرار التثبيت تختفي نهائيًا: إذا حذفت التطبيق من هاتفك فستعود','تختفي الأزرار فقط داخل التطبيق المثبّت وبعد التثبيت مباشرة']},
@@ -142,7 +145,7 @@ ru:{
  'goal.talk':'Свободное общение','goal.quran':'Язык Корана','goal.work':'Работа и учёба',
  'onb.level':'Ваш уровень','level.zero':'Начинаю с нуля','level.letters':'Знаю буквы','level.some':'Немного читаю и говорю',
  'onb.daily':'Цель на день','daily.10':'Лёгкая · 10 XP','daily.20':'Обычная · 20 XP','daily.40':'Серьёзная · 40 XP',
- 'onb.start':'Начать','onb.next':'Далее','onb.back':'Назад',
+ 'onb.enter':'Открыть приложение','onb.start':'Начать','onb.next':'Далее','onb.back':'Назад',
  'home.goal':'Цель дня','home.goalval':'{a} из {b} XP','home.continue':'Продолжить','home.start':'Начать','home.lesson':'Урок {n}','home.locked':'Сначала пройдите предыдущий урок','home.done':'Пройден',
  'lesson.quit':'Выйти из урока? Прогресс этого урока будет потерян.','lesson.stay':'Остаться','lesson.leave':'Выйти',
  'ex.sound':'Какой звук у этой буквы?','ex.letter':'Выберите букву «{name}»','ex.tr':'Что значит это слово?','ex.pickar':'Выберите по-арабски: «{w}»','ex.listen':'Что вы услышали?','ex.match':'Соедините пары','ex.order':'Составьте фразу: «{w}»','ex.type':'Напишите по-арабски: «{w}»','ex.speak':'Произнесите вслух',
@@ -173,7 +176,7 @@ en:{
  'goal.talk':'Everyday communication','goal.quran':'The language of the Quran','goal.work':'Work and study',
  'onb.level':'Your level','level.zero':'Starting from zero','level.letters':'I know the letters','level.some':'I read and speak a little',
  'onb.daily':'Daily goal','daily.10':'Light · 10 XP','daily.20':'Regular · 20 XP','daily.40':'Serious · 40 XP',
- 'onb.start':'Start','onb.next':'Next','onb.back':'Back',
+ 'onb.enter':'Open the app','onb.start':'Start','onb.next':'Next','onb.back':'Back',
  'home.goal':'Daily goal','home.goalval':'{a} of {b} XP','home.continue':'Continue','home.start':'Start','home.lesson':'Lesson {n}','home.locked':'Finish the previous lesson first','home.done':'Completed',
  'lesson.quit':'Leave the lesson? Progress in this lesson will be lost.','lesson.stay':'Stay','lesson.leave':'Leave',
  'ex.sound':'What sound does this letter make?','ex.letter':'Choose the letter “{name}”','ex.tr':'What does this mean?','ex.pickar':'Choose in Arabic: “{w}”','ex.listen':'What did you hear?','ex.match':'Match the pairs','ex.order':'Build the phrase: “{w}”','ex.type':'Write in Arabic: “{w}”','ex.speak':'Say it out loud',
@@ -204,7 +207,7 @@ ar:{
  'goal.talk':'التواصل اليومي','goal.quran':'لغة القرآن','goal.work':'العمل والدراسة',
  'onb.level':'مستواك','level.zero':'مبتدئ من الصفر','level.letters':'أعرف الحروف','level.some':'أقرأ وأتحدث قليلًا',
  'onb.daily':'هدفك اليومي','daily.10':'خفيف · 10 XP','daily.20':'عادي · 20 XP','daily.40':'جاد · 40 XP',
- 'onb.start':'ابدأ','onb.next':'التالي','onb.back':'رجوع',
+ 'onb.enter':'افتح التطبيق','onb.start':'ابدأ','onb.next':'التالي','onb.back':'رجوع',
  'home.goal':'هدف اليوم','home.goalval':'{a} من {b} XP','home.continue':'تابع','home.start':'ابدأ','home.lesson':'الدرس {n}','home.locked':'أكمل الدرس السابق أولًا','home.done':'مكتمل',
  'lesson.quit':'هل تريد مغادرة الدرس؟ سيُفقد تقدّم هذا الدرس.','lesson.stay':'ابقَ','lesson.leave':'مغادرة',
  'ex.sound':'ما صوت هذا الحرف؟','ex.letter':'اختر الحرف «{name}»','ex.tr':'ما معنى هذه الكلمة؟','ex.pickar':'اختر بالعربية: «{w}»','ex.listen':'ماذا سمعت؟','ex.match':'طابِق بين الأزواج','ex.order':'رتّب العبارة: «{w}»','ex.type':'اكتب بالعربية: «{w}»','ex.speak':'انطق بصوت عالٍ',

@@ -45,7 +45,7 @@ const IC = {
 };
 
 /* ---------- state ---------- */
-let deferred = null, newVer = 0, instNow = false;
+let deferred = null, newVer = 0, instNow = false, landing = false;
 let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
 let TTS = false;
 function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
@@ -385,15 +385,16 @@ function meView() {
 function logView() {
   return '<h1 class="h1">' + t('me.log') + '</h1>' + CHANGELOG.slice().reverse().map(c => '<div class="card"><h2 class="h2">v' + c.v + '</h2><ul class="feat">' + (c[st.lang] || c.en).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>').join('');
 }
-function onbView() {
-  const dots = '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= ob.step ? 'on' : '') + '"></i>').join('') + '</div>';
+function onbView(land) {
+  const step = land ? 0 : ob.step;
+  const dots = land ? '' : '<div class="dots">' + [0, 1, 2, 3].map(i => '<i class="' + (i <= step ? 'on' : '') + '"></i>').join('') + '</div>';
   let body = '';
-  if (ob.step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard() + photo('night');
-  if (ob.step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>' + photo('day');
-  if (ob.step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
-  if (ob.step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
-  const last = ob.step === 3;
-  return '<div class="app"><header class="top"><span class="logo"><span class="brand">FUSHA</span>' + VTAG + '</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (ob.step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (last ? 'onbdone' : 'onbnext') + '">' + t(last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
+  if (step === 0) body = '<p class="h1">' + t('onb.welcome') + '</p><h2 class="h2">' + t('onb.lang') + '</h2>' + segHTML('lang', st.lang, LANGS) + authorBlock() + installCard() + photo('night');
+  if (step === 1) body = '<h2 class="h1">' + t('onb.goal') + '</h2><div class="opts">' + [['talk', '💬'], ['quran', '📖'], ['work', '🎓']].map(x => '<button class="opt" data-act="goal" data-v="' + x[0] + '" aria-pressed="' + (st.goal === x[0]) + '"><span>' + x[1] + '</span>' + t('goal.' + x[0]) + '</button>').join('') + '</div>' + photo('day');
+  if (step === 2) body = '<h2 class="h1">' + t('onb.level') + '</h2><div class="opts">' + [['zero', 'level.zero'], ['letters', 'level.letters'], ['some', 'level.some']].map(x => '<button class="opt" data-act="level" data-v="' + x[0] + '" aria-pressed="' + (st.level === x[0]) + '">' + t(x[1]) + '</button>').join('') + '</div>';
+  if (step === 3) body = '<h2 class="h1">' + t('onb.daily') + '</h2><div class="opts">' + [10, 20, 40].map(n => '<button class="opt" data-act="daily" data-v="' + n + '" aria-pressed="' + (st.daily === n) + '">' + t('daily.' + n) + '</button>').join('') + '</div>';
+  const last = step === 3;
+  return '<div class="app"><header class="top"><span class="logo"><span class="brand">FUSHA</span>' + VTAG + '</span></header><main>' + dots + body + '<div class="row" style="margin-top:1.5rem">' + (!land && step ? '<button class="btn ghost" data-act="onbback">' + t('onb.back') + '</button>' : '') + '<button class="btn gold" style="margin-inline-start:auto" data-act="' + (land ? 'enter' : last ? 'onbdone' : 'onbnext') + '">' + t(land ? 'onb.enter' : last ? 'onb.start' : 'onb.next') + '</button></div></main></div>';
 }
 
 /* ----- lesson ----- */
@@ -509,10 +510,12 @@ function render() {
   de.lang = st.lang; de.dir = st.lang === 'ar' ? 'rtl' : 'ltr';
   if (st.theme === 'auto') de.removeAttribute('data-theme'); else de.setAttribute('data-theme', st.theme);
   let r = route();
-  if (!st.onboarded) r = 'onb';
+  if (landing && st.onboarded && r !== 'lesson') r = 'land';
+  else if (!st.onboarded) r = 'onb';
   else if (r === 'onb') r = 'home';
   let html;
-  if (r === 'onb') html = onbView();
+  if (r === 'land') html = onbView(true);
+  else if (r === 'onb') html = onbView();
   else if (r === 'lesson') html = lessonView();
   else {
     const map = {home:homeView, review:reviewView, tutor:tutorView, me:meView, pay:payView, log:logView, tracks:tracksView, reading:readingView};
@@ -556,6 +559,7 @@ document.addEventListener('click', e => {
     case 'daily': st.daily = +d.v; save(); render(); break;
     case 'goal': st.goal = d.v; render(); break;
     case 'level': st.level = d.v; render(); break;
+    case 'enter': landing = false; window.scrollTo(0, 0); render(); break;
     case 'onbnext': ob.step++; render(); break;
     case 'onbback': ob.step--; render(); break;
     case 'onbdone': st.onboarded = true; st.seen = VERSION; save(); go('home'); break;
@@ -610,8 +614,9 @@ document.addEventListener('keydown', e => {
     else if (e.key.length === 1 && /[؀-ۿ ]/.test(e.key)) { ls.typed += e.key; render(); }
   } else if (e.key === 'Enter') { if (ls.ans || ex.k === 'info') next(); else if (ex.o) check(); }
 });
-window.addEventListener('hashchange', () => { if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
+window.addEventListener('hashchange', () => { landing = false; if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
 window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });
+landing = st.onboarded && !isStandalone() && !location.hash;
 initTTS();
 if (location.hash === '#/lesson' && !ls) location.hash = '#/home';
 render();
