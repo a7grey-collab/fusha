@@ -298,11 +298,12 @@ function tabs(cur) {
 }
 function homeView() {
   const nl = nextLesson();
-  let h = photo('night') + installCard();
+  let h = '<div class="hwrap"><div class="hside">' + photo('night') + installCard();
   h += '<button class="card tbtn" data-act="nav" data-to="tracks"><b>' + t('tracks.title') + '</b><span class="small muted">' + t('tracks.lead') + '</span></button>';
   if (st.level !== 'zero') h += '<p class="small muted">' + t('me.reco', {n:2}) + '</p>';
   h += '<div class="card goal">' + goalRing() + '<div><h2 class="h2">' + t('home.goal') + '</h2><p class="muted">' + t('home.goalval', {a:xpToday(), b:st.daily}) + '</p></div></div>';
   if (nl) h += '<button class="btn gold block" data-act="lesson" data-id="' + nl.id + '">' + t('home.continue') + ' · ' + esc(nl.unit.t[st.lang]) + ' ' + nl.n + '</button>';
+  h += '</div><div class="hunits">';
   UNITS.forEach(u => {
     h += '<section class="unit"><h2 class="h2"><span class="uic ar">' + u.ic + '</span><span>' + esc(u.t[st.lang]) + '</span>' + (u.premium ? '<span class="plus">Plus</span>' : '') + '</h2><div class="path">';
     u.lessons.forEach(l => {
@@ -314,6 +315,7 @@ function homeView() {
     });
     h += '</div></section>';
   });
+  h += '</div></div>';
   return h;
 }
 function reviewView() {
@@ -467,7 +469,7 @@ function lessonView() {
 }
 function sheetHTML() {
   if (!sheet) return '';
-  if (sheet === 'insios' || sheet === 'instand') return installSheet();
+  if (sheet === 'insios' || sheet === 'instand' || sheet === 'instpc') return installSheet();
   if (sheet === 'quit') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('lesson.quit') + '</p><button class="btn gold block" data-act="stay">' + t('lesson.stay') + '</button><button class="btn ghost block" data-act="leave">' + t('lesson.leave') + '</button></div></div>';
   if (sheet === 'reset') return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('me.reset.q') + '</p><button class="btn ghost block" data-act="sheetx">' + t('lesson.stay') + '</button><button class="btn block" style="background:var(--bad);border-color:var(--bad)" data-act="resetyes">' + t('me.reset') + '</button></div></div>';
   return '<div class="scrim" data-act="sheetx"><div class="sheet" role="dialog" aria-modal="true"><p class="h2">' + t('sheet.title') + '</p><p class="muted">' + t(sheet === 'tutor' ? 'sheet.tutor' : 'sheet.unit') + '</p><button class="btn gold block" data-act="seeplans">' + t('sheet.see') + '</button><button class="btn ghost block" data-act="sheetx">' + t('sheet.later') + '</button></div></div>';
@@ -479,19 +481,21 @@ const HOSTED = PWA && /^https?:$/.test(location.protocol) && window.top === wind
 const isStandalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+const isMobile = () => isIOS() || /android/i.test(navigator.userAgent);
 function installCard() {
   if (!HOSTED || isStandalone() || (instNow && !deferred)) return '';
-  const A = '<button class="btn gold sm" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold sm" data-act="insios">' + t('inst.ios') + '</button>';
-  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><div class="irow">' + (isIOS() ? I + A : A + I) + '</div></div>';
+  const B = {and:'<button class="btn gold sm" data-act="instand">' + t('inst.android') + '</button>', ios:'<button class="btn gold sm" data-act="insios">' + t('inst.ios') + '</button>', pc:'<button class="btn gold sm" data-act="instpc">' + t('inst.pc') + '</button>'};
+  const order = isIOS() ? ['ios', 'and', 'pc'] : /android/i.test(navigator.userAgent) ? ['and', 'ios', 'pc'] : ['pc', 'and', 'ios'];
+  return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><div class="irow">' + order.map(k => B[k]).join('') + '</div></div>';
 }
 function installSheet() {
-  const steps = sheet === 'insios' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : 'inst.and.';
+  const steps = sheet === 'insios' || sheet === 'instpc' ? ['s1', 's2', 's3', 's4'] : ['s1', 's2', 's3'], pre = sheet === 'insios' ? 'inst.ios.' : sheet === 'instpc' ? 'inst.pc.' : 'inst.and.';
   const li = steps.map((s, i) => '<li><span class="n">' + (i + 1) + '</span><span>' + t(pre + s) + (sheet === 'insios' && s === 's2' ? ' ' + SHARE_IC : '') + '</span></li>').join('');
   const done = sheet === 'insios' ? '<button class="btn gold block" data-act="instdone">' + t('inst.ios.done') + '</button>' : '';
   return '<div class="scrim" data-act="sheetx"><div class="sheet sheet-tall" role="dialog" aria-modal="true"><p class="h2">' + t(pre + 'title') + '</p><ol class="steps">' + li + '</ol>' + done + '<button class="btn ghost block" data-act="sheetx">' + t('inst.close') + '</button></div></div>';
 }
-function installAndroid() {
-  if (!deferred) { sheet = 'instand'; render(); return; }
+function installAndroid(kind) {
+  if (!deferred) { sheet = kind || 'instand'; render(); return; }
   const ev = deferred; deferred = null;
   ev.prompt();
   ev.userChoice.then(c => { if (c && c.outcome === 'accepted') markInstalled(); }).catch(() => {});
@@ -608,7 +612,8 @@ document.addEventListener('click', e => {
     case 'resetyes': { const keep = {lang:st.lang, theme:st.theme}; st = Object.assign({}, DEF, keep, {onboarded:true, seen:VERSION}); save(); sheet = null; tut = null; ls = null; toast(tp('toast.reset')); render(); break; }
     case 'updclose': st.seen = VERSION; save(); render(); break;
     case 'reload': location.reload(); break;
-    case 'instand': installAndroid(); break;
+    case 'instand': installAndroid('instand'); break;
+    case 'instpc': installAndroid('instpc'); break;
     case 'insios': sheet = 'insios'; render(); break;
     case 'instdone': markInstalled(); break;
   }
