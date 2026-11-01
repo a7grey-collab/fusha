@@ -3,9 +3,11 @@
 Запуск: python3 tools/ingest_audio.py Fusha_Voice_Clips_114of114.zip"""
 import sys, zipfile, subprocess, pathlib, tempfile, json
 root = pathlib.Path(__file__).resolve().parent.parent
-out = root / "src" / "audio"
-man = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
-known = {v[:-4] for v in man.values()}
+out = root / "src" / "audio_real"
+syn = json.loads((root / "src" / "audio_synth" / "manifest.json").read_text(encoding="utf-8"))  # id -> a000.mp3
+man = json.loads((out / "manifest.json").read_text(encoding="utf-8")) if (out / "manifest.json").exists() else {}
+known = {v[:-4] for v in syn.values()}
+bystem = {v[:-4]: k for k, v in syn.items()}
 z = zipfile.ZipFile(sys.argv[1]); n = 0
 with tempfile.TemporaryDirectory() as td:
     for info in z.infolist():
@@ -15,5 +17,6 @@ with tempfile.TemporaryDirectory() as td:
         trim = "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05,areverse,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05,areverse"
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-ac", "1", "-ar", "24000",
                         "-af", trim + ",loudnorm=I=-18:TP=-2:LRA=7", "-b:a", "48k", str(out / (stem + ".mp3"))], check=True)
-        n += 1
-print("заменено клипов:", n, "из", len(known))
+        man[bystem[stem]] = stem + ".mp3"; n += 1
+(out / "manifest.json").write_text(json.dumps(man, ensure_ascii=False), encoding="utf-8")
+print("принято клипов:", n, "из", len(known))

@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 const KEY = 'fusha-app', LATEST = 'fusha-latest';
-const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0, installed:false};
+const DEF = {onboarded:false, lang:'ru', theme:'auto', goal:'talk', level:'zero', daily:20, xp:0, xpDay:{d:'', n:0}, streak:{n:0, last:''}, done:{}, srs:{}, premium:false, region:'gcc', unlockAll:false, tutorDay:{d:'', n:0}, notes:'', seen:0, installed:false, reciter:'Husary_Muallim_128kbps'};
 let st = load();
 function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (e) { return Object.assign({}, DEF); } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
@@ -55,11 +55,9 @@ function play(id) {
   if (!src) return false;
   try { if (curAudio) curAudio.pause(); curAudio = new Audio(src); const pr = curAudio.play(); if (pr && pr.catch) pr.catch(() => {}); return true; } catch (e) { return false; }
 }
-const lb = it => '<button class="tts sm" data-act="play" data-id="' + esc(it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button>';
+const lb = it => !(typeof AUD !== 'undefined' && AUD[it.id]) ? '' : '<button class="tts sm" data-act="play" data-id="' + esc(it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button>';
 function say(text) {
-  if (play('T:' + text)) return;
-  if (!TTS) { toast(tp('tts.off')); return; }
-  try { const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; const v = speechSynthesis.getVoices().find(v => /^ar/i.test(v.lang)); if (v) u.voice = v; u.rate = .85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+  play('T:' + text);
 }
 function toast(m) { const e = $('#toast'); e.textContent = m; e.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove('on'), 2400); }
 function go(h) { if (location.hash === '#/' + h) render(); else location.hash = '#/' + h; }
@@ -118,7 +116,7 @@ function buildQueue(ids, intro) {
     shuffle(its).forEach(i => out.push(mk('tr', i)));
     if (its.length >= 3) out.push(mkMatch(its.slice(0, 4)));
     shuffle(its).forEach(i => out.push(mk('pickar', i)));
-    sample(its, 2).forEach(i => out.push(mk('listen', i)));
+    sample(its.filter(i => typeof AUD !== 'undefined' && AUD[i.id]), 2).forEach(i => out.push(mk('listen', i)));
     its.filter(i => i.ar.includes(' ')).slice(0, 2).forEach(i => out.push(mk('order', i)));
     sample(its.filter(i => i.ar.length <= 10), 2).forEach(i => out.push(mk('type', i)));
     out.push(mk('speak', its[0]));
@@ -274,8 +272,35 @@ function tracksView() {
   h += '</div><div class="note"><p class="small">' + t('tracks.ijaza') + '</p></div>';
   return h;
 }
+/* ---------- reciters (EveryAyah, streamed online) ---------- */
+const RECS = [
+ ['Husary_Muallim_128kbps', {ru:'аль-Хусари · обучающее чтение (Муаллим)', en:'Al-Husary · teaching recitation (Muallim)', ar:'الحصري · المعلِّم'}],
+ ['Husary_128kbps', {ru:'аль-Хусари · мурталь', en:'Al-Husary · murattal', ar:'الحصري · مرتل'}],
+ ['Minshawy_Murattal_128kbps', {ru:'аль-Миншави · мурталь', en:'Al-Minshawi · murattal', ar:'المنشاوي · مرتل'}],
+ ['Abdul_Basit_Murattal_192kbps', {ru:'Абдуль-Басит Абдус-Самад', en:'Abdul Basit Abdus-Samad', ar:'عبد الباسط عبد الصمد'}],
+ ['Abdurrahmaan_As-Sudais_192kbps', {ru:'ас-Судайс', en:'As-Sudais', ar:'السديس'}],
+ ['Alafasy_128kbps', {ru:'аль-Афаси', en:'Al-Afasy', ar:'العفاسي'}]
+];
+let qa = null;
+function qStop() { if (qa) { qa.onended = null; qa.onerror = null; try { qa.pause(); } catch (e) {} qa = null; } const s = $('#qstat'); if (s) s.textContent = ''; }
+function qPlay(from, to) {
+  qStop();
+  let n = from;
+  const go = () => {
+    const s = $('#qstat'); if (s) s.textContent = tp('q.playing', {n});
+    const a = new Audio('https://everyayah.com/data/' + st.reciter + '/001' + String(n).padStart(3, '0') + '.mp3'); qa = a;
+    a.onended = () => { if (n < to) { n++; go(); } else qStop(); };
+    a.onerror = () => { qStop(); toast(tp('q.err')); };
+    const pr = a.play(); if (pr && pr.catch) pr.catch(() => { if (qa === a) { qStop(); toast(tp('q.err')); } });
+  };
+  go();
+}
+function reciterCard() {
+  return '<div class="card"><h2 class="h2">' + t('q.title') + '</h2><label class="small muted" for="rsel">' + t('q.reciter') + '</label><select id="rsel" class="sel">' + RECS.map(r => '<option value="' + r[0] + '"' + (st.reciter === r[0] ? ' selected' : '') + '>' + esc(r[1][st.lang] || r[1].en) + '</option>').join('') + '</select><div class="irow"><button class="btn gold sm" data-act="qplay" data-from="1" data-to="1">▶ ' + t('q.basmala') + '</button><button class="btn gold sm" data-act="qplay" data-from="1" data-to="7">▶ ' + t('q.fatiha') + '</button><button class="btn ghost sm" data-act="qstop" aria-label="Stop">■</button></div><p class="small muted" id="qstat" aria-live="polite"></p><p class="small muted" dir="ltr">Audio: EveryAyah.com</p></div>';
+}
+
 function readingView() {
-  return '<h1 class="h1">' + t('read.title') + '</h1><p class="muted">' + t('read.how') + '</p><div class="card"><p class="small muted">' + t('read.sub') + '</p><div class="big w"><span class="ar" style="font-size:2rem;line-height:1.9">' + esc(BASMALA) + '</span></div><p class="small muted">' + t('read.src') + '</p><div class="rec" id="recbox">' + recHTML('read') + '</div></div>';
+  return '<h1 class="h1">' + t('read.title') + '</h1><p class="muted">' + t('read.how') + '</p>' + reciterCard() + '<div class="card"><p class="small muted">' + t('read.sub') + '</p><div class="big w"><span class="ar" style="font-size:2rem;line-height:1.9">' + esc(BASMALA) + '</span></div><p class="small muted">' + t('read.src') + '</p><div class="rec" id="recbox">' + recHTML('read') + '</div></div>';
 }
 function goalRing() {
   const p = Math.min(1, xpToday() / st.daily), c = 2 * Math.PI * 32;
@@ -339,7 +364,7 @@ function tutorView() {
   h += '<div class="chat" id="chat">' + tut.msgs.map(m => {
     if (m.r === 'f') return '<div class="msg f">' + m.h + '</div>';
     if (m.r === 'u') return '<div class="msg u">' + ar(m.ar) + '</div>';
-    return '<div class="msg t">' + ar(m.say.ar) + '<span class="tr">' + esc(m.say[L2()]) + '</span><button class="btn ghost sm" style="margin-top:.4rem" data-act="say" data-t="' + esc(m.say.ar) + '">' + IC.spk.replace('<svg', '<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2"') + ' ' + t('tts.play') + '</button></div>';
+    return '<div class="msg t">' + ar(m.say.ar) + '<span class="tr">' + esc(m.say[L2()]) + '</span>' + (typeof AUD !== 'undefined' && AUD['T:' + m.say.ar] ? '<button class="btn ghost sm" style="margin-top:.4rem" data-act="say" data-t="' + esc(m.say.ar) + '">' + IC.spk.replace('<svg', '<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2"') + ' ' + t('tts.play') + '</button>' : '') + '</div>';
   }).join('') + '</div>';
   if (tut.done) h += '<div class="card"><b>' + t('tutor.end') + '</b><button class="btn gold block" data-act="scenreset">' + t('tutor.again') + '</button></div>';
   else {
@@ -441,7 +466,7 @@ function exBody(ex) {
       body = '<div class="match"><div class="col">' + ex.left.map(id => cell(id, 'L')).join('') + '</div><div class="col">' + ex.right.map(id => cell(id, 'R')).join('') + '</div></div>';
       break; }
     case 'speak':
-      q = tp('ex.speak'); body = '<div class="big w"><span class="ar" style="font-size:' + (ex.it.type === 'L' ? '4.5rem' : '2.6rem') + '">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.type === 'L' ? sndOf(ex.it) : ex.it.tr) + '</span></div><button class="tts" data-act="play" data-id="' + esc(ex.it.id) + '">' + IC.spk + ' ' + t('tts.play') + '</button><div class="rec" id="recbox">' + recHTML() + '</div>';
+      q = tp('ex.speak'); body = '<div class="big w"><span class="ar" style="font-size:' + (ex.it.type === 'L' ? '4.5rem' : '2.6rem') + '">' + esc(ex.it.ar) + '</span><span class="tr">' + esc(ex.it.type === 'L' ? sndOf(ex.it) : ex.it.tr) + '</span></div>' + lb(ex.it) + '<div class="rec" id="recbox">' + recHTML() + '</div>';
       break;
   }
   return '<h1 class="q">' + esc(q) + '</h1>' + body;
@@ -589,6 +614,8 @@ document.addEventListener('click', e => {
       matchTap(a === 'mL' ? 'L' : 'R', d.id); break; }
     case 'say': say(d.t); break;
     case 'play': play(d.id); break;
+    case 'qplay': qPlay(+d.from, +d.to); break;
+    case 'qstop': qStop(); break;
     case 'track': if (d.id === 'zero') go('home'); else if (d.id === 'tajweed') { cleanupRec(); go('reading'); } else toast(tp('st.soon')); break;
     case 'sendteacher': toast(tp('read.sent')); break;
     case 'rec': recStart(); break;
@@ -628,7 +655,8 @@ document.addEventListener('keydown', e => {
     else if (e.key.length === 1 && /[؀-ۿ ]/.test(e.key)) { ls.typed += e.key; render(); }
   } else if (e.key === 'Enter') { if (ls.ans || ex.k === 'info') next(); else if (ex.o) check(); }
 });
-window.addEventListener('hashchange', () => { landing = false; if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
+document.addEventListener('change', e => { if (e.target && e.target.id === 'rsel') { st.reciter = e.target.value; save(); qStop(); } });
+window.addEventListener('hashchange', () => { qStop(); landing = false; if (route() !== 'reading' && route() !== 'lesson') cleanupRec(); sheet = null; render(); });
 window.addEventListener('storage', e => { if (e.key === LATEST && +e.newValue > VERSION) { newVer = +e.newValue; banner = 'new'; render(); } });
 landing = st.onboarded && !isStandalone() && !location.hash;
 initTTS();
