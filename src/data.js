@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 9;
+const VERSION = 10;
 const CHANGELOG = [
+ {v:10, ru:['Кнопки установки больше не пропадают навсегда: если приложение удалили с телефона, они снова появятся','Кнопки скрываются только в установленном приложении и сразу после установки'],
+  en:['Install buttons no longer disappear for good: if you removed the app from your phone they come back','Buttons are hidden only inside the installed app and right after installing'],
+  ar:['لم تعد أزرار التثبيت تختفي نهائيًا: إذا حذفت التطبيق من هاتفك فستعود','تختفي الأزرار فقط داخل التطبيق المثبّت وبعد التثبيت مباشرة']},
  {v:9, ru:['Алфавит по порядку: 28 букв в 7 уроках, трудные звуки больше не отдельно','Формы буквы в слове: отдельно, в начале, в середине, в конце','Новый раздел «Огласовки»: фатха, дамма, касра, долгие гласные','Раздел «Читаем слова»: первые 8 слов с огласовками','Короткие пояснения перед уроками'],
   en:['Alphabet in order: 28 letters in 7 lessons, hard sounds are no longer separate','Letter shapes inside a word: alone, start, middle, end','New “Vowel marks” unit: fatha, damma, kasra, long vowels','“Reading words” unit: first 8 words with vowel marks','Short explanations before lessons'],
   ar:['الأبجدية بالترتيب: 28 حرفًا في 7 دروس، ولم تعد الأصوات الصعبة منفصلة','أشكال الحرف داخل الكلمة: منفرد، أول، وسط، آخر','وحدة جديدة «الحركات»: الفتحة والضمة والكسرة وحروف المد','وحدة «نقرأ كلمات»: أول 8 كلمات بالحركات','شروح قصيرة قبل الدروس']},

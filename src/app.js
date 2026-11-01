@@ -45,7 +45,7 @@ const IC = {
 };
 
 /* ---------- state ---------- */
-let deferred = null, newVer = 0;
+let deferred = null, newVer = 0, instNow = false;
 let ls = null, tut = null, sheet = null, banner = null, ob = {step:0}, toastT;
 let TTS = false;
 function initTTS() { if (!('speechSynthesis' in window)) return; const c = () => { TTS = speechSynthesis.getVoices().some(v => /^ar/i.test(v.lang)); }; c(); try { speechSynthesis.onvoiceschanged = c; } catch (e) {} }
@@ -471,7 +471,7 @@ const isStandalone = () => { try { return matchMedia('(display-mode: standalone)
 const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const SHARE_IC = '<svg class="shic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 function installCard() {
-  if (!HOSTED || st.installed || isStandalone()) return '';
+  if (!HOSTED || isStandalone() || (instNow && !deferred)) return '';
   const A = '<button class="btn gold sm" data-act="instand">' + t('inst.android') + '</button>', I = '<button class="btn gold sm" data-act="insios">' + t('inst.ios') + '</button>';
   return '<div class="card inst"><h2 class="h2">' + t('inst.title') + '</h2><div class="irow">' + (isIOS() ? I + A : A + I) + '</div></div>';
 }
@@ -487,7 +487,7 @@ function installAndroid() {
   ev.prompt();
   ev.userChoice.then(c => { if (c && c.outcome === 'accepted') markInstalled(); }).catch(() => {});
 }
-function markInstalled() { if (st.installed) return; st.installed = true; save(); sheet = null; toast(tp('inst.ok')); render(); }
+function markInstalled() { if (instNow) return; instNow = true; deferred = null; sheet = null; toast(tp('inst.ok')); render(); }
 function checkUpdate() {
   if (!HOSTED) return;
   fetch('version.json?t=' + Date.now(), {cache:'no-store'}).then(r => r.json()).then(j => {
@@ -495,7 +495,7 @@ function checkUpdate() {
   }).catch(() => {});
 }
 if (HOSTED) {
-  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; });
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; instNow = false; if (route() !== 'lesson' && route() !== 'reading') render(); });
   window.addEventListener('appinstalled', markInstalled);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdate(); });
