@@ -1,6 +1,9 @@
 /* ===== version ===== */
-const VERSION = 15;
+const VERSION = 16;
 const CHANGELOG = [
+ {v:16, ru:['В разделе «Тьютор» реплики тьютора можно прослушать (озвучка синтезированная, только в этом разделе)','Буквы и слоги по-прежнему озвучены живым голосом'],
+  en:['Tutor replies can now be played aloud (synthesized voice, in the Tutor section only)','Letters and syllables keep the real human voice'],
+  ar:['يمكن الآن الاستماع إلى ردود المعلّم في قسم «المعلّم» (صوت مُصطنع في هذا القسم فقط)','تبقى الحروف والمقاطع بصوت بشري حقيقي']},
  {v:15, ru:['Настоящий голос: названия и звуки всех 28 букв из «Мединского каиды» (чтец — школа шейха д-ра Абдулмухсина аль-Касима)','Кнопка «Послушать» у букв и слогов с фатхой','Синтезированного голоса в приложении нет'],
   en:['Real human voice: names and sounds of all 28 letters from the Madinah Qa’ida (narrated by Sheikh Dr. Abdulmohsen Al-Qasim’s school)','“Listen” button on letters and fatha syllables','No synthesized voice anywhere in the app'],
   ar:['صوت بشري حقيقي: أسماء وأصوات الحروف الثمانية والعشرين من القاعدة المدنية (بصوت مدرسة الشيخ د. عبدالمحسن القاسم)','زر «استمع» عند الحروف والمقاطع المفتوحة','لا يوجد صوت مُصطنع في التطبيق']},
